@@ -9,14 +9,14 @@ const test = attendant.test
 
 attendant.run()
 
-test('malformed documents', function (t) {
+test('malformed documents', function (t: any) {
   t.plan(0)
   const turndownService = new TurndownService()
   turndownService.turndown('<HTML><head></head><BODY><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><body onload=alert(document.cookie);></body></html>')
   t.end()
 })
 
-test('null input', function (t) {
+test('null input', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService()
   t.throws(
@@ -24,7 +24,7 @@ test('null input', function (t) {
   )
 })
 
-test('undefined input', function (t) {
+test('undefined input', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService()
   t.throws(
@@ -33,63 +33,63 @@ test('undefined input', function (t) {
   )
 })
 
-test('#addRule returns the instance', function (t) {
+test('#addRule returns the instance', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService()
   const rule = {
     filter: ['del', 's', 'strike'],
-    replacement: function (content) {
+    replacement: function (content: string) {
       return '~~' + content + '~~'
     }
   }
   t.equal(turndownService.addRule('strikethrough', rule), turndownService)
 })
 
-test('#addRule adds the rule', function (t) {
+test('#addRule adds the rule', function (t: any) {
   t.plan(2)
   const turndownService = new TurndownService()
   const rule = {
     filter: ['del', 's', 'strike'],
-    replacement: function (content) {
+    replacement: function (content: string) {
       return '~~' + content + '~~'
     }
   }
   // Assert rules#add is called
-  turndownService.rules.add = function (key, r) {
+  turndownService.rules.add = function (key: string, r: any) {
     t.equal(key, 'strikethrough')
     t.equal(rule, r)
   }
   turndownService.addRule('strikethrough', rule)
 })
 
-test('#use returns the instance for chaining', function (t) {
+test('#use returns the instance for chaining', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService()
   t.equal(turndownService.use(function plugin () {}), turndownService)
 })
 
-test('#use with a single plugin calls the fn with instance', function (t) {
+test('#use with a single plugin calls the fn with instance', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService()
-  function plugin (service) {
+  function plugin (service: any) {
     t.equal(service, turndownService)
   }
   turndownService.use(plugin)
 })
 
-test('#use with multiple plugins calls each fn with instance', function (t) {
+test('#use with multiple plugins calls each fn with instance', function (t: any) {
   t.plan(2)
   const turndownService = new TurndownService()
-  function plugin1 (service) {
+  function plugin1 (service: any) {
     t.equal(service, turndownService)
   }
-  function plugin2 (service) {
+  function plugin2 (service: any) {
     t.equal(service, turndownService)
   }
   turndownService.use([plugin1, plugin2])
 })
 
-test('#keep keeps elements as HTML', function (t) {
+test('#keep keeps elements as HTML', function (t: any) {
   t.plan(2)
   const turndownService = new TurndownService()
   const input = '<p>Hello <del>world</del><ins>World</ins></p>'
@@ -105,20 +105,20 @@ test('#keep keeps elements as HTML', function (t) {
   )
 })
 
-test('#keep returns the TurndownService instance for chaining', function (t) {
+test('#keep returns the TurndownService instance for chaining', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService()
   t.equal(turndownService.keep(['del', 'ins']), turndownService)
 })
 
-test('keep rules are overridden by the standard rules', function (t) {
+test('keep rules are overridden by the standard rules', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService()
   turndownService.keep('p')
   t.equal(turndownService.turndown('<p>Hello world</p>'), 'Hello world')
 })
 
-test('keeping elements that have a blank textContent but contain significant elements', function (t) {
+test('keeping elements that have a blank textContent but contain significant elements', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService()
   turndownService.keep('figure')
@@ -128,10 +128,10 @@ test('keeping elements that have a blank textContent but contain significant ele
   )
 })
 
-test('keepReplacement can be customised', function (t) {
+test('keepReplacement can be customised', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService({
-    keepReplacement: function (content, node) {
+    keepReplacement: function (content: string, node: any) {
       return '\n\n' + node.outerHTML + '\n\n'
     }
   })
@@ -142,7 +142,7 @@ test('keepReplacement can be customised', function (t) {
   )
 })
 
-test('#remove removes elements', function (t) {
+test('#remove removes elements', function (t: any) {
   t.plan(2)
   const turndownService = new TurndownService()
   const input = '<del>Please redact me</del>'
@@ -155,20 +155,20 @@ test('#remove removes elements', function (t) {
   t.equal(turndownService.turndown(input), '')
 })
 
-test('#remove returns the TurndownService instance for chaining', function (t) {
+test('#remove returns the TurndownService instance for chaining', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService()
   t.equal(turndownService.remove(['del', 'ins']), turndownService)
 })
 
-test('remove elements are overridden by rules', function (t) {
+test('remove elements are overridden by rules', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService()
   turndownService.remove('p')
   t.equal(turndownService.turndown('<p>Hello world</p>'), 'Hello world')
 })
 
-test('remove elements are overridden by keep', function (t) {
+test('remove elements are overridden by keep', function (t: any) {
   t.plan(1)
   const turndownService = new TurndownService()
   turndownService.keep(['del', 'ins'])

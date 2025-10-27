@@ -1,8 +1,13 @@
 const test = require('tape').test
 const { edgeWhitespace } = require('../lib/index.cjs')
 
-test('edge whitespace detection', function (t) {
-  function ews (leadingAscii, leadingNonAscii, trailingNonAscii, trailingAscii) {
+test('edge whitespace detection', function (t: any) {
+  function ews(
+    leadingAscii: string,
+    leadingNonAscii: string,
+    trailingNonAscii: string,
+    trailingAscii: string
+  ) {
     return {
       leading: leadingAscii + leadingNonAscii,
       leadingAscii,
