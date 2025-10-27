@@ -1,12 +1,13 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vite';
+import type { UserConfigExport } from 'vite';
 
-export default defineConfig({
+const config: UserConfigExport = defineConfig({
     build: {
         lib: {
             entry: 'src/turndown.ts',
             name: 'Turndown',
             formats: ['es', 'cjs', 'umd', 'iife'],
-            fileName: (format) => {
+            fileName: (format: string) => {
                 if (format === 'es') { return 'index.mjs'; }
                 if (format === 'cjs') { return 'index.cjs'; }
                 if (format === 'umd') { return 'index.umd.js'; }
@@ -20,8 +21,11 @@ export default defineConfig({
             output: {
                 globals: {
                     '@mixmark-io/domino': 'domino'
-                }
+                },
+                exports: 'named'
             }
         }
     }
-})
+});
+
+export default config;
