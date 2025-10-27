@@ -1,4 +1,4 @@
-import TurndownService from '../dist/index.cjs';
+import TurndownService from '../src/turndown';
 import { describe, it, expect } from 'vitest';
 
 describe('TurndownService', () => {
