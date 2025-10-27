@@ -14,7 +14,6 @@ const config: UserConfigExport = defineConfig({
                 return `index.${format}.js`;
             }
         },
-        outDir: 'lib',
         rollupOptions: {
             // Externalize dependencies that shouldn't be bundled
             external: ['@mixmark-io/domino'],

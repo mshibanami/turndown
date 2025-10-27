@@ -1,5 +1,5 @@
 const test = require('tape').test
-const { edgeWhitespace } = require('../lib/index.cjs')
+const { edgeWhitespace } = require('../dist/index.cjs')
 
 test('edge whitespace detection', function (t: any) {
   function ews(

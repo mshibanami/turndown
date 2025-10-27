@@ -30,7 +30,7 @@
  *
  * @param {Object} options
  */
-function collapseWhitespace (options) {
+function collapseWhitespace(options) {
   const element = options.element
   const isBlock = options.isBlock
   const isVoid = options.isVoid
@@ -51,7 +51,7 @@ function collapseWhitespace (options) {
       let text = node.data.replace(/[ \r\n\t]+/g, ' ')
 
       if ((!prevText || / $/.test(prevText.data)) &&
-          !keepLeadingWs && text[0] === ' ') {
+        !keepLeadingWs && text[0] === ' ') {
         text = text.substr(1)
       }
 
@@ -105,7 +105,7 @@ function collapseWhitespace (options) {
  * @param {Node} node
  * @return {Node} node
  */
-function remove (node) {
+function remove(node) {
   const next = node.nextSibling || node.parentNode
 
   node.parentNode.removeChild(node)
@@ -122,7 +122,7 @@ function remove (node) {
  * @param {Function} isPre
  * @return {Node}
  */
-function next (prev, current, isPre) {
+function next(prev, current, isPre) {
   if ((prev && prev.parentNode === current) || isPre(current)) {
     return current.nextSibling || current.parentNode
   }
