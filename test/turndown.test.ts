@@ -1,6 +1,3 @@
-
-// @ts-expect-error: No types for turndown-attendant
-import Attendant from 'turndown-attendant';
 import TurndownServiceDefault from '../dist/index.cjs';
 import { describe, it, expect } from 'vitest';
 
@@ -40,18 +37,18 @@ describe('TurndownService', () => {
             replacement: (content: string) => '~~' + content + '~~'
         };
         let called = false;
-            if (turndownService.rules && typeof turndownService.rules.add === 'function') {
-                turndownService.rules.add = (key: string, r: any) => {
-                    expect(key).toBe('strikethrough');
-                    expect(r).toBe(rule);
-                    called = true;
-                };
-                turndownService.addRule('strikethrough', rule);
-                expect(called).toBe(true);
-            } else {
-                // If rules.add is not available, just check addRule returns instance
-                expect(turndownService.addRule('strikethrough', rule)).toBe(turndownService);
-            }
+        if (turndownService.rules && typeof turndownService.rules.add === 'function') {
+            turndownService.rules.add = (key: string, r: any) => {
+                expect(key).toBe('strikethrough');
+                expect(r).toBe(rule);
+                called = true;
+            };
+            turndownService.addRule('strikethrough', rule);
+            expect(called).toBe(true);
+        } else {
+            // If rules.add is not available, just check addRule returns instance
+            expect(turndownService.addRule('strikethrough', rule)).toBe(turndownService);
+        }
     });
 
     it('#use returns the instance for chaining', () => {
