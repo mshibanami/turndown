@@ -5,7 +5,7 @@ const config: UserConfigExport = defineConfig({
     build: {
         lib: {
             entry: 'src/turndown.ts',
-            name: 'Turndown',
+            name: 'TurndownService',
             formats: ['es', 'cjs', 'umd', 'iife'],
             fileName: (format: string) => {
                 if (format === 'es') { return 'index.mjs'; }
@@ -21,7 +21,7 @@ const config: UserConfigExport = defineConfig({
                 globals: {
                     '@mixmark-io/domino': 'domino'
                 },
-                exports: 'named'
+                exports: 'default'
             }
         }
     }

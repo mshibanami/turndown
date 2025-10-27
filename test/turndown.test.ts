@@ -1,7 +1,5 @@
-import TurndownServiceDefault from '../dist/index.cjs';
+import TurndownService from '../dist/index.cjs';
 import { describe, it, expect } from 'vitest';
-
-const TurndownService = TurndownServiceDefault.default || TurndownServiceDefault;
 
 describe('TurndownService', () => {
     it('malformed documents', () => {

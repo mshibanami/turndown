@@ -21,7 +21,7 @@ const escapes = [
   [/^(\d+)\. /g, '$1\\. ']
 ]
 
-export default function TurndownService (options) {
+function TurndownService(options) {
   if (!(this instanceof TurndownService)) return new TurndownService(options)
 
   const defaults = {
@@ -155,7 +155,7 @@ TurndownService.prototype = {
  * @type String
  */
 
-function process (parentNode) {
+function process(parentNode) {
   const self = this
   return reduce.call(parentNode.childNodes, function (output, node) {
     node = new Node(node, self.options)
@@ -179,7 +179,7 @@ function process (parentNode) {
  * @type String
  */
 
-function postProcess (output) {
+function postProcess(output) {
   const self = this
   this.rules.forEach(function (rule) {
     if (typeof rule.append === 'function') {
@@ -198,7 +198,7 @@ function postProcess (output) {
  * @type String
  */
 
-function replacementForNode (node) {
+function replacementForNode(node) {
   const rule = this.rules.forNode(node)
   let content = process.call(this, node)
   const whitespace = node.flankingWhitespace
@@ -219,7 +219,7 @@ function replacementForNode (node) {
  * @type String
  */
 
-function join (output, replacement) {
+function join(output, replacement) {
   const s1 = trimTrailingNewlines(output)
   const s2 = trimLeadingNewlines(replacement)
   const nls = Math.max(output.length - s1.length, replacement.length - s2.length)
@@ -236,7 +236,7 @@ function join (output, replacement) {
  * @type String|Object|Array|Boolean|Number
  */
 
-function canConvert (input) {
+function canConvert(input) {
   return (
     input != null && (
       typeof input === 'string' ||
@@ -246,3 +246,5 @@ function canConvert (input) {
     )
   )
 }
+
+export default TurndownService;

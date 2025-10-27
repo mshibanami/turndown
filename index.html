@@ -60,8 +60,7 @@
   }
 
   .row {
-    display: flex;
-    flex-wrap: wrap;
+    *zoom: 1;
   }
 
   .col,
@@ -110,7 +109,7 @@
     font-size: 0.875em;
   }
 </style>
-<script src="https://unpkg.com/turndown/dist/turndown.js"></script>
+<script src="./dist/index.iife.js"></script>
 </head>
 <body>
 <header>
@@ -239,12 +238,12 @@ console.log(
     var input = document.getElementById('input')
     var output = document.getElementById('output')
     var optionsForm = document.getElementById('options')
-    var turndownService = new window.TurndownService(options())
+  var turndownService = new window.TurndownService(options())
 
     input.addEventListener('input', update)
 
     optionsForm.addEventListener('change', function () {
-      turndownService = new window.TurndownService(options())
+  turndownService = new window.TurndownService(options())
       update()
     })
 
