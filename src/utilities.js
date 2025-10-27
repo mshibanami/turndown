@@ -1,7 +1,7 @@
 export function extend (destination) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i]
-    for (var key in source) {
+  for (let i = 1; i < arguments.length; i++) {
+    const source = arguments[i]
+    for (const key in source) {
       if (source.hasOwnProperty(key)) destination[key] = source[key]
     }
   }
@@ -18,7 +18,7 @@ export function trimLeadingNewlines (string) {
 
 export function trimTrailingNewlines (string) {
   // avoid match-at-end regexp bottleneck, see #370
-  var indexEnd = string.length
+  let indexEnd = string.length
   while (indexEnd > 0 && string[indexEnd - 1] === '\n') indexEnd--
   return string.substring(0, indexEnd)
 }
@@ -53,7 +53,7 @@ export function hasVoid (node) {
   return has(node, voidElements)
 }
 
-var meaningfulWhenBlankElements = [
+const meaningfulWhenBlankElements = [
   'A', 'TABLE', 'THEAD', 'TBODY', 'TFOOT', 'TH', 'TD', 'IFRAME', 'SCRIPT',
   'AUDIO', 'VIDEO'
 ]

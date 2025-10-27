@@ -3,8 +3,8 @@ import Rules from './rules'
 import { extend, trimLeadingNewlines, trimTrailingNewlines } from './utilities'
 import RootNode from './root-node'
 import Node from './node'
-var reduce = Array.prototype.reduce
-var escapes = [
+const reduce = Array.prototype.reduce
+const escapes = [
   [/\\/g, '\\\\'],
   [/\*/g, '\\*'],
   [/^-/g, '\\-'],
@@ -23,7 +23,7 @@ var escapes = [
 export default function TurndownService (options) {
   if (!(this instanceof TurndownService)) return new TurndownService(options)
 
-  var defaults = {
+  const defaults = {
     rules: COMMONMARK_RULES,
     headingStyle: 'setext',
     hr: '* * *',
@@ -68,7 +68,7 @@ TurndownService.prototype = {
 
     if (input === '') return ''
 
-    var output = process.call(this, new RootNode(input, this.options))
+    const output = process.call(this, new RootNode(input, this.options))
     return postProcess.call(this, output)
   },
 
@@ -82,7 +82,7 @@ TurndownService.prototype = {
 
   use: function (plugin) {
     if (Array.isArray(plugin)) {
-      for (var i = 0; i < plugin.length; i++) this.use(plugin[i])
+      for (let i = 0; i < plugin.length; i++) this.use(plugin[i])
     } else if (typeof plugin === 'function') {
       plugin(this)
     } else {
@@ -155,11 +155,11 @@ TurndownService.prototype = {
  */
 
 function process (parentNode) {
-  var self = this
+  const self = this
   return reduce.call(parentNode.childNodes, function (output, node) {
     node = new Node(node, self.options)
 
-    var replacement = ''
+    let replacement = ''
     if (node.nodeType === 3) {
       replacement = node.isCode ? node.nodeValue : self.escape(node.nodeValue)
     } else if (node.nodeType === 1) {
@@ -179,7 +179,7 @@ function process (parentNode) {
  */
 
 function postProcess (output) {
-  var self = this
+  const self = this
   this.rules.forEach(function (rule) {
     if (typeof rule.append === 'function') {
       output = join(output, rule.append(self.options))
@@ -198,9 +198,9 @@ function postProcess (output) {
  */
 
 function replacementForNode (node) {
-  var rule = this.rules.forNode(node)
-  var content = process.call(this, node)
-  var whitespace = node.flankingWhitespace
+  const rule = this.rules.forNode(node)
+  let content = process.call(this, node)
+  const whitespace = node.flankingWhitespace
   if (whitespace.leading || whitespace.trailing) content = content.trim()
   return (
     whitespace.leading +
@@ -219,10 +219,10 @@ function replacementForNode (node) {
  */
 
 function join (output, replacement) {
-  var s1 = trimTrailingNewlines(output)
-  var s2 = trimLeadingNewlines(replacement)
-  var nls = Math.max(output.length - s1.length, replacement.length - s2.length)
-  var separator = '\n\n'.substring(0, nls)
+  const s1 = trimTrailingNewlines(output)
+  const s2 = trimLeadingNewlines(replacement)
+  const nls = Math.max(output.length - s1.length, replacement.length - s2.length)
+  const separator = '\n\n'.substring(0, nls)
 
   return s1 + separator + s2
 }
