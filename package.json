@@ -4,12 +4,12 @@
   "version": "7.2.2",
   "type": "module",
   "author": "Dom Christie",
-  "main": "lib/turndown.cjs.js",
+  "main": "lib/turndown.cjs",
   "module": "lib/turndown.es.js",
   "jsnext:main": "lib/turndown.es.js",
   "browser": {
     "@mixmark-io/domino": false,
-    "./lib/turndown.cjs.js": "./lib/turndown.browser.cjs.js",
+    "./lib/turndown.cjs": "./lib/turndown.browser.cjs",
     "./lib/turndown.es.js": "./lib/turndown.browser.es.js",
     "./lib/turndown.umd.js": "./lib/turndown.browser.umd.js"
   },
@@ -46,8 +46,8 @@
     "build-es": "rollup -c config/rollup.config.es.js && rollup -c config/rollup.config.browser.es.js",
     "build-umd": "rollup -c config/rollup.config.umd.js && rollup -c config/rollup.config.browser.umd.js",
     "build-iife": "rollup -c config/rollup.config.iife.js",
-    "build-test": "browserify test/turndown-test.js --outfile test/turndown-test.browser.js",
+    "build-test": "browserify test/turndown-test.cjs --outfile test/turndown-test.browser.js",
     "prepare": "npm run build",
-    "test": "npm run build && npm run build-test && standard ./src/**/*.js && node test/internals-test.js && node test/turndown-test.js"
+    "test": "npm run build && npm run build-test && standard ./src/**/*.js && node test/internals-test.cjs && node test/turndown-test.cjs"
   }
 }

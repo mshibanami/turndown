@@ -2,7 +2,7 @@ import config from './rollup.config.js'
 
 export default config({
   output: {
-    file: 'lib/turndown.cjs.js',
+    file: 'lib/turndown.cjs',
     format: 'cjs',
     exports: 'auto'
   },
