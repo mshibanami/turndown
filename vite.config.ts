@@ -3,6 +3,7 @@ import type { UserConfigExport } from 'vite';
 
 const config: UserConfigExport = defineConfig({
     build: {
+        sourcemap: true,
         lib: {
             entry: 'src/turndown.ts',
             name: 'TurndownService',
@@ -21,7 +22,7 @@ const config: UserConfigExport = defineConfig({
                 globals: {
                     '@mixmark-io/domino': 'domino'
                 },
-                exports: 'default'
+                exports: 'default',
             }
         }
     }
