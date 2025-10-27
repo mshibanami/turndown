@@ -1,6 +1,5 @@
 const test = require('tape').test
-const rewire = require('rewire')
-const turndownModule = rewire('../lib/turndown.cjs')
+const { edgeWhitespace } = require('../lib/index.cjs')
 
 test('edge whitespace detection', function (t) {
   function ews (leadingAscii, leadingNonAscii, trailingNonAscii, trailingAscii) {
@@ -28,7 +27,6 @@ test('edge whitespace detection', function (t) {
   ]
   t.plan(TEST_CASES.length)
   t.timeoutAfter(300)
-  const edgeWhitespace = turndownModule.__get__('edgeWhitespace')
   TEST_CASES.forEach(function (c) {
     t.deepEqual(edgeWhitespace(c[0]), c[1])
   })

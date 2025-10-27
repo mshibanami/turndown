@@ -3,6 +3,7 @@ import Rules from './rules'
 import { extend, trimLeadingNewlines, trimTrailingNewlines } from './utilities'
 import RootNode from './root-node'
 import Node from './node'
+export * from './node'
 const reduce = Array.prototype.reduce
 const escapes = [
   [/\\/g, '\\\\'],

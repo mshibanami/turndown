@@ -1,5 +1,5 @@
 const Attendant = require('turndown-attendant')
-const TurndownService = require('../lib/turndown.cjs')
+const TurndownService = require('../lib/index.cjs').default
 
 const attendant = new Attendant({
   file: __dirname + '/index.html',

@@ -38,7 +38,7 @@ function flankingWhitespace (node, options) {
   return { leading: edges.leading, trailing: edges.trailing }
 }
 
-function edgeWhitespace (string) {
+export function edgeWhitespace (string) {
   const m = string.match(/^(([ \t\r\n]*)(\s*))(?:(?=\S)[\s\S]*\S)?((\s*?)([ \t\r\n]*))$/)
   return {
     leading: m[1], // whole string for whitespace-only strings
