@@ -4,20 +4,20 @@ Convert HTML into Markdown with JavaScript.
 
 ## Project Updates
 * `to-markdown` has been renamed to Turndown. See the [migration guide](https://github.com/domchristie/to-markdown/wiki/Migrating-from-to-markdown-to-Turndown) for details.
-* Turndown repository has changed its URL to https://github.com/mixmark-io/turndown.
+* Turndown repository has changed its URL to https://github.com/mshibanami-org/turndown.
 
 ## Installation
 
 npm:
 
 ```
-npm install turndown
+npm install @mshibanami-org/turndown
 ```
 
 Browser:
 
 ```html
-<script src="https://unpkg.com/turndown/dist/turndown.js"></script>
+<script src="https://unpkg.com/@mshibanami-org/turndown/dist/turndown.js"></script>
 ```
 
 For usage with RequireJS, UMD versions are located in `lib/turndown.umd.js` (for Node.js) and `lib/turndown.browser.umd.js` for browser usage. These files are generated when the npm package is published. To generate them manually, clone this repo and run `npm run build`.
@@ -26,7 +26,7 @@ For usage with RequireJS, UMD versions are located in `lib/turndown.umd.js` (for
 
 ```js
 // For Node.js
-var TurndownService = require('turndown')
+var TurndownService = require('@mshibanami-org/turndown')
 
 var turndownService = new TurndownService()
 var markdown = turndownService.turndown('<h1>Hello world!</h1>')
