@@ -2,7 +2,9 @@ export function extend (destination) {
   for (let i = 1; i < arguments.length; i++) {
     const source = arguments[i]
     for (const key in source) {
-      if (source.hasOwnProperty(key)) destination[key] = source[key]
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        destination[key] = source[key]
+      }
     }
   }
   return destination
@@ -27,7 +29,7 @@ export function trimNewlines (string) {
   return trimTrailingNewlines(trimLeadingNewlines(string))
 }
 
-export var blockElements = [
+export const blockElements = [
   'ADDRESS', 'ARTICLE', 'ASIDE', 'AUDIO', 'BLOCKQUOTE', 'BODY', 'CANVAS',
   'CENTER', 'DD', 'DIR', 'DIV', 'DL', 'DT', 'FIELDSET', 'FIGCAPTION', 'FIGURE',
   'FOOTER', 'FORM', 'FRAMESET', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'HEADER',
@@ -40,7 +42,7 @@ export function isBlock (node) {
   return is(node, blockElements)
 }
 
-export var voidElements = [
+export const voidElements = [
   'AREA', 'BASE', 'BR', 'COL', 'COMMAND', 'EMBED', 'HR', 'IMG', 'INPUT',
   'KEYGEN', 'LINK', 'META', 'PARAM', 'SOURCE', 'TRACK', 'WBR'
 ]

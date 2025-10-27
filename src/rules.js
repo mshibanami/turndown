@@ -63,7 +63,7 @@ function findRule (rules, node, options) {
     const rule = rules[i]
     if (filterValue(rule, node, options)) return rule
   }
-  return void 0
+  return undefined
 }
 
 function filterValue (rule, node, options) {
