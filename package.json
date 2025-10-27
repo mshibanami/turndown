@@ -2,6 +2,7 @@
   "name": "@mshibanami-org/turndown",
   "description": "A library that converts HTML to Markdown",
   "version": "7.2.2",
+  "type": "module",
   "author": "Dom Christie",
   "main": "lib/turndown.cjs.js",
   "module": "lib/turndown.es.js",
