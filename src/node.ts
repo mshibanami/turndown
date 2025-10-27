@@ -1,6 +1,6 @@
 import { isBlock, isVoid, hasVoid, isMeaningfulWhenBlank, hasMeaningfulWhenBlank } from './utilities'
 
-export default function Node (node, options) {
+export default function Node(node, options) {
   node.isBlock = isBlock(node)
   node.isCode = node.nodeName === 'CODE' || node.parentNode.isCode
   node.isBlank = isBlank(node)
@@ -8,7 +8,7 @@ export default function Node (node, options) {
   return node
 }
 
-function isBlank (node) {
+function isBlank(node) {
   return (
     !isVoid(node) &&
     !isMeaningfulWhenBlank(node) &&
@@ -18,7 +18,7 @@ function isBlank (node) {
   )
 }
 
-function flankingWhitespace (node, options) {
+function flankingWhitespace(node, options) {
   if (node.isBlock || (options.preformattedCode && node.isCode)) {
     return { leading: '', trailing: '' }
   }
@@ -38,7 +38,7 @@ function flankingWhitespace (node, options) {
   return { leading: edges.leading, trailing: edges.trailing }
 }
 
-function edgeWhitespace (string) {
+function edgeWhitespace(string) {
   const m = string.match(/^(([ \t\r\n]*)(\s*))(?:(?=\S)[\s\S]*\S)?((\s*?)([ \t\r\n]*))$/)
   return {
     leading: m[1], // whole string for whitespace-only strings
@@ -50,7 +50,7 @@ function edgeWhitespace (string) {
   }
 }
 
-function isFlankedByWhitespace (side, node, options) {
+function isFlankedByWhitespace(side, node, options) {
   let sibling
   let regExp
   let isFlanked

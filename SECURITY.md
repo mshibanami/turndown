@@ -3,9 +3,9 @@
 ## Supported Versions
 
 | Version | Supported          | Remark |
-| ------- | ------------------ | -------|
-| 7.0.x   | :white_check_mark: | |
-| < 7.0   | :x:                | jsdom |
+| ------- | ------------------ | ------ |
+| 7.0.x   | :white_check_mark: |        |
+| < 7.0   | :x:                | jsdom  |
 
 ## DOM Parser Notice
 

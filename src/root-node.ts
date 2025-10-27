@@ -2,7 +2,7 @@ import collapseWhitespace from './collapse-whitespace'
 import HTMLParser from './html-parser'
 import { isBlock, isVoid } from './utilities'
 
-export default function RootNode (input, options) {
+export default function RootNode(input, options) {
   let root
   if (typeof input === 'string') {
     const doc = htmlParser().parseFromString(
@@ -27,11 +27,11 @@ export default function RootNode (input, options) {
 }
 
 let _htmlParser
-function htmlParser () {
+function htmlParser() {
   _htmlParser = _htmlParser || new HTMLParser()
   return _htmlParser
 }
 
-function isPreOrCode (node) {
+function isPreOrCode(node) {
   return node.nodeName === 'PRE' || node.nodeName === 'CODE'
 }

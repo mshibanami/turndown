@@ -2,7 +2,7 @@
  * Manages a collection of rules used to convert HTML to Markdown
  */
 
-export default function Rules (options) {
+export default function Rules(options) {
   this.options = options
   this._keep = []
   this._remove = []
@@ -58,7 +58,7 @@ Rules.prototype = {
   }
 }
 
-function findRule (rules, node, options) {
+function findRule(rules, node, options) {
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i]
     if (filterValue(rule, node, options)) return rule
@@ -66,7 +66,7 @@ function findRule (rules, node, options) {
   return undefined
 }
 
-function filterValue (rule, node, options) {
+function filterValue(rule, node, options) {
   const filter = rule.filter
   if (typeof filter === 'string') {
     if (filter === node.nodeName.toLowerCase()) return true

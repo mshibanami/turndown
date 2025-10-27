@@ -1,4 +1,4 @@
-export function extend (destination) {
+export function extend(destination) {
   for (let i = 1; i < arguments.length; i++) {
     const source = arguments[i]
     for (const key in source) {
@@ -10,22 +10,22 @@ export function extend (destination) {
   return destination
 }
 
-export function repeat (character, count) {
+export function repeat(character, count) {
   return Array(count + 1).join(character)
 }
 
-export function trimLeadingNewlines (string) {
+export function trimLeadingNewlines(string) {
   return string.replace(/^\n*/, '')
 }
 
-export function trimTrailingNewlines (string) {
+export function trimTrailingNewlines(string) {
   // avoid match-at-end regexp bottleneck, see #370
   let indexEnd = string.length
   while (indexEnd > 0 && string[indexEnd - 1] === '\n') indexEnd--
   return string.substring(0, indexEnd)
 }
 
-export function trimNewlines (string) {
+export function trimNewlines(string) {
   return trimTrailingNewlines(trimLeadingNewlines(string))
 }
 
@@ -38,7 +38,7 @@ export const blockElements = [
   'TFOOT', 'TH', 'THEAD', 'TR', 'UL'
 ]
 
-export function isBlock (node) {
+export function isBlock(node) {
   return is(node, blockElements)
 }
 
@@ -47,11 +47,11 @@ export const voidElements = [
   'KEYGEN', 'LINK', 'META', 'PARAM', 'SOURCE', 'TRACK', 'WBR'
 ]
 
-export function isVoid (node) {
+export function isVoid(node) {
   return is(node, voidElements)
 }
 
-export function hasVoid (node) {
+export function hasVoid(node) {
   return has(node, voidElements)
 }
 
@@ -60,19 +60,19 @@ const meaningfulWhenBlankElements = [
   'AUDIO', 'VIDEO'
 ]
 
-export function isMeaningfulWhenBlank (node) {
+export function isMeaningfulWhenBlank(node) {
   return is(node, meaningfulWhenBlankElements)
 }
 
-export function hasMeaningfulWhenBlank (node) {
+export function hasMeaningfulWhenBlank(node) {
   return has(node, meaningfulWhenBlankElements)
 }
 
-function is (node, tagNames) {
+function is(node, tagNames) {
   return tagNames.indexOf(node.nodeName) >= 0
 }
 
-function has (node, tagNames) {
+function has(node, tagNames) {
   return (
     node.getElementsByTagName &&
     tagNames.some(function (tagName) {
