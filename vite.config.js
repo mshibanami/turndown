@@ -3,7 +3,7 @@ import { defineConfig } from 'vite'
 export default defineConfig({
     build: {
         lib: {
-            entry: 'src/turndown.js',
+            entry: 'src/turndown.ts',
             name: 'Turndown',
             formats: ['es', 'cjs', 'umd', 'iife'],
             fileName: (format) => {
