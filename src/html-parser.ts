@@ -8,7 +8,7 @@ const root = (typeof window !== 'undefined' ? window : {})
  * Parsing HTML strings
  */
 
-function canParseHTMLNatively () {
+function canParseHTMLNatively() {
   const Parser = root.DOMParser
   let canParse = false
 
@@ -19,13 +19,13 @@ function canParseHTMLNatively () {
     if (new Parser().parseFromString('', 'text/html')) {
       canParse = true
     }
-  } catch (e) {}
+  } catch (e) { }
 
   return canParse
 }
 
-function createHTMLParser () {
-  const Parser = function () {}
+function createHTMLParser() {
+  const Parser = function () { }
 
   if (process.browser) {
     if (shouldUseActiveX()) {
@@ -55,7 +55,7 @@ function createHTMLParser () {
   return Parser
 }
 
-function shouldUseActiveX () {
+function shouldUseActiveX() {
   let useActiveX = false
   try {
     document.implementation.createHTMLDocument('').open()

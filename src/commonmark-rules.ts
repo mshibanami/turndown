@@ -1,265 +1,271 @@
-import { repeat, trimNewlines } from './utilities'
 
-const rules = {}
+import { repeat, trimNewlines } from './utilities';
+
+type ReplacementFn = (content: string, node?: Node, options?: any) => string;
+type FilterFn = (node: Node, options?: any) => boolean;
+
+interface Rule {
+  filter: string | string[] | FilterFn;
+  replacement?: ReplacementFn;
+  references?: string[];
+  append?: (options?: any) => string;
+}
+
+interface Rules {
+  [key: string]: Rule;
+}
+
+const rules: Rules = {};
 
 rules.paragraph = {
   filter: 'p',
-
-  replacement: function (content) {
-    return '\n\n' + content + '\n\n'
+  replacement: function (content: string, _node?: Node, _options?: any): string {
+    return '\n\n' + content + '\n\n';
   }
-}
+};
 
 rules.lineBreak = {
   filter: 'br',
-
-  replacement: function (content, node, options) {
-    return options.br + '\n'
+  replacement: function (_content: string, _node?: Node, options?: any): string {
+    return options.br + '\n';
   }
-}
+};
 
 rules.heading = {
   filter: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-
-  replacement: function (content, node, options) {
-    const hLevel = Number(node.nodeName.charAt(1))
-
+  replacement: function (content: string, node?: Node, options?: any): string {
+    if (!node) return content;
+    const hLevel = Number(node.nodeName.charAt(1));
     if (options.headingStyle === 'setext' && hLevel < 3) {
-      const underline = repeat((hLevel === 1 ? '=' : '-'), content.length)
+      const underline = repeat((hLevel === 1 ? '=' : '-'), content.length);
       return (
         '\n\n' + content + '\n' + underline + '\n\n'
-      )
+      );
     } else {
-      return '\n\n' + repeat('#', hLevel) + ' ' + content + '\n\n'
+      return '\n\n' + repeat('#', hLevel) + ' ' + content + '\n\n';
     }
   }
-}
+};
 
 rules.blockquote = {
   filter: 'blockquote',
-
-  replacement: function (content) {
-    content = trimNewlines(content).replace(/^/gm, '> ')
-    return '\n\n' + content + '\n\n'
+  replacement: function (content: string, _node?: Node, _options?: any): string {
+    content = trimNewlines(content).replace(/^/gm, '> ');
+    return '\n\n' + content + '\n\n';
   }
-}
+};
 
 rules.list = {
   filter: ['ul', 'ol'],
-
-  replacement: function (content, node) {
-    const parent = node.parentNode
+  replacement: function (content: string, node?: Node, _options?: any): string {
+    if (!node) return content;
+    const parent = node.parentNode as Element;
     if (parent.nodeName === 'LI' && parent.lastElementChild === node) {
-      return '\n' + content
+      return '\n' + content;
     } else {
-      return '\n\n' + content + '\n\n'
+      return '\n\n' + content + '\n\n';
     }
   }
-}
+};
 
 rules.listItem = {
   filter: 'li',
-
-  replacement: function (content, node, options) {
-    let prefix = options.bulletListMarker + '   '
-    const parent = node.parentNode
+  replacement: function (content: string, node?: Node, options?: any): string {
+    if (!node) return content;
+    let prefix = options.bulletListMarker + '   ';
+    const parent = node.parentNode as Element;
     if (parent.nodeName === 'OL') {
-      const start = parent.getAttribute('start')
-      const index = Array.prototype.indexOf.call(parent.children, node)
-      prefix = (start ? Number(start) + index : index + 1) + '.  '
+      const start = parent.getAttribute('start');
+      const index = Array.prototype.indexOf.call(parent.children, node);
+      prefix = (start ? Number(start) + index : index + 1) + '.  ';
     }
-    const isParagraph = /\n$/.test(content)
-    content = trimNewlines(content) + (isParagraph ? '\n' : '')
-    content = content.replace(/\n/gm, '\n' + ' '.repeat(prefix.length)) // indent
+    const isParagraph = /\n$/.test(content);
+    content = trimNewlines(content) + (isParagraph ? '\n' : '');
+    content = content.replace(/\n/gm, '\n' + ' '.repeat(prefix.length)); // indent
     return (
       prefix + content + (node.nextSibling ? '\n' : '')
-    )
+    );
   }
-}
+};
 
 rules.indentedCodeBlock = {
-  filter: function (node, options) {
-    return (
+  filter: function (node: Node, options?: any): boolean {
+    return !!(
+      options &&
       options.codeBlockStyle === 'indented' &&
       node.nodeName === 'PRE' &&
       node.firstChild &&
-      node.firstChild.nodeName === 'CODE'
-    )
+      (node.firstChild as Element).nodeName === 'CODE'
+    );
   },
-
-  replacement: function (content, node, options) {
+  replacement: function (_content: string, node?: Node, _options?: any): string {
+    if (!node || !node.firstChild) return '';
     return (
       '\n\n    ' +
-      node.firstChild.textContent.replace(/\n/g, '\n    ') +
+      (node.firstChild as Element).textContent!.replace(/\n/g, '\n    ') +
       '\n\n'
-    )
+    );
   }
-}
+};
 
 rules.fencedCodeBlock = {
-  filter: function (node, options) {
-    return (
+  filter: function (node: Node, options?: any): boolean {
+    return !!(
+      options &&
       options.codeBlockStyle === 'fenced' &&
       node.nodeName === 'PRE' &&
       node.firstChild &&
-      node.firstChild.nodeName === 'CODE'
-    )
+      (node.firstChild as Element).nodeName === 'CODE'
+    );
   },
-
-  replacement: function (content, node, options) {
-    const className = node.firstChild.getAttribute('class') || ''
-    const language = (className.match(/language-(\S+)/) || [null, ''])[1]
-    const code = node.firstChild.textContent
-
-    const fenceChar = options.fence.charAt(0)
-    let fenceSize = 3
-    const fenceInCodeRegex = new RegExp('^' + fenceChar + '{3,}', 'gm')
-
-    let match
+  replacement: function (_content: string, node?: Node, options?: any): string {
+    if (!node || !node.firstChild) return '';
+    const codeElem = node.firstChild as Element;
+    const className = codeElem.getAttribute('class') || '';
+    const language = (className.match(/language-(\S+)/) || [null, ''])[1];
+    const code = codeElem.textContent || '';
+    const fenceChar = options.fence.charAt(0);
+    let fenceSize = 3;
+    const fenceInCodeRegex = new RegExp('^' + fenceChar + '{3,}', 'gm');
+    let match;
     while ((match = fenceInCodeRegex.exec(code))) {
       if (match[0].length >= fenceSize) {
-        fenceSize = match[0].length + 1
+        fenceSize = match[0].length + 1;
       }
     }
-
-    const fence = repeat(fenceChar, fenceSize)
-
+    const fence = repeat(fenceChar, fenceSize);
     return (
       '\n\n' + fence + language + '\n' +
       code.replace(/\n$/, '') +
       '\n' + fence + '\n\n'
-    )
+    );
   }
-}
+};
 
 rules.horizontalRule = {
   filter: 'hr',
-
-  replacement: function (content, node, options) {
-    return '\n\n' + options.hr + '\n\n'
+  replacement: function (_content: string, _node?: Node, options?: any): string {
+    return '\n\n' + options.hr + '\n\n';
   }
-}
+};
 
 rules.inlineLink = {
-  filter: function (node, options) {
-    return (
+  filter: function (node: Node, options?: any): boolean {
+    return !!(
+      options &&
       options.linkStyle === 'inlined' &&
       node.nodeName === 'A' &&
-      node.getAttribute('href')
-    )
+      (node as Element).getAttribute('href')
+    );
   },
-
-  replacement: function (content, node) {
-    let href = node.getAttribute('href')
-    if (href) href = href.replace(/([()])/g, '\\$1')
-    let title = cleanAttribute(node.getAttribute('title'))
-    if (title) title = ' "' + title.replace(/"/g, '\\"') + '"'
-    return '[' + content + '](' + href + title + ')'
+  replacement: function (content: string, node?: Node, _options?: any): string {
+    if (!node) return content;
+    let href = (node as Element).getAttribute('href');
+    if (href) href = href.replace(/([()])/g, '\\$1');
+    let title = cleanAttribute((node as Element).getAttribute('title'));
+    if (title) title = ' "' + title.replace(/"/g, '\\"') + '"';
+    return '[' + content + '](' + href + title + ')';
   }
-}
+};
 
 rules.referenceLink = {
-  filter: function (node, options) {
-    return (
+  filter: function (node: Node, options?: any): boolean {
+    return !!(
+      options &&
       options.linkStyle === 'referenced' &&
       node.nodeName === 'A' &&
-      node.getAttribute('href')
-    )
+      (node as Element).getAttribute('href')
+    );
   },
-
-  replacement: function (content, node, options) {
-    const href = node.getAttribute('href')
-    let title = cleanAttribute(node.getAttribute('title'))
-    if (title) title = ' "' + title + '"'
-    let replacement
-    let reference
-
+  replacement: function (content: string, node?: Node, options?: any): string {
+    if (!node) return content;
+    const href = (node as Element).getAttribute('href');
+    let title = cleanAttribute((node as Element).getAttribute('title'));
+    if (title) title = ' "' + title + '"';
+    let replacement: string;
+    let reference: string;
+    // @ts-ignore
+    const self = rules.referenceLink;
     switch (options.linkReferenceStyle) {
       case 'collapsed':
-        replacement = '[' + content + '][]'
-        reference = '[' + content + ']: ' + href + title
-        break
+        replacement = '[' + content + '][]';
+        reference = '[' + content + ']: ' + href + title;
+        break;
       case 'shortcut':
-        replacement = '[' + content + ']'
-        reference = '[' + content + ']: ' + href + title
-        break
+        replacement = '[' + content + ']';
+        reference = '[' + content + ']: ' + href + title;
+        break;
       default: {
-        const id = this.references.length + 1
-        replacement = '[' + content + '][' + id + ']'
-        reference = '[' + id + ']: ' + href + title
-        break
+        const id = self.references!.length + 1;
+        replacement = '[' + content + '][' + id + ']';
+        reference = '[' + id + ']: ' + href + title;
+        break;
       }
     }
-
-    this.references.push(reference)
-    return replacement
+    self.references!.push(reference);
+    return replacement;
   },
-
   references: [],
-
-  append: function (options) {
-    let references = ''
-    if (this.references.length) {
-      references = '\n\n' + this.references.join('\n') + '\n\n'
-      this.references = [] // Reset references
+  append: function (_options?: any): string {
+    // @ts-ignore
+    const self = rules.referenceLink;
+    let references = '';
+    if (self.references && self.references.length) {
+      references = '\n\n' + self.references.join('\n') + '\n\n';
+      self.references = [];
     }
-    return references
+    return references;
   }
-}
+};
 
 rules.emphasis = {
   filter: ['em', 'i'],
-
-  replacement: function (content, node, options) {
-    if (!content.trim()) return ''
-    return options.emDelimiter + content + options.emDelimiter
+  replacement: function (content: string, _node?: Node, options?: any): string {
+    if (!content.trim()) return '';
+    return options.emDelimiter + content + options.emDelimiter;
   }
-}
+};
 
 rules.strong = {
   filter: ['strong', 'b'],
-
-  replacement: function (content, node, options) {
-    if (!content.trim()) return ''
-    return options.strongDelimiter + content + options.strongDelimiter
+  replacement: function (content: string, _node?: Node, options?: any): string {
+    if (!content.trim()) return '';
+    return options.strongDelimiter + content + options.strongDelimiter;
   }
-}
+};
 
 rules.code = {
-  filter: function (node) {
-    const hasSiblings = node.previousSibling || node.nextSibling
-    const isCodeBlock = node.parentNode.nodeName === 'PRE' && !hasSiblings
-
-    return node.nodeName === 'CODE' && !isCodeBlock
+  filter: function (node: Node): boolean {
+    const hasSiblings = node.previousSibling || node.nextSibling;
+    const parent = node.parentNode as Element;
+    const isCodeBlock = parent.nodeName === 'PRE' && !hasSiblings;
+    return node.nodeName === 'CODE' && !isCodeBlock;
   },
-
-  replacement: function (content) {
-    if (!content) return ''
-    content = content.replace(/\r?\n|\r/g, ' ')
-
-    const extraSpace = /^`|^ .*?[^ ].* $|`$/.test(content) ? ' ' : ''
-    let delimiter = '`'
-    const matches = content.match(/`+/gm) || []
-    while (matches.indexOf(delimiter) !== -1) delimiter = delimiter + '`'
-
-    return delimiter + extraSpace + content + extraSpace + delimiter
+  replacement: function (content: string, _node?: Node, _options?: any): string {
+    if (!content) return '';
+    content = content.replace(/\r?\n|\r/g, ' ');
+    const extraSpace = /^`|^ .*?[^ ].* $|`$/.test(content) ? ' ' : '';
+    let delimiter = '`';
+    const matches: string[] = content.match(/`+/gm) || [];
+    while (matches.includes(delimiter)) delimiter = delimiter + '`';
+    return delimiter + extraSpace + content + extraSpace + delimiter;
   }
-}
+};
 
 rules.image = {
   filter: 'img',
-
-  replacement: function (content, node) {
-    const alt = cleanAttribute(node.getAttribute('alt'))
-    const src = node.getAttribute('src') || ''
-    const title = cleanAttribute(node.getAttribute('title'))
-    const titlePart = title ? ' "' + title + '"' : ''
-    return src ? '![' + alt + ']' + '(' + src + titlePart + ')' : ''
+  replacement: function (_content: string, node?: Node, _options?: any): string {
+    if (!node) return '';
+    const alt = cleanAttribute((node as Element).getAttribute('alt'));
+    const src = (node as Element).getAttribute('src') || '';
+    const title = cleanAttribute((node as Element).getAttribute('title'));
+    const titlePart = title ? ' "' + title + '"' : '';
+    return src ? '![' + alt + ']' + '(' + src + titlePart + ')' : '';
   }
-}
+};
 
-function cleanAttribute (attribute) {
-  return attribute ? attribute.replace(/(\n+\s*)+/g, '\n') : ''
+function cleanAttribute(attribute: string | null): string {
+  return attribute ? attribute.replace(/(\n+\s*)+/g, '\n') : '';
 }
 
 export default rules

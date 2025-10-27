@@ -30,70 +30,78 @@
  *
  * @param {Object} options
  */
-function collapseWhitespace(options) {
+interface CollapseWhitespaceOptions {
+  element: Node;
+  isBlock: (node: Node) => boolean;
+  isVoid: (node: Node) => boolean;
+  isPre?: (node: Node) => boolean;
+}
+
+function collapseWhitespace(options: CollapseWhitespaceOptions): void {
   const element = options.element
   const isBlock = options.isBlock
   const isVoid = options.isVoid
-  const isPre = options.isPre || function (node) {
-    return node.nodeName === 'PRE'
-  }
+  const isPre = options.isPre || function (node: Node): boolean {
+    return node.nodeName === 'PRE';
+  };
 
   if (!element.firstChild || isPre(element)) return
 
-  let prevText = null
+  let prevText: Text | null = null;
   let keepLeadingWs = false
 
-  let prev = null
-  let node = next(prev, element, isPre)
+  let prev: Node | null = null;
+  let node: Node = next(prev, element, isPre);
 
   while (node !== element) {
     if (node.nodeType === 3 || node.nodeType === 4) { // Node.TEXT_NODE or Node.CDATA_SECTION_NODE
-      let text = node.data.replace(/[ \r\n\t]+/g, ' ')
+      const textNode = node as Text;
+      let text = textNode.data.replace(/[ \r\n\t]+/g, ' ');
 
       if ((!prevText || / $/.test(prevText.data)) &&
         !keepLeadingWs && text[0] === ' ') {
-        text = text.substr(1)
+        text = text.substr(1);
       }
 
       // `text` might be empty at this point.
       if (!text) {
-        node = remove(node)
-        continue
+        node = remove(node);
+        continue;
       }
 
-      node.data = text
+      textNode.data = text;
 
-      prevText = node
+      prevText = textNode;
     } else if (node.nodeType === 1) { // Node.ELEMENT_NODE
       if (isBlock(node) || node.nodeName === 'BR') {
         if (prevText) {
-          prevText.data = prevText.data.replace(/ $/, '')
+          prevText.data = prevText.data.replace(/ $/, '');
         }
 
-        prevText = null
-        keepLeadingWs = false
+        prevText = null;
+        keepLeadingWs = false;
       } else if (isVoid(node) || isPre(node)) {
         // Avoid trimming space around non-block, non-BR void elements and inline PRE.
-        prevText = null
-        keepLeadingWs = true
+        prevText = null;
+        keepLeadingWs = true;
       } else if (prevText) {
         // Drop protection if set previously.
-        keepLeadingWs = false
+        keepLeadingWs = false;
       }
     } else {
-      node = remove(node)
-      continue
+      node = remove(node);
+      continue;
     }
 
-    const nextNode = next(prev, node, isPre)
-    prev = node
-    node = nextNode
+    const nextNode = next(prev, node, isPre);
+    prev = node;
+    node = nextNode;
   }
 
   if (prevText) {
-    prevText.data = prevText.data.replace(/ $/, '')
+    prevText.data = prevText.data.replace(/ $/, '');
     if (!prevText.data) {
-      remove(prevText)
+      remove(prevText);
     }
   }
 }
@@ -105,12 +113,12 @@ function collapseWhitespace(options) {
  * @param {Node} node
  * @return {Node} node
  */
-function remove(node) {
-  const next = node.nextSibling || node.parentNode
-
-  node.parentNode.removeChild(node)
-
-  return next
+function remove(node: Node): Node {
+  const nextNode: Node | null = node.nextSibling ?? node.parentNode;
+  if (node.parentNode) {
+    node.parentNode.removeChild(node);
+  }
+  return nextNode as Node;
 }
 
 /**
@@ -122,12 +130,13 @@ function remove(node) {
  * @param {Function} isPre
  * @return {Node}
  */
-function next(prev, current, isPre) {
+function next(prev: Node | null, current: Node, isPre: (node: Node) => boolean): Node {
   if ((prev && prev.parentNode === current) || isPre(current)) {
-    return current.nextSibling || current.parentNode
+    const nextNode: Node | null = current.nextSibling ?? current.parentNode;
+    return nextNode as Node;
   }
-
-  return current.firstChild || current.nextSibling || current.parentNode
+  const nextNode: Node | null = current.firstChild ?? current.nextSibling ?? current.parentNode;
+  return nextNode as Node;
 }
 
 export default collapseWhitespace
