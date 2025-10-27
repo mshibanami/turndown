@@ -60,7 +60,7 @@ TurndownService.prototype = {
    * @type String
    */
 
-  turndown: function (input) {
+  turndown: function (input: string | HTMLElement) {
     if (!canConvert(input)) {
       throw new TypeError(
         input + ' is not a string, or an element/document/fragment node.'
@@ -81,7 +81,7 @@ TurndownService.prototype = {
    * @type Object
    */
 
-  use: function (plugin) {
+  use: function (plugin: Function | Array<Function>) {
     if (Array.isArray(plugin)) {
       for (let i = 0; i < plugin.length; i++) this.use(plugin[i])
     } else if (typeof plugin === 'function') {
@@ -101,7 +101,7 @@ TurndownService.prototype = {
    * @type Object
    */
 
-  addRule: function (key, rule) {
+  addRule: function (key: string, rule: any) {
     this.rules.add(key, rule)
     return this
   },
@@ -114,7 +114,7 @@ TurndownService.prototype = {
    * @type Object
    */
 
-  keep: function (filter) {
+  keep: function (filter: string | string[] | ((node: HTMLElement, options: any) => boolean)) {
     this.rules.keep(filter)
     return this
   },
@@ -127,7 +127,7 @@ TurndownService.prototype = {
    * @type Object
    */
 
-  remove: function (filter) {
+  remove: function (filter: string | string[] | ((node: HTMLElement, options: any) => boolean)) {
     this.rules.remove(filter)
     return this
   },
@@ -140,7 +140,7 @@ TurndownService.prototype = {
    * @type String
    */
 
-  escape: function (string) {
+  escape: function (string: string) {
     return escapes.reduce(function (accumulator, escape) {
       return accumulator.replace(escape[0], escape[1])
     }, string)
@@ -155,7 +155,7 @@ TurndownService.prototype = {
  * @type String
  */
 
-function process(parentNode) {
+function process(parentNode: HTMLElement) {
   const self = this
   return reduce.call(parentNode.childNodes, function (output, node) {
     node = new Node(node, self.options)
@@ -179,7 +179,7 @@ function process(parentNode) {
  * @type String
  */
 
-function postProcess(output) {
+function postProcess(output: string) {
   const self = this
   this.rules.forEach(function (rule) {
     if (typeof rule.append === 'function') {
@@ -198,7 +198,7 @@ function postProcess(output) {
  * @type String
  */
 
-function replacementForNode(node) {
+function replacementForNode(node: HTMLElement) {
   const rule = this.rules.forNode(node)
   let content = process.call(this, node)
   const whitespace = node.flankingWhitespace
@@ -236,7 +236,7 @@ function join(output, replacement) {
  * @type String|Object|Array|Boolean|Number
  */
 
-function canConvert(input) {
+function canConvert(input: string | HTMLElement) {
   return (
     input != null && (
       typeof input === 'string' ||
