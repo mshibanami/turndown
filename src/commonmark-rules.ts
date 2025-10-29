@@ -1,5 +1,6 @@
 
-import { TurndownOptions, Rule } from './rules';
+import { Rule } from './rules';
+import { TurndownOptions } from './turndown';
 import { repeat, trimNewlines } from './utilities';
 
 export const commonmarkRules: { [key: string]: Rule } = {}

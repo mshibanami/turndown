@@ -24,7 +24,6 @@ const escapes: EscapeRule[] = [
 
 type Plugin = (service: TurndownService) => void;
 
-
 export interface TurndownOptions {
   rules?: { [key: string]: Rule };
   headingStyle?: 'setext' | 'atx';
