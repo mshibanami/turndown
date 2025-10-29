@@ -113,3 +113,12 @@ function isFlankedByWhitespace(side: 'left' | 'right', node: Element, options: O
 
   return isFlanked || false;
 }
+
+export const NodeTypes = {
+  Element: 1,
+  Text: 3,
+  CDATASection: 4,
+  Comment: 8
+} as const;
+
+export type NodeType = typeof NodeTypes[keyof typeof NodeTypes];

@@ -25,6 +25,8 @@
  * THE SOFTWARE.
  */
 
+import { NodeTypes } from "./node";
+
 /**
  * collapseWhitespace(options) removes extraneous whitespace from an the given element.
  *
@@ -54,7 +56,7 @@ function collapseWhitespace(options: CollapseWhitespaceOptions): void {
   let node: Node = next(prev, element, isPre);
 
   while (node !== element) {
-    if (node.nodeType === 3 || node.nodeType === 4) { // Node.TEXT_NODE or Node.CDATA_SECTION_NODE
+    if (node.nodeType === NodeTypes.Text || node.nodeType === NodeTypes.CDATASection) {
       const textNode = node as Text;
       let text = textNode.data.replace(/[ \r\n\t]+/g, ' ');
 
@@ -72,7 +74,7 @@ function collapseWhitespace(options: CollapseWhitespaceOptions): void {
       textNode.data = text;
 
       prevText = textNode;
-    } else if (node.nodeType === 1) { // Node.ELEMENT_NODE
+    } else if (node.nodeType === NodeTypes.Element) {
       if (isBlock(node) || node.nodeName === 'BR') {
         if (prevText) {
           prevText.data = prevText.data.replace(/ $/, '');
