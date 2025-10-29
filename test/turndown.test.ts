@@ -144,9 +144,14 @@ describe('TurndownService', () => {
 
     it('has no newline in the text of a link', () => {
         const turndownService = new TurndownService();
-        const input = '<a href="http://example.com">Example Link</a>';
-        expect.soft(turndownService.turndown(input)).toBe('[Example Link](http://example.com)');
-        const input2 = '<a href="http://example.com"><p>Example Link</p></a>';
-        expect.soft(turndownService.turndown(input2)).toBe('[Example Link](http://example.com)');
+        expect.soft(turndownService
+            .turndown('<a href="http://example.com">Example Link</a>'))
+            .toBe('[Example Link](http://example.com)');
+        expect.soft(turndownService
+            .turndown('<a href="http://example.com"><p>Example Link</p></a>'))
+            .toBe('[Example Link](http://example.com)');
+        expect.soft(turndownService
+            .turndown('<a href="http://example.com"><span>Example<br/>Link</span></a>'))
+            .toBe('[Example Link](http://example.com)');
     });
 });

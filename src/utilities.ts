@@ -80,3 +80,10 @@ function has(node: Element, tagNames: string[]) {
     })
   )
 }
+
+export function normalizedLinkText(content: string): string {
+  return content
+    .replace(/[\t\r\n]+/g, ' ')
+    .replace(/ {2,}/g, ' ')
+    .trim()
+}

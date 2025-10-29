@@ -1,7 +1,7 @@
 
 import { Rule } from './rules';
 import { TurndownOptions } from './turndown';
-import { repeat, trimNewlines } from './utilities';
+import { normalizedLinkText, repeat, trimNewlines } from './utilities';
 
 export const commonmarkRules: { [key: string]: Rule } = {}
 
@@ -140,19 +140,21 @@ commonmarkRules.horizontalRule = {
 commonmarkRules.inlineLink = {
   filter: function (node: Node, options?: TurndownOptions): boolean {
     return !!(
-      options &&
-      options.linkStyle === 'inlined' &&
+      options?.linkStyle === 'inlined' &&
       node.nodeName === 'A' &&
       (node as Element).getAttribute('href')
     );
   },
   replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
-    if (!node) return content;
+    const normalizedContent = normalizedLinkText(content);
+    if (!node) {
+      return content;
+    }
     let href = (node as Element).getAttribute('href');
     if (href) href = href.replace(/([()])/g, '\\$1');
     let title = cleanAttribute((node as Element).getAttribute('title'));
     if (title) title = ' "' + title.replace(/"/g, '\\"') + '"';
-    return '[' + content + '](' + href + title + ')';
+    return '[' + normalizedContent + '](' + href + title + ')';
   }
 };
 
