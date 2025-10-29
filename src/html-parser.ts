@@ -23,45 +23,45 @@ function canParseHTMLNatively() {
   return canParse;
 }
 
-function createHTMLParser() {
-  const Parser = function () { }
+export class HTMLParser {
+  // This will be assigned per environment below
+  parseFromString(_input: string, _type?: string): Document {
+    throw new Error('Not implemented')
+  }
+}
+
+function createParser(): HTMLParser {
+  const isBrowser =
+    typeof window !== 'undefined' &&
+    typeof document !== 'undefined' &&
+    (typeof process === 'undefined' || (process as any).browser === true)
 
   if (typeof window !== 'undefined') {
-    if (shouldUseActiveX()) {
-      Parser.prototype.parseFromString = function (string: string) {
-        const doc = new (window as any).ActiveXObject('htmlfile');
-        doc.designMode = 'on'; // disable on-page scripts
-        doc.open();
-        doc.write(string);
-        doc.close();
-        return doc;
-      };
-    } else {
-      Parser.prototype.parseFromString = function (string: string) {
-        const doc = document.implementation.createHTMLDocument('');
-        doc.open();
-        doc.write(string);
-        doc.close();
-        return doc;
-      };
+    // Browser environment: use DOM API
+    class HTMLParserBrowser extends HTMLParser {
+      parseFromString(input: string, _type?: string): Document {
+        const doc = document.implementation.createHTMLDocument('')
+        doc.open()
+        doc.write(input)
+        doc.close()
+        return doc
+      }
     }
+    return new HTMLParserBrowser()
   } else {
-    const domino = require('@mixmark-io/domino');
-    Parser.prototype.parseFromString = function (string: string) {
-      return domino.createDocument(string);
-    };
+    const domino = require('@mixmark-io/domino') as {
+      createDocument: (html: string) => Document
+    }
+    class HTMLParserNode extends HTMLParser {
+      parseFromString(input: string, _type?: string): Document {
+        return domino.createDocument(input);
+      }
+    }
+    return new HTMLParserNode()
   }
-  return Parser
 }
 
-function shouldUseActiveX() {
-  let useActiveX = false;
-  try {
-    document.implementation.createHTMLDocument('').open();
-  } catch (e) {
-    if (typeof root.ActiveXObject !== 'undefined') useActiveX = true;
-  }
-  return useActiveX;
-}
-
-export default canParseHTMLNatively() && typeof root.DOMParser !== 'undefined' ? root.DOMParser : createHTMLParser();
+export const createHTMLParser = (): HTMLParser =>
+  canParseHTMLNatively()
+    ? new root.DOMParser()
+    : createParser()

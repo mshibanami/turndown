@@ -1,11 +1,13 @@
-import COMMONMARK_RULES from './commonmark-rules'
-import Rules from './rules'
+import { commonmarkRules } from './commonmark-rules'
+import { Rules, Rule, RuleFilter } from './rules'
 import { extend, trimLeadingNewlines, trimTrailingNewlines } from './utilities'
 import RootNode from './root-node'
-import Node from './node'
-export * from './node'
+import { ExtendedNode } from './node';
 const reduce = Array.prototype.reduce
-const escapes = [
+
+type EscapeRule = [RegExp, string];
+
+const escapes: EscapeRule[] = [
   [/\\/g, '\\\\'],
   [/\*/g, '\\*'],
   [/^-/g, '\\-'],
@@ -17,80 +19,102 @@ const escapes = [
   [/\[/g, '\\['],
   [/\]/g, '\\]'],
   [/^>/g, '\\>'],
-  [/_/g, '\\_'],
   [/^(\d+)\. /g, '$1\\. ']
-]
+];
 
-function TurndownService(options) {
-  if (!(this instanceof TurndownService)) return new TurndownService(options)
+type Plugin = (service: TurndownService) => void;
 
-  const defaults = {
-    rules: COMMONMARK_RULES,
-    headingStyle: 'setext',
-    hr: '* * *',
-    bulletListMarker: '*',
-    codeBlockStyle: 'indented',
-    fence: '```',
-    emDelimiter: '_',
-    strongDelimiter: '**',
-    linkStyle: 'inlined',
-    linkReferenceStyle: 'full',
-    br: '  ',
-    preformattedCode: false,
-    blankReplacement: function (content, node) {
-      return node.isBlock ? '\n\n' : ''
-    },
-    keepReplacement: function (content, node) {
-      return node.isBlock ? '\n\n' + node.outerHTML + '\n\n' : node.outerHTML
-    },
-    defaultReplacement: function (content, node) {
-      return node.isBlock ? '\n\n' + content + '\n\n' : content
-    }
-  }
-  this.options = extend({}, defaults, options)
-  this.rules = new Rules(this.options)
+
+export interface TurndownOptions {
+  rules?: { [key: string]: Rule };
+  headingStyle?: 'setext' | 'atx';
+  hr?: string;
+  bulletListMarker?: '*' | '-' | '+';
+  codeBlockStyle?: 'indented' | 'fenced';
+  fence?: string;
+  emDelimiter?: '_' | '*';
+  strongDelimiter?: '**' | '__';
+  linkStyle?: 'inlined' | 'referenced';
+  linkReferenceStyle?: 'full' | 'collapsed' | 'shortcut';
+  br?: string;
+  preformattedCode?: boolean;
+  blankReplacement?: (content: string, node: ExtendedNode) => string;
+  keepReplacement?: (content: string, node: ExtendedNode) => string;
+  defaultReplacement?: (content: string, node: ExtendedNode) => string;
+  [key: string]: any;
 }
 
-TurndownService.prototype = {
+
+const defaultOptions: TurndownOptions = {
+  rules: commonmarkRules,
+  headingStyle: 'setext',
+  hr: '* * *',
+  bulletListMarker: '*',
+  codeBlockStyle: 'fenced',
+  fence: '```',
+  emDelimiter: '_',
+  strongDelimiter: '**',
+  linkStyle: 'inlined',
+  linkReferenceStyle: 'full',
+  br: '  ',
+  preformattedCode: false,
+  blankReplacement: function (content: string, node: ExtendedNode): string {
+    return node.isBlock ? '\n\n' : '';
+  },
+  keepReplacement: function (content: string, node: ExtendedNode): string {
+    return node.isBlock ? '\n\n' + node.outerHTML + '\n\n' : node.outerHTML;
+  },
+  defaultReplacement: function (content: string, node: ExtendedNode): string {
+    return node.isBlock ? '\n\n' + content + '\n\n' : content;
+  }
+};
+
+export default class TurndownService {
+  options: TurndownOptions;
+  rules: Rules;
+
+  constructor(options?: TurndownOptions) {
+    this.options = extend({}, defaultOptions, options);
+    this.rules = new Rules(this.options);
+  }
+
   /**
    * The entry point for converting a string or DOM node to Markdown
    * @public
-   * @param {String|HTMLElement} input The string or DOM node to convert
+   * @param {InputType} input The string or DOM node to convert
    * @returns A Markdown representation of the input
    * @type String
    */
-
-  turndown: function (input: string | HTMLElement) {
+  turndown(input: InputType): string {
     if (!canConvert(input)) {
       throw new TypeError(
         input + ' is not a string, or an element/document/fragment node.'
-      )
+      );
     }
 
-    if (input === '') return ''
+    if (input === '') return '';
 
-    const output = process.call(this, new RootNode(input, this.options))
-    return postProcess.call(this, output)
-  },
+    const output = process.call(this, RootNode(input, this.options));
+    return postProcess.call(this, output);
+  }
 
   /**
    * Add one or more plugins
    * @public
-   * @param {Function|Array} plugin The plugin or array of plugins to add
+   * @param {Plugin|Plugin[]} plugin The plugin or array of plugins to add
    * @returns The Turndown instance for chaining
    * @type Object
    */
-
-  use: function (plugin: Function | Array<Function>) {
+  use(plugin: Plugin | Plugin[]): TurndownService {
     if (Array.isArray(plugin)) {
-      for (let i = 0; i < plugin.length; i++) this.use(plugin[i])
+      for (let i = 0; i < plugin.length; i++) this.use(plugin[i]);
     } else if (typeof plugin === 'function') {
-      plugin(this)
+      plugin(this);
     } else {
-      throw new TypeError('plugin must be a Function or an Array of Functions')
+      throw new TypeError('plugin must be a Function or an Array of Functions');
     }
-    return this
-  },
+    return this;
+  }
 
   /**
    * Adds a rule
@@ -100,24 +124,22 @@ TurndownService.prototype = {
    * @returns The Turndown instance for chaining
    * @type Object
    */
-
-  addRule: function (key: string, rule: any) {
-    this.rules.add(key, rule)
-    return this
-  },
+  addRule(key: string, rule: Rule): TurndownService {
+    this.rules.add(key, rule);
+    return this;
+  }
 
   /**
    * Keep a node (as HTML) that matches the filter
    * @public
-   * @param {String|Array|Function} filter The unique key of the rule
+   * @param {RuleFilter} filter The unique key of the rule
    * @returns The Turndown instance for chaining
    * @type Object
    */
-
-  keep: function (filter: string | string[] | ((node: HTMLElement, options: any) => boolean)) {
-    this.rules.keep(filter)
-    return this
-  },
+  keep(filter: RuleFilter): TurndownService {
+    this.rules.keep(filter);
+    return this;
+  }
 
   /**
    * Remove a node that matches the filter
@@ -126,11 +148,10 @@ TurndownService.prototype = {
    * @returns The Turndown instance for chaining
    * @type Object
    */
-
-  remove: function (filter: string | string[] | ((node: HTMLElement, options: any) => boolean)) {
-    this.rules.remove(filter)
-    return this
-  },
+  remove(filter: RuleFilter): TurndownService {
+    this.rules.remove(filter);
+    return this;
+  }
 
   /**
    * Escapes Markdown syntax
@@ -139,11 +160,10 @@ TurndownService.prototype = {
    * @returns A string with Markdown syntax escaped
    * @type String
    */
-
-  escape: function (string: string) {
-    return escapes.reduce(function (accumulator, escape) {
-      return accumulator.replace(escape[0], escape[1])
-    }, string)
+  escape(string: string): string {
+    return escapes.reduce(function (accumulator: string, escape: EscapeRule) {
+      return accumulator.replace(escape[0], escape[1]);
+    }, string);
   }
 }
 
@@ -155,10 +175,10 @@ TurndownService.prototype = {
  * @type String
  */
 
-function process(parentNode: HTMLElement) {
+function process(parentNode: ExtendedNode): string {
   const self = this
   return reduce.call(parentNode.childNodes, function (output, node) {
-    node = new Node(node, self.options)
+    node = ExtendedNode(node, self.options)
 
     let replacement = ''
     if (node.nodeType === 3) {
@@ -193,12 +213,12 @@ function postProcess(output: string) {
 /**
  * Converts an element node to its Markdown equivalent
  * @private
- * @param {HTMLElement} node The node to convert
+ * @param {ExtendedNode} node The node to convert
  * @returns A Markdown representation of the node
  * @type String
  */
 
-function replacementForNode(node: HTMLElement) {
+function replacementForNode(node: ExtendedNode) {
   const rule = this.rules.forNode(node)
   let content = process.call(this, node)
   const whitespace = node.flankingWhitespace
@@ -235,8 +255,8 @@ function join(output, replacement) {
  * @returns Describe what it returns
  * @type String|Object|Array|Boolean|Number
  */
-
-function canConvert(input: string | HTMLElement) {
+type InputType = string | HTMLElement | Document | DocumentFragment;
+function canConvert(input: any): input is InputType {
   return (
     input != null && (
       typeof input === 'string' ||
@@ -244,7 +264,5 @@ function canConvert(input: string | HTMLElement) {
         input.nodeType === 1 || input.nodeType === 9 || input.nodeType === 11
       ))
     )
-  )
+  );
 }
-
-export default TurndownService;

@@ -1,4 +1,15 @@
-export const extend = Object.assign;
+import { ExtendedNode } from "./node";
+
+export function extend<T, U>(destination: T, ...sources: U[]): T & U {
+  for (const source of sources) {
+    for (const key in source) {
+      if (Object.prototype.hasOwnProperty.call(source, key)) {
+        (destination as any)[key] = source[key];
+      }
+    }
+  }
+  return destination as T & U;
+}
 
 export function repeat(character: string, count: number) {
   return Array(count + 1).join(character)
@@ -64,7 +75,6 @@ function is(node: Element, tagNames: string[]) {
 
 function has(node: Element, tagNames: string[]) {
   return (
-    node.getElementsByTagName &&
     tagNames.some(function (tagName) {
       return node.getElementsByTagName(tagName).length
     })

@@ -1,37 +1,24 @@
 
+import { Rule } from './rules';
 import { repeat, trimNewlines } from './utilities';
 
-type ReplacementFn = (content: string, node?: Node, options?: any) => string;
-type FilterFn = (node: Node, options?: any) => boolean;
+export const commonmarkRules: { [key: string]: Rule } = {}
 
-interface Rule {
-  filter: string | string[] | FilterFn;
-  replacement?: ReplacementFn;
-  references?: string[];
-  append?: (options?: any) => string;
-}
-
-interface Rules {
-  [key: string]: Rule;
-}
-
-const rules: Rules = {};
-
-rules.paragraph = {
+commonmarkRules.paragraph = {
   filter: 'p',
   replacement: function (content: string, _node?: Node, _options?: any): string {
     return '\n\n' + content + '\n\n';
   }
 };
 
-rules.lineBreak = {
+commonmarkRules.lineBreak = {
   filter: 'br',
   replacement: function (_content: string, _node?: Node, options?: any): string {
     return options.br + '\n';
   }
 };
 
-rules.heading = {
+commonmarkRules.heading = {
   filter: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
   replacement: function (content: string, node?: Node, options?: any): string {
     if (!node) return content;
@@ -47,7 +34,7 @@ rules.heading = {
   }
 };
 
-rules.blockquote = {
+commonmarkRules.blockquote = {
   filter: 'blockquote',
   replacement: function (content: string, _node?: Node, _options?: any): string {
     content = trimNewlines(content).replace(/^/gm, '> ');
@@ -55,7 +42,7 @@ rules.blockquote = {
   }
 };
 
-rules.list = {
+commonmarkRules.list = {
   filter: ['ul', 'ol'],
   replacement: function (content: string, node?: Node, _options?: any): string {
     if (!node) return content;
@@ -68,7 +55,7 @@ rules.list = {
   }
 };
 
-rules.listItem = {
+commonmarkRules.listItem = {
   filter: 'li',
   replacement: function (content: string, node?: Node, options?: any): string {
     if (!node) return content;
@@ -88,7 +75,7 @@ rules.listItem = {
   }
 };
 
-rules.indentedCodeBlock = {
+commonmarkRules.indentedCodeBlock = {
   filter: function (node: Node, options?: any): boolean {
     return !!(
       options &&
@@ -108,7 +95,7 @@ rules.indentedCodeBlock = {
   }
 };
 
-rules.fencedCodeBlock = {
+commonmarkRules.fencedCodeBlock = {
   filter: function (node: Node, options?: any): boolean {
     return !!(
       options &&
@@ -142,14 +129,14 @@ rules.fencedCodeBlock = {
   }
 };
 
-rules.horizontalRule = {
+commonmarkRules.horizontalRule = {
   filter: 'hr',
   replacement: function (_content: string, _node?: Node, options?: any): string {
     return '\n\n' + options.hr + '\n\n';
   }
 };
 
-rules.inlineLink = {
+commonmarkRules.inlineLink = {
   filter: function (node: Node, options?: any): boolean {
     return !!(
       options &&
@@ -168,7 +155,7 @@ rules.inlineLink = {
   }
 };
 
-rules.referenceLink = {
+commonmarkRules.referenceLink = {
   filter: function (node: Node, options?: any): boolean {
     return !!(
       options &&
@@ -185,7 +172,7 @@ rules.referenceLink = {
     let replacement: string;
     let reference: string;
     // @ts-ignore
-    const self = rules.referenceLink;
+    const self = commonmarkRules.referenceLink;
     switch (options.linkReferenceStyle) {
       case 'collapsed':
         replacement = '[' + content + '][]';
@@ -202,13 +189,13 @@ rules.referenceLink = {
         break;
       }
     }
-    self.references!.push(reference);
+    self.references?.push(reference);
     return replacement;
   },
   references: [],
   append: function (_options?: any): string {
     // @ts-ignore
-    const self = rules.referenceLink;
+    const self = commonmarkRules.referenceLink;
     let references = '';
     if (self.references && self.references.length) {
       references = '\n\n' + self.references.join('\n') + '\n\n';
@@ -218,7 +205,7 @@ rules.referenceLink = {
   }
 };
 
-rules.emphasis = {
+commonmarkRules.emphasis = {
   filter: ['em', 'i'],
   replacement: function (content: string, _node?: Node, options?: any): string {
     if (!content.trim()) return '';
@@ -226,7 +213,7 @@ rules.emphasis = {
   }
 };
 
-rules.strong = {
+commonmarkRules.strong = {
   filter: ['strong', 'b'],
   replacement: function (content: string, _node?: Node, options?: any): string {
     if (!content.trim()) return '';
@@ -234,7 +221,7 @@ rules.strong = {
   }
 };
 
-rules.code = {
+commonmarkRules.code = {
   filter: function (node: Node): boolean {
     const hasSiblings = node.previousSibling || node.nextSibling;
     const parent = node.parentNode as Element;
@@ -252,7 +239,7 @@ rules.code = {
   }
 };
 
-rules.image = {
+commonmarkRules.image = {
   filter: 'img',
   replacement: function (_content: string, node?: Node, _options?: any): string {
     if (!node) return '';
@@ -267,5 +254,3 @@ rules.image = {
 function cleanAttribute(attribute: string | null): string {
   return attribute ? attribute.replace(/(\n+\s*)+/g, '\n') : '';
 }
-
-export default rules

@@ -1,9 +1,16 @@
 import collapseWhitespace from './collapse-whitespace'
-import HTMLParser from './html-parser'
+import { createHTMLParser, HTMLParser } from './html-parser'
 import { isBlock, isVoid } from './utilities'
 
-export default function RootNode(input, options) {
-  let root
+interface RootNodeOptions {
+  preformattedCode?: boolean
+}
+
+export default function RootNode(
+  input: string | Node,
+  options: RootNodeOptions
+): Element {
+  let root: Element
   if (typeof input === 'string') {
     const doc = htmlParser().parseFromString(
       // DOM parsers arrange elements in the <head> and <body>.
@@ -12,26 +19,25 @@ export default function RootNode(input, options) {
       '<x-turndown id="turndown-root">' + input + '</x-turndown>',
       'text/html'
     )
-    root = doc.getElementById('turndown-root')
+    root = doc.getElementById('turndown-root') as Element
   } else {
-    root = input.cloneNode(true)
+    root = input.cloneNode(true) as Element
   }
   collapseWhitespace({
     element: root,
-    isBlock,
-    isVoid,
+    isBlock: isBlock,
+    isVoid: isVoid,
     isPre: options.preformattedCode ? isPreOrCode : null
   })
 
   return root
 }
 
-let _htmlParser
-function htmlParser() {
-  _htmlParser = _htmlParser || new HTMLParser()
-  return _htmlParser
+let _htmlParser: HTMLParser | undefined
+function htmlParser(): HTMLParser {
+  return (_htmlParser ??= createHTMLParser())
 }
 
-function isPreOrCode(node) {
+function isPreOrCode(node: Node): boolean {
   return node.nodeName === 'PRE' || node.nodeName === 'CODE'
 }

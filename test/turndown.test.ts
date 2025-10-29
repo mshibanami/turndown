@@ -11,12 +11,12 @@ describe('TurndownService', () => {
 
     it('null input', () => {
         const turndownService = new TurndownService();
-        expect(() => turndownService.turndown(null)).toThrow(/null is not a string/);
+        expect(() => turndownService.turndown(null as any)).toThrow(/null is not a string/);
     });
 
     it('undefined input', () => {
         const turndownService = new TurndownService();
-        expect(() => turndownService.turndown(undefined)).toThrow(/undefined is not a string/);
+        expect(() => turndownService.turndown(undefined as any)).toThrow(/undefined is not a string/);
     });
 
     it('#addRule returns the instance', () => {
@@ -84,9 +84,11 @@ describe('TurndownService', () => {
     it('#keep keeps elements as HTML', () => {
         const turndownService = new TurndownService();
         const input = '<p>Hello <del>world</del><ins>World</ins></p>';
-        expect(turndownService.turndown(input)).toBe('Hello worldWorld');
-        turndownService.keep(['del', 'ins']);
-        expect(turndownService.turndown('<p>Hello <del>world</del><ins>World</ins></p>')).toBe('Hello <del>world</del><ins>World</ins>');
+        expect.soft(turndownService.turndown(input)).toBe('Hello worldWorld');
+        turndownService.keep(['del']);
+        expect.soft(turndownService.turndown(input)).toBe('Hello <del>world</del>World');
+        turndownService.keep(['ins']);
+        expect.soft(turndownService.turndown(input)).toBe('Hello <del>world</del><ins>World</ins>');
     });
 
     it('#keep returns the TurndownService instance for chaining', () => {
