@@ -923,13 +923,13 @@ describe('TurndownService', () => {
     it('element with trailing ASCII WS followed by nonASCII WS', () => {
         const turndownService = new TurndownService();
         const input = `<i>foo </i>${noBreakSpace}bar`;
-        expect(turndownService.turndown(input)).toBe(`_foo_ &${noBreakSpace}bar`);
+        expect(turndownService.turndown(input)).toBe(`_foo_ ${noBreakSpace}bar`);
     });
 
     it('element with trailing nonASCII WS followed by ASCII WS', () => {
         const turndownService = new TurndownService();
         const input = `<i>foo${noBreakSpace}</i> bar`;
-        expect(turndownService.turndown(input)).toBe(`_foo_${noBreakSpace}bar`);
+        expect(turndownService.turndown(input)).toBe(`_foo_${noBreakSpace} bar`);
     });
 
     it('nonWS followed by element with leading nonASCII WS', () => {
@@ -947,7 +947,7 @@ describe('TurndownService', () => {
     it('nonASCII WS followed by element with leading ASCII WS', () => {
         const turndownService = new TurndownService();
         const input = `foo${noBreakSpace}<i> bar</i>`;
-        expect(turndownService.turndown(input)).toBe(`foo${noBreakSpace}_bar_`);
+        expect(turndownService.turndown(input)).toBe(`foo${noBreakSpace} _bar_`);
     });
 
     it('ASCII WS followed by element with leading nonASCII WS', () => {
