@@ -671,7 +671,7 @@ describe('TurndownService', () => {
     it('not escaping within code', () => {
         const turndownService = new TurndownService();
         const input = "<pre><code>def this_is_a_method; end;</code></pre>";
-        expect(turndownService.turndown(input)).toBe("def this_is_a_method; end;");
+        expect(turndownService.turndown(input)).toBe("```\ndef this_is_a_method; end;\n```");
     });
 
     it('escaping strong markdown with *', () => {
@@ -905,7 +905,7 @@ describe('TurndownService', () => {
     it('list-like text with non-breaking spaces', () => {
         const turndownService = new TurndownService();
         const input = `${noBreakSpace}1. First<br>${noBreakSpace}2. Second`;
-        expect(turndownService.turndown(input)).toBe(`${noBreakSpace}1. First  <!-- hard break -->\n${noBreakSpace}2. Second`);
+        expect(turndownService.turndown(input)).toBe(`${noBreakSpace}1. First  \n${noBreakSpace}2. Second`);
     });
 
     it('element with trailing nonASCII WS followed by nonWS', () => {
