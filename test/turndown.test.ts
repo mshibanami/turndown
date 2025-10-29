@@ -141,4 +141,12 @@ describe('TurndownService', () => {
         turndownService.remove(['del', 'ins']);
         expect(turndownService.turndown('<p>Hello <del>world</del><ins>World</ins></p>')).toBe('Hello <del>world</del><ins>World</ins>');
     });
+
+    it('has no newline in the text of a link', () => {
+        const turndownService = new TurndownService();
+        const input = '<a href="http://example.com">Example Link</a>';
+        expect.soft(turndownService.turndown(input)).toBe('[Example Link](http://example.com)');
+        const input2 = '<a href="http://example.com"><p>Example Link</p></a>';
+        expect.soft(turndownService.turndown(input2)).toBe('[Example Link](http://example.com)');
+    });
 });
