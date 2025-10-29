@@ -1010,6 +1010,12 @@ describe('TurndownService', () => {
         const input = "<a href=\"http://example.com/image.png\" title=\"Hello    World\">This is an image with long-whitespace-including title text.</a>";
         expect(turndownService.turndown(input)).toBe(`[This is an image with long-whitespace-including title text.](http://example.com/image.png "Hello    World")`);
     });
+
+    it('parses strong text with leading and trailing whitespace', () => {
+        const turndownService = new TurndownService();
+        expect(turndownService.turndown("<strong><br>Strong Text<br></strong>"))
+            .toBe(`**Strong Text**`);
+    });
 });
 
 const read = (filename: string) =>
