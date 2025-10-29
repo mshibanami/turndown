@@ -1004,6 +1004,12 @@ describe('TurndownService', () => {
         const input = "<a href=\"http://example.com/image.png\" title=\"This is an image\nwith multiline\ntitle text.\">This is an image with multiline title text.</a>";
         expect(turndownService.turndown(input)).toBe(`[This is an image with multiline title text.](http://example.com/image.png "This is an image with multiline title text.")`);
     });
+
+    it('parses link with long-whitespace-including title text', () => {
+        const turndownService = new TurndownService();
+        const input = "<a href=\"http://example.com/image.png\" title=\"Hello    World\">This is an image with long-whitespace-including title text.</a>";
+        expect(turndownService.turndown(input)).toBe(`[This is an image with long-whitespace-including title text.](http://example.com/image.png "Hello    World")`);
+    });
 });
 
 const read = (filename: string) =>
