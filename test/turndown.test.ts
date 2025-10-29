@@ -422,6 +422,16 @@ describe('TurndownService', () => {
         expect(turndownService.turndown(input)).toBe("[Reference link with shortcut style]\n\n[Reference link with shortcut style]: http://example.com");
     });
 
+    it('multiple references with deduplication', () => {
+        const turndownService = new TurndownService({ linkStyle: "referenced", linkReferenceStyle: "full", linkReferenceDeduplication: "none" });
+        const input = "<a href=\"http://example.com/a\">Reference Link 1</a> <a href=\"http://example.com/b\">Reference Link 2</a> <a href=\"http://example.com/a\">Reference Link 3</a>";
+        expect.soft(turndownService.turndown(input))
+            .toBe("[Reference Link 1][1] [Reference Link 2][2] [Reference Link 3][3]\n\n[1]: http://example.com/a\n[2]: http://example.com/b\n[3]: http://example.com/a");
+        turndownService.options.linkReferenceDeduplication = "full";
+        expect.soft(turndownService.turndown(input))
+            .toBe("[Reference Link 1][1] [Reference Link 2][2] [Reference Link 3][1]\n\n[1]: http://example.com/a\n[2]: http://example.com/b");
+    });
+
     it('pre/code block', () => {
         const turndownService = new TurndownService();
         const input = read('pre-code-block.html');
