@@ -347,19 +347,19 @@ describe('TurndownService', () => {
     it('img with a new line in alt', () => {
         const turndownService = new TurndownService();
         const input = "<img src=\"logo.png\" alt=\"img with\n    alt\">";
-        expect(turndownService.turndown(input)).toBe("![img with\nalt](logo.png)");
+        expect(turndownService.turndown(input)).toBe("![img with alt](logo.png)");
     });
 
     it('img with more than one new line in alt', () => {
         const turndownService = new TurndownService();
         const input = "<img src=\"logo.png\" alt=\"img with\n    \n    alt\">";
-        expect(turndownService.turndown(input)).toBe("![img with\nalt](logo.png)");
+        expect(turndownService.turndown(input)).toBe("![img with alt](logo.png)");
     });
 
     it('img with new lines in title', () => {
         const turndownService = new TurndownService();
         const input = "<img src=\"logo.png\" title=\"the\n    \n    title\">";
-        expect(turndownService.turndown(input)).toBe("![](logo.png \"the\ntitle\")");
+        expect(turndownService.turndown(input)).toBe("![](logo.png \"the title\")");
     });
 
     it('a', () => {
@@ -377,7 +377,7 @@ describe('TurndownService', () => {
     it('a with multiline title', () => {
         const turndownService = new TurndownService();
         const input = "<a href=\"http://example.com\" title=\"Title for\n    \n    link\">An anchor</a>";
-        expect(turndownService.turndown(input)).toBe("[An anchor](http://example.com \"Title for\nlink\")");
+        expect(turndownService.turndown(input)).toBe("[An anchor](http://example.com \"Title for link\")");
     });
 
     it('a with quotes in title', () => {
@@ -985,11 +985,24 @@ describe('TurndownService', () => {
         const input = "<code>\n\n nasty\ncode\n\n</code>";
         expect(turndownService.turndown(input)).toBe("`    nasty code   `");
     });
+
     it('parses highlight.js style code block', () => {
         const turndownService = new TurndownService();
         const input = read('highlight-js.html');
         const expected = read('highlight-js.md');
         expect(turndownService.turndown(input)).toBe(expected);
+    });
+
+    it('parses image with multiline alt text', () => {
+        const turndownService = new TurndownService();
+        const input = "<img src=\"http://example.com/image.png\" alt=\"This is an image\nwith multiline\nalt text.\" />";
+        expect(turndownService.turndown(input)).toBe(`![This is an image with multiline alt text.](http://example.com/image.png)`);
+    });
+
+    it('parses link with multiline title text', () => {
+        const turndownService = new TurndownService();
+        const input = "<a href=\"http://example.com/image.png\" title=\"This is an image\nwith multiline\ntitle text.\">This is an image with multiline title text.</a>";
+        expect(turndownService.turndown(input)).toBe(`[This is an image with multiline title text.](http://example.com/image.png "This is an image with multiline title text.")`);
     });
 });
 

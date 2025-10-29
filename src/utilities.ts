@@ -84,9 +84,21 @@ function has(node: Node, tagNames: string[]) {
   )
 }
 
-export function normalizedLinkText(content: string): string {
-  return content
+export function sanitizeWhitespace(string: string): string {
+  return string ? string.replace(/(\n+\s*)+/g, '\n') : '';
+}
+
+export function sanitizedLinkContent(content: string): string {
+  const sanitized = sanitizeWhitespace(content);
+  return sanitized
     .replace(/[\t\r\n]+/g, ' ')
     .replace(/ {2,}/g, ' ')
-    .trim()
+    .replace(/([()])/g, '\\$1')
+    .trim();
+}
+
+export function sanitizedLinkTitle(content: string): string {
+  const sanitized = sanitizeWhitespace(content);
+  return sanitized
+    .replace(/[\t\r\n]+/g, ' ');
 }

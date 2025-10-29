@@ -1,7 +1,7 @@
 
 import { Rule } from './rules';
 import { TurndownOptions } from './turndown';
-import { normalizedLinkText, repeat, trimNewlines } from './utilities';
+import { repeat, sanitizedLinkContent, sanitizedLinkTitle, trimNewlines } from './utilities';
 
 export const commonmarkRules: { [key: string]: Rule } = {}
 
@@ -146,15 +146,18 @@ commonmarkRules.inlineLink = {
     );
   },
   replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
-    const normalizedContent = normalizedLinkText(content);
+    const sanitizedContent = sanitizedLinkContent(content);
     if (!node) {
       return content;
     }
-    let href = (node as Element).getAttribute('href');
-    if (href) href = href.replace(/([()])/g, '\\$1');
-    let title = cleanAttribute((node as Element).getAttribute('title'));
-    if (title) title = ' "' + title.replace(/"/g, '\\"') + '"';
-    return '[' + normalizedContent + '](' + href + title + ')';
+    let href = (node as Element)
+      .getAttribute('href')
+      ?.replace(/([()])/g, '\\$1');
+    let title = sanitizedLinkTitle((node as Element).getAttribute('title'));
+    if (title) {
+      title = ' "' + title.replace(/"/g, '\\"') + '"';
+    }
+    return '[' + sanitizedContent + '](' + href + title + ')';
   }
 };
 
@@ -170,7 +173,7 @@ commonmarkRules.referenceLink = {
   replacement: function (content: string, node?: Node, options?: any): string {
     if (!node) return content;
     const href = (node as Element).getAttribute('href');
-    let title = cleanAttribute((node as Element).getAttribute('title'));
+    let title = sanitizedLinkTitle((node as Element).getAttribute('title'));
     if (title) title = ' "' + title + '"';
     let replacement: string;
     let reference: string;
@@ -246,14 +249,10 @@ commonmarkRules.image = {
   filter: 'img',
   replacement: function (_content: string, node?: Node, _options?: TurndownOptions): string {
     if (!node) return '';
-    const alt = cleanAttribute((node as Element).getAttribute('alt'));
+    const alt = sanitizedLinkTitle((node as Element).getAttribute('alt'));
     const src = (node as Element).getAttribute('src') || '';
-    const title = cleanAttribute((node as Element).getAttribute('title'));
+    const title = sanitizedLinkTitle((node as Element).getAttribute('title'));
     const titlePart = title ? ' "' + title + '"' : '';
     return src ? '![' + alt + ']' + '(' + src + titlePart + ')' : '';
   }
 };
-
-function cleanAttribute(attribute: string | null): string {
-  return attribute ? attribute.replace(/(\n+\s*)+/g, '\n') : '';
-}
