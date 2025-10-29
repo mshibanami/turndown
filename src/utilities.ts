@@ -1,4 +1,4 @@
-import { ExtendedNode } from "./node";
+import { ExtendedNode, NodeTypes } from "./node";
 
 export function extend<T, U>(destination: T, ...sources: U[]): T & U {
   for (const source of sources) {
@@ -39,7 +39,7 @@ export const blockElements = [
   'TFOOT', 'TH', 'THEAD', 'TR', 'UL'
 ]
 
-export function isBlock(node: Element) {
+export function isBlock(node: Node) {
   return is(node, blockElements)
 }
 
@@ -48,11 +48,11 @@ export const voidElements = [
   'KEYGEN', 'LINK', 'META', 'PARAM', 'SOURCE', 'TRACK', 'WBR'
 ]
 
-export function isVoid(node: Element) {
+export function isVoid(node: Node) {
   return is(node, voidElements)
 }
 
-export function hasVoid(node: Element) {
+export function hasVoid(node: Node) {
   return has(node, voidElements)
 }
 
@@ -61,22 +61,25 @@ const meaningfulWhenBlankElements = [
   'AUDIO', 'VIDEO'
 ]
 
-export function isMeaningfulWhenBlank(node: Element) {
+export function isMeaningfulWhenBlank(node: Node) {
   return is(node, meaningfulWhenBlankElements)
 }
 
-export function hasMeaningfulWhenBlank(node: Element) {
+export function hasMeaningfulWhenBlank(node: Node) {
   return has(node, meaningfulWhenBlankElements)
 }
 
-function is(node: Element, tagNames: string[]) {
+function is(node: Node, tagNames: string[]) {
   return tagNames.indexOf(node.nodeName) >= 0
 }
 
-function has(node: Element, tagNames: string[]) {
+function has(node: Node, tagNames: string[]) {
   return (
     tagNames.some(function (tagName) {
-      return node.getElementsByTagName(tagName).length
+      if (node.nodeType !== NodeTypes.Element) {
+        return false;
+      }
+      return (node as Element).getElementsByTagName(tagName).length
     })
   )
 }
