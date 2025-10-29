@@ -1,26 +1,26 @@
 
-import { ReplacementOptions, Rule } from './rules';
+import { TurndownOptions, Rule } from './rules';
 import { repeat, trimNewlines } from './utilities';
 
 export const commonmarkRules: { [key: string]: Rule } = {}
 
 commonmarkRules.paragraph = {
   filter: 'p',
-  replacement: function (content: string, _node?: Node, _options?: ReplacementOptions): string {
+  replacement: function (content: string, _node?: Node, _options?: TurndownOptions): string {
     return '\n\n' + content + '\n\n';
   }
 };
 
 commonmarkRules.lineBreak = {
   filter: 'br',
-  replacement: function (_content: string, _node?: Node, options?: ReplacementOptions): string {
+  replacement: function (_content: string, _node?: Node, options?: TurndownOptions): string {
     return options.br + '\n';
   }
 };
 
 commonmarkRules.heading = {
   filter: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-  replacement: function (content: string, node?: Node, options?: ReplacementOptions): string {
+  replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
     if (!node) return content;
     const hLevel = Number(node.nodeName.charAt(1));
     if (options.headingStyle === 'setext' && hLevel < 3) {
@@ -36,7 +36,7 @@ commonmarkRules.heading = {
 
 commonmarkRules.blockquote = {
   filter: 'blockquote',
-  replacement: function (content: string, _node?: Node, _options?: ReplacementOptions): string {
+  replacement: function (content: string, _node?: Node, _options?: TurndownOptions): string {
     content = trimNewlines(content).replace(/^/gm, '> ');
     return '\n\n' + content + '\n\n';
   }
@@ -44,7 +44,7 @@ commonmarkRules.blockquote = {
 
 commonmarkRules.list = {
   filter: ['ul', 'ol'],
-  replacement: function (content: string, node?: Node, _options?: ReplacementOptions): string {
+  replacement: function (content: string, node?: Node, _options?: TurndownOptions): string {
     if (!node) return content;
     const parent = node.parentNode as Element;
     if (parent.nodeName === 'LI' && parent.lastElementChild === node) {
@@ -57,7 +57,7 @@ commonmarkRules.list = {
 
 commonmarkRules.listItem = {
   filter: 'li',
-  replacement: function (content: string, node?: Node, options?: ReplacementOptions): string {
+  replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
     if (!node) return content;
     let prefix = options.bulletListMarker + '   ';
     const parent = node.parentNode as Element;
@@ -76,7 +76,7 @@ commonmarkRules.listItem = {
 };
 
 commonmarkRules.indentedCodeBlock = {
-  filter: function (node: Node, options?: ReplacementOptions): boolean {
+  filter: function (node: Node, options?: TurndownOptions): boolean {
     return !!(
       options &&
       options.codeBlockStyle === 'indented' &&
@@ -85,7 +85,7 @@ commonmarkRules.indentedCodeBlock = {
       (node.firstChild as Element).nodeName === 'CODE'
     );
   },
-  replacement: function (_content: string, node?: Node, _options?: ReplacementOptions): string {
+  replacement: function (_content: string, node?: Node, _options?: TurndownOptions): string {
     if (!node || !node.firstChild) return '';
     return (
       '\n\n    ' +
@@ -96,7 +96,7 @@ commonmarkRules.indentedCodeBlock = {
 };
 
 commonmarkRules.fencedCodeBlock = {
-  filter: function (node: Node, options?: ReplacementOptions): boolean {
+  filter: function (node: Node, options?: TurndownOptions): boolean {
     return !!(
       options &&
       options.codeBlockStyle === 'fenced' &&
@@ -105,7 +105,7 @@ commonmarkRules.fencedCodeBlock = {
       (node.firstChild as Element).nodeName === 'CODE'
     );
   },
-  replacement: function (_content: string, node?: Node, options?: ReplacementOptions): string {
+  replacement: function (_content: string, node?: Node, options?: TurndownOptions): string {
     if (!node || !node.firstChild) return '';
     const codeElem = node.firstChild as Element;
     const className = codeElem.getAttribute('class') || '';
@@ -131,13 +131,13 @@ commonmarkRules.fencedCodeBlock = {
 
 commonmarkRules.horizontalRule = {
   filter: 'hr',
-  replacement: function (_content: string, _node?: Node, options?: ReplacementOptions): string {
+  replacement: function (_content: string, _node?: Node, options?: TurndownOptions): string {
     return '\n\n' + options.hr + '\n\n';
   }
 };
 
 commonmarkRules.inlineLink = {
-  filter: function (node: Node, options?: ReplacementOptions): boolean {
+  filter: function (node: Node, options?: TurndownOptions): boolean {
     return !!(
       options &&
       options.linkStyle === 'inlined' &&
@@ -145,7 +145,7 @@ commonmarkRules.inlineLink = {
       (node as Element).getAttribute('href')
     );
   },
-  replacement: function (content: string, node?: Node, options?: ReplacementOptions): string {
+  replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
     if (!node) return content;
     let href = (node as Element).getAttribute('href');
     if (href) href = href.replace(/([()])/g, '\\$1');
@@ -156,7 +156,7 @@ commonmarkRules.inlineLink = {
 };
 
 commonmarkRules.referenceLink = {
-  filter: function (node: Node, options?: ReplacementOptions): boolean {
+  filter: function (node: Node, options?: TurndownOptions): boolean {
     return !!(
       options &&
       options.linkStyle === 'referenced' &&
@@ -193,7 +193,7 @@ commonmarkRules.referenceLink = {
     return replacement;
   },
   references: [],
-  append: function (_options?: any): string {
+  append: function (_options?: TurndownOptions): string {
     // @ts-ignore
     const self = commonmarkRules.referenceLink;
     let references = '';
@@ -207,7 +207,7 @@ commonmarkRules.referenceLink = {
 
 commonmarkRules.emphasis = {
   filter: ['em', 'i'],
-  replacement: function (content: string, _node?: Node, options?: ReplacementOptions): string {
+  replacement: function (content: string, _node?: Node, options?: TurndownOptions): string {
     if (!content.trim()) return '';
     return options.emDelimiter + content + options.emDelimiter;
   }
@@ -215,7 +215,7 @@ commonmarkRules.emphasis = {
 
 commonmarkRules.strong = {
   filter: ['strong', 'b'],
-  replacement: function (content: string, _node?: Node, options?: ReplacementOptions): string {
+  replacement: function (content: string, _node?: Node, options?: TurndownOptions): string {
     if (!content.trim()) return '';
     return options.strongDelimiter + content + options.strongDelimiter;
   }
@@ -228,7 +228,7 @@ commonmarkRules.code = {
     const isCodeBlock = parent.nodeName === 'PRE' && !hasSiblings;
     return node.nodeName === 'CODE' && !isCodeBlock;
   },
-  replacement: function (content: string, _node?: Node, _options?: ReplacementOptions): string {
+  replacement: function (content: string, _node?: Node, _options?: TurndownOptions): string {
     if (!content) return '';
     content = content.replace(/\r?\n|\r/g, ' ');
     const extraSpace = /^`|^ .*?[^ ].* $|`$/.test(content) ? ' ' : '';
@@ -241,7 +241,7 @@ commonmarkRules.code = {
 
 commonmarkRules.image = {
   filter: 'img',
-  replacement: function (_content: string, node?: Node, _options?: ReplacementOptions): string {
+  replacement: function (_content: string, node?: Node, _options?: TurndownOptions): string {
     if (!node) return '';
     const alt = cleanAttribute((node as Element).getAttribute('alt'));
     const src = (node as Element).getAttribute('src') || '';

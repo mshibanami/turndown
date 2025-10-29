@@ -4,33 +4,16 @@
 import { ExtendedNode } from "./node";
 import { TurndownOptions } from "./turndown";
 
-export type RuleFilterFunction = (node: ExtendedNode, options?: ReplacementOptions) => boolean;
+export type RuleFilterFunction = (node: ExtendedNode, options?: TurndownOptions) => boolean;
 export type RuleFilter = string | string[] | RuleFilterFunction;
 
 type RuleReplacementFunction = (...args: any[]) => string;
 
 export interface Rule {
   filter?: RuleFilter;
-  replacement: RuleReplacementFunction | ((content: string, node: any, options?: ReplacementOptions, previousNode?: any) => string);
+  replacement: RuleReplacementFunction | ((content: string, node: any, options?: TurndownOptions, previousNode?: any) => string);
   references?: string[];
-  append?: (options?: any) => string;
-}
-
-export interface ReplacementOptions {
-  br?: string;
-  headingStyle?: string;
-  codeBlockStyle?: string;
-  fence?: string;
-  hr?: string;
-  bulletListMarker?: string;
-  linkStyle?: string;
-  linkReferenceStyle?: string;
-  emDelimiter?: string;
-  strongDelimiter?: string;
-  anchorNames?: string[];
-  preserveColorStyles?: boolean;
-  allowResourcePlaceholders?: boolean;
-  preserveImageTagsWithSize?: boolean;
+  append?: (options?: TurndownOptions) => string;
 }
 
 export class Rules {
