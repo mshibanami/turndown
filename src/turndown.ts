@@ -10,6 +10,7 @@ type EscapeRule = [RegExp, string];
 const escapes: EscapeRule[] = [
   [/\\/g, '\\\\'],
   [/\*/g, '\\*'],
+  [/_/g, '\\_'],
   [/^-/g, '\\-'],
   [/^\+ /g, '\\+ '],
   [/^(=+)/g, '\\$1'],
