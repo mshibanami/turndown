@@ -405,19 +405,19 @@ describe('TurndownService', () => {
     });
 
     it('a reference', () => {
-        const turndownService = new TurndownService({ "linkStyle": "referenced" });
+        const turndownService = new TurndownService({ linkStyle: "referenced" });
         const input = "<a href=\"http://example.com\">Reference link</a>";
         expect(turndownService.turndown(input)).toBe("[Reference link][1]\n\n[1]: http://example.com");
     });
 
     it('a reference with collapsed style', () => {
-        const turndownService = new TurndownService({ "linkStyle": "referenced", "linkReferenceStyle": "collapsed" });
+        const turndownService = new TurndownService({ linkStyle: "referenced", linkReferenceStyle: "collapsed" });
         const input = "<a href=\"http://example.com\">Reference link with collapsed style</a>";
         expect(turndownService.turndown(input)).toBe("[Reference link with collapsed style][]\n\n[Reference link with collapsed style]: http://example.com");
     });
 
     it('a reference with shortcut style', () => {
-        const turndownService = new TurndownService({ "linkStyle": "referenced", "linkReferenceStyle": "shortcut" });
+        const turndownService = new TurndownService({ linkStyle: "referenced", linkReferenceStyle: "shortcut" });
         const input = "<a href=\"http://example.com\">Reference link with shortcut style</a>";
         expect(turndownService.turndown(input)).toBe("[Reference link with shortcut style]\n\n[Reference link with shortcut style]: http://example.com");
     });
@@ -441,13 +441,13 @@ describe('TurndownService', () => {
     });
 
     it('fenced pre/code block', () => {
-        const turndownService = new TurndownService({ "codeBlockStyle": "fenced" });
+        const turndownService = new TurndownService({ codeBlockStyle: "fenced" });
         const input = "<pre><code>def a_fenced_code block; end</code></pre>";
         expect(turndownService.turndown(input)).toBe("```\ndef a_fenced_code block; end\n```");
     });
 
     it('pre/code block fenced with ~', () => {
-        const turndownService = new TurndownService({ "codeBlockStyle": "fenced", "fence": "~~~" });
+        const turndownService = new TurndownService({ codeBlockStyle: "fenced", fence: "~~~" });
         const input = "<pre><code>def a_fenced_code block; end</code></pre>";
         expect(turndownService.turndown(input)).toBe("~~~\ndef a_fenced_code block; end\n~~~");
     });
@@ -465,7 +465,7 @@ describe('TurndownService', () => {
     });
 
     it('fenced pre/code block with language', () => {
-        const turndownService = new TurndownService({ "codeBlockStyle": "fenced" });
+        const turndownService = new TurndownService({ codeBlockStyle: "fenced" });
         const input = "<pre><code class=\"language-ruby\">def a_fenced_code block; end</code></pre>";
         expect(turndownService.turndown(input)).toBe("```ruby\ndef a_fenced_code block; end\n```");
     });
@@ -507,7 +507,7 @@ describe('TurndownService', () => {
     });
 
     it('ul with custom bullet', () => {
-        const turndownService = new TurndownService({ "bulletListMarker": "-" });
+        const turndownService = new TurndownService({ bulletListMarker: "-" });
         const input = "<ul>\n      <li>Unordered list item 1</li>\n      <li>Unordered list item 2</li>\n      <li>Unordered list item 3</li>\n    </ul>";
         expect(turndownService.turndown(input)).toBe("-   Unordered list item 1\n-   Unordered list item 2\n-   Unordered list item 3");
     });
@@ -873,25 +873,25 @@ describe('TurndownService', () => {
     });
 
     it('triple tildes inside code', () => {
-        const turndownService = new TurndownService({ "codeBlockStyle": "fenced", "fence": "~~~" });
+        const turndownService = new TurndownService({ codeBlockStyle: "fenced", fence: "~~~" });
         const input = "<pre><code>~~~\nCode\n~~~\n</code></pre>";
         expect(turndownService.turndown(input)).toBe("~~~~\n~~~\nCode\n~~~\n~~~~");
     });
 
     it('triple ticks inside code', () => {
-        const turndownService = new TurndownService({ "codeBlockStyle": "fenced", "fence": "```" });
+        const turndownService = new TurndownService({ codeBlockStyle: "fenced", fence: "```" });
         const input = "<pre><code>```\nCode\n```\n</code></pre>";
         expect(turndownService.turndown(input)).toBe("````\n```\nCode\n```\n````");
     });
 
     it('four ticks inside code', () => {
-        const turndownService = new TurndownService({ "codeBlockStyle": "fenced", "fence": "```" });
+        const turndownService = new TurndownService({ codeBlockStyle: "fenced", fence: "```" });
         const input = "<pre><code>````\nCode\n````\n</code></pre>";
         expect(turndownService.turndown(input)).toBe("`````\n````\nCode\n````\n`````");
     });
 
     it('empty line in start/end of code block', () => {
-        const turndownService = new TurndownService({ "codeBlockStyle": "fenced", "fence": "```" });
+        const turndownService = new TurndownService({ codeBlockStyle: "fenced", fence: "```" });
         const input = "<pre><code>\nCode\n\n</code></pre>";
         expect(turndownService.turndown(input)).toBe("```\n\nCode\n\n```");
     });
@@ -957,31 +957,31 @@ describe('TurndownService', () => {
     });
 
     it('preformatted code with leading whitespace', () => {
-        const turndownService = new TurndownService({ "preformattedCode": true });
+        const turndownService = new TurndownService({ preformattedCode: true });
         const input = "Four spaces <code>    make an indented code block in Markdown</code>";
         expect(turndownService.turndown(input)).toBe("Four spaces `    make an indented code block in Markdown`");
     });
 
     it('preformatted code with trailing whitespace', () => {
-        const turndownService = new TurndownService({ "preformattedCode": true });
+        const turndownService = new TurndownService({ preformattedCode: true });
         const input = "<code>A line break  </code> <b> note the spaces</b>";
         expect(turndownService.turndown(input)).toBe("`A line break  ` **note the spaces**");
     });
 
     it('preformatted code tightly surrounded', () => {
-        const turndownService = new TurndownService({ "preformattedCode": true });
+        const turndownService = new TurndownService({ preformattedCode: true });
         const input = "<b>tight</b><code>code</code><b>wrap</b>";
         expect(turndownService.turndown(input)).toBe("**tight**`code`**wrap**");
     });
 
     it('preformatted code loosely surrounded', () => {
-        const turndownService = new TurndownService({ "preformattedCode": true });
+        const turndownService = new TurndownService({ preformattedCode: true });
         const input = "<b>not so tight </b><code>code</code><b> wrap</b>";
         expect(turndownService.turndown(input)).toBe("**not so tight** `code` **wrap**");
     });
 
     it('preformatted code with newlines', () => {
-        const turndownService = new TurndownService({ "preformattedCode": true });
+        const turndownService = new TurndownService({ preformattedCode: true });
         const input = "<code>\n\n nasty\ncode\n\n</code>";
         expect(turndownService.turndown(input)).toBe("`    nasty code   `");
     });
