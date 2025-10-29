@@ -214,7 +214,8 @@ commonmarkRules.referenceLink = {
 commonmarkRules.emphasis = {
   filter: ['em', 'i'],
   replacement: function (content: string, _node?: Node, options?: TurndownOptions): string {
-    if (!content.trim()) return '';
+    content = content.trim();
+    if (!content) { return ''; }
     return options.emDelimiter + content + options.emDelimiter;
   }
 };
@@ -222,7 +223,8 @@ commonmarkRules.emphasis = {
 commonmarkRules.strong = {
   filter: ['strong', 'b'],
   replacement: function (content: string, _node?: Node, options?: TurndownOptions): string {
-    if (!content.trim()) return '';
+    content = content.trim();
+    if (!content) { return ''; }
     return options.strongDelimiter + content + options.strongDelimiter;
   }
 };
