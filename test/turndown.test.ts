@@ -868,8 +868,8 @@ describe('TurndownService', () => {
 
     it('text separated by a non-breaking space in an element', () => {
         const turndownService = new TurndownService();
-        const input = "<p>Foo<span>&nbsp;</span>Bar</p>";
-        expect.soft(turndownService.turndown(input)).toBe("Foo&nbsp;Bar");
+        const input = `<p>Foo<span>${noBreakSpace}</span>Bar</p>`;
+        expect.soft(turndownService.turndown(input)).toBe(`Foo${noBreakSpace}Bar`);
     });
 
     it('triple tildes inside code', () => {
@@ -898,62 +898,62 @@ describe('TurndownService', () => {
 
     it('text separated by ASCII and nonASCII space in an element', () => {
         const turndownService = new TurndownService();
-        const input = "<p>Foo<span>  &nbsp;  </span>Bar</p>";
-        expect.soft(turndownService.turndown(input)).toBe("Foo &nbsp; Bar");
+        const input = `<p>Foo<span>  ${noBreakSpace}  </span>Bar</p>`;
+        expect.soft(turndownService.turndown(input)).toBe(`Foo ${noBreakSpace} Bar`);
     });
 
     it('list-like text with non-breaking spaces', () => {
         const turndownService = new TurndownService();
-        const input = "&nbsp;1. First<br>&nbsp;2. Second";
-        expect.soft(turndownService.turndown(input)).toBe("&nbsp;1. First  <!-- hard break -->\n&nbsp;2. Second");
+        const input = `${noBreakSpace}1. First<br>${noBreakSpace}2. Second`;
+        expect.soft(turndownService.turndown(input)).toBe(`${noBreakSpace}1. First  <!-- hard break -->\n${noBreakSpace}2. Second`);
     });
 
     it('element with trailing nonASCII WS followed by nonWS', () => {
         const turndownService = new TurndownService();
-        const input = "<i>foo&nbsp;</i>bar";
-        expect.soft(turndownService.turndown(input)).toBe("_foo_&nbsp;bar");
+        const input = `<i>foo${noBreakSpace}</i>bar`;
+        expect.soft(turndownService.turndown(input)).toBe(`_foo_${noBreakSpace}bar`);
     });
 
     it('element with trailing nonASCII WS followed by nonASCII WS', () => {
         const turndownService = new TurndownService();
-        const input = "<i>foo&nbsp;</i>&nbsp;bar";
-        expect.soft(turndownService.turndown(input)).toBe("_foo_&nbsp;&nbsp;bar");
+        const input = `<i>foo${noBreakSpace}</i>${noBreakSpace}bar`;
+        expect.soft(turndownService.turndown(input)).toBe(`_foo_${noBreakSpace}${noBreakSpace}bar`);
     });
 
     it('element with trailing ASCII WS followed by nonASCII WS', () => {
         const turndownService = new TurndownService();
-        const input = "<i>foo </i>&nbsp;bar";
-        expect.soft(turndownService.turndown(input)).toBe("_foo_ &nbsp;bar");
+        const input = `<i>foo </i>${noBreakSpace}bar`;
+        expect.soft(turndownService.turndown(input)).toBe(`_foo_ &${noBreakSpace}bar`);
     });
 
     it('element with trailing nonASCII WS followed by ASCII WS', () => {
         const turndownService = new TurndownService();
-        const input = "<i>foo&nbsp;</i> bar";
-        expect.soft(turndownService.turndown(input)).toBe("_foo_&nbsp; bar");
+        const input = `<i>foo${noBreakSpace}</i> bar`;
+        expect.soft(turndownService.turndown(input)).toBe(`_foo_${noBreakSpace}bar`);
     });
 
     it('nonWS followed by element with leading nonASCII WS', () => {
         const turndownService = new TurndownService();
-        const input = "foo<i>&nbsp;bar</i>";
-        expect.soft(turndownService.turndown(input)).toBe("foo&nbsp;_bar_");
+        const input = `foo<i>${noBreakSpace}bar</i>`;
+        expect.soft(turndownService.turndown(input)).toBe(`foo${noBreakSpace}_bar_`);
     });
 
     it('nonASCII WS followed by element with leading nonASCII WS', () => {
         const turndownService = new TurndownService();
-        const input = "foo&nbsp;<i>&nbsp;bar</i>";
-        expect.soft(turndownService.turndown(input)).toBe("foo&nbsp;&nbsp;_bar_");
+        const input = `foo${noBreakSpace}<i>${noBreakSpace}bar</i>`;
+        expect.soft(turndownService.turndown(input)).toBe(`foo${noBreakSpace}${noBreakSpace}_bar_`);
     });
 
     it('nonASCII WS followed by element with leading ASCII WS', () => {
         const turndownService = new TurndownService();
-        const input = "foo&nbsp;<i> bar</i>";
-        expect.soft(turndownService.turndown(input)).toBe("foo&nbsp; _bar_");
+        const input = `foo${noBreakSpace}<i> bar</i>`;
+        expect.soft(turndownService.turndown(input)).toBe(`foo${noBreakSpace}_bar_`);
     });
 
     it('ASCII WS followed by element with leading nonASCII WS', () => {
         const turndownService = new TurndownService();
-        const input = "foo <i>&nbsp;bar</i>";
-        expect.soft(turndownService.turndown(input)).toBe("foo &nbsp;_bar_");
+        const input = `foo <i>${noBreakSpace}bar</i>`;
+        expect.soft(turndownService.turndown(input)).toBe(`foo ${noBreakSpace}_bar_`);
     });
 
     it('preformatted code with leading whitespace', () => {
@@ -996,3 +996,5 @@ describe('TurndownService', () => {
 
 const read = (filename: string) =>
     readFileSync(resolve(__dirname, 'resources', filename), 'utf8').trim();
+
+const noBreakSpace = '\u00A0';
