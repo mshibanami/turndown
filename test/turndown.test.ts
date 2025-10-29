@@ -4,6 +4,12 @@ import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
 describe('TurndownService', () => {
+    it('parses p tag', () => {
+        const turndownService = new TurndownService();
+        const input = '<p>Lorem ipsum</p>';
+        expect.soft(turndownService.turndown(input)).toBe('Lorem ipsum');
+    });
+
     it('malformed documents', () => {
         const turndownService = new TurndownService();
         expect(() => {
