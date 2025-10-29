@@ -11,7 +11,7 @@ type RuleReplacementFunction = (...args: any[]) => string;
 
 export interface Rule {
   filter?: RuleFilter;
-  replacement: RuleReplacementFunction | ((content: string, node: any, options?: any, previousNode?: any) => string);
+  replacement: RuleReplacementFunction | ((content: string, node: any, options?: ReplacementOptions, previousNode?: any) => string);
   references?: string[];
   append?: (options?: any) => string;
 }
