@@ -1,5 +1,7 @@
 import TurndownService from '../src/turndown';
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'fs';
+import { resolve } from 'path';
 
 describe('TurndownService', () => {
     it('malformed documents', () => {
@@ -154,4 +156,15 @@ describe('TurndownService', () => {
             .turndown('<a href="http://example.com"><span>Example<br/>Link</span></a>'))
             .toBe('[Example Link](http://example.com)');
     });
+
+    it('parses highlight.js style code block', () => {
+        const turndownService = new TurndownService();
+        const input = read('highlight-js.html');
+        const expected = read('highlight-js.md');
+        console.log("⭐️", turndownService.turndown(input));
+        expect.soft(turndownService.turndown(input)).toBe(expected);
+    });
 });
+
+const read = (filename: string) =>
+    readFileSync(resolve(__dirname, 'resources', filename), 'utf8').trim();
