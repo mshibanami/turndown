@@ -3,6 +3,7 @@
  */
 import { ExtendedNode } from "./node";
 import { TurndownOptions } from "./turndown";
+import { standardMarkdownElements } from "./utilities";
 
 export type RuleFilterFunction = (node: ExtendedNode, options?: TurndownOptions) => boolean;
 export type RuleFilter = string | string[] | RuleFilterFunction;
@@ -70,7 +71,15 @@ export class Rules {
   }
 
   forNode(node: ExtendedNode): Rule {
-    if (node.isBlank) return this.blankRule
+    if (node.isBlank) {
+      return this.blankRule;
+    }
+    if (this.options.htmlRetentionMode === 'preserveAll' && this.isUnsupportedElement(node)) {
+      return {
+        replacement: this.keepReplacement
+      };
+    }
+
     let rule: Rule | undefined;
     if ((rule = findRule(this.array, node, this.options))) {
       return rule;
@@ -82,6 +91,62 @@ export class Rules {
       return rule;
     }
     return this.defaultRule;
+  }
+
+  /// Check if an element is unsupported for Markdown conversion.
+  private isUnsupportedElement(node: ExtendedNode): boolean {
+    const nodeName = node.nodeName;
+
+    if (nodeName === 'PRE' && node.firstChild && (node.firstChild as Element).nodeName === 'CODE') {
+      const codeElem = node.firstChild as Element;
+      if (codeElem.attributes && codeElem.attributes.length > 0) {
+        for (let i = 0; i < codeElem.attributes.length; i++) {
+          const attrName = codeElem.attributes[i].name.toLowerCase();
+          if (attrName !== 'class') {
+            return true;
+          }
+        }
+      }
+    }
+
+    if (node.attributes && node.attributes.length > 0) {
+      switch (nodeName) {
+        case 'IMG':
+          for (let i = 0; i < node.attributes.length; i++) {
+            const attrName = node.attributes[i].name.toLowerCase();
+            if (attrName !== 'src' && attrName !== 'alt' && attrName !== 'title') {
+              return true;
+            }
+          }
+          return false;
+        case 'A':
+          for (let i = 0; i < node.attributes.length; i++) {
+            const attrName = node.attributes[i].name.toLowerCase();
+            if (attrName !== 'href' && attrName !== 'title') {
+              return true;
+            }
+          }
+          return false;
+        case 'CODE':
+          const parent = node.parentNode as Element;
+          if (parent && parent.nodeName === 'PRE') {
+            for (let i = 0; i < node.attributes.length; i++) {
+              const attrName = node.attributes[i].name.toLowerCase();
+              if (attrName !== 'class') {
+                return true;
+              }
+            }
+            return false;
+          }
+        default:
+          return true;
+      }
+    }
+    // Elements that are not standard HTML elements are unsupported
+    if (standardMarkdownElements.indexOf(nodeName) === -1) {
+      return true;
+    }
+    return false;
   }
 
   forEach(fn: (rule: Rule, index: number) => void): void {

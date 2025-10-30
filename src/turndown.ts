@@ -39,6 +39,7 @@ export interface TurndownOptions {
   linkReferenceDeduplication?: 'none' | 'full';
   br?: string;
   preformattedCode?: boolean;
+  htmlRetentionMode?: 'standard' | 'preserveAll' | 'markdownIncludingHtml';
   blankReplacement?: (content: string, node: ExtendedNode) => string;
   keepReplacement?: (content: string, node: ExtendedNode) => string;
   defaultReplacement?: (content: string, node: ExtendedNode) => string;
@@ -60,6 +61,7 @@ const defaultOptions: TurndownOptions = {
   linkReferenceDeduplication: 'full',
   br: '  ',
   preformattedCode: false,
+  htmlRetentionMode: false,
   blankReplacement: function (content: string, node: ExtendedNode): string {
     return node.isBlock ? '\n\n' : '';
   },

@@ -61,6 +61,12 @@ const meaningfulWhenBlankElements = [
   'AUDIO', 'VIDEO'
 ]
 
+export const standardMarkdownElements = [
+  'P', 'BR', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'BLOCKQUOTE',
+  'UL', 'OL', 'LI', 'PRE', 'CODE', 'HR', 'A', 'EM', 'I', 'STRONG',
+  'B', 'IMG', 'DIV', 'SPAN', 'TABLE', 'THEAD', 'TBODY', 'TR', 'TH', 'TD'
+]
+
 export function isMeaningfulWhenBlank(node: Node) {
   return is(node, meaningfulWhenBlankElements)
 }

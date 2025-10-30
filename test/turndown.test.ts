@@ -1032,6 +1032,126 @@ describe('TurndownService', () => {
         expect(turndownService.turndown("<strong><br>Strong Text<br></strong>"))
             .toBe(`**Strong Text**`);
     });
+
+    it('converts standard elements to markdown when htmlRetentionMode is false', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'standard' });
+        const input = '<em>Hello</em>';
+        expect(turndownService.turndown(input)).toBe('_Hello_');
+    });
+
+    it('converts standard elements to markdown when htmlRetentionMode is true', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<em>Hello</em>';
+        expect(turndownService.turndown(input)).toBe('_Hello_');
+    });
+
+    it('preserves span with id attribute', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<span id="foo">Hello</span>';
+        expect(turndownService.turndown(input)).toBe('<span id="foo">Hello</span>');
+    });
+
+    it('preserves div with data attribute', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<div data-role="note">Hello</div>';
+        expect(turndownService.turndown(input)).toBe('<div data-role="note">Hello</div>');
+    });
+
+    it('preserves custom elements', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<custom-element>Hello</custom-element>';
+        expect(turndownService.turndown(input)).toBe('<custom-element>Hello</custom-element>');
+    });
+
+    it('preserves element with class attribute', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<span class="highlight">Important</span>';
+        expect(turndownService.turndown(input)).toBe('<span class="highlight">Important</span>');
+    });
+
+    it('preserves element with style attribute', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<span style="color: red;">Red text</span>';
+        expect(turndownService.turndown(input)).toBe('<span style="color: red;">Red text</span>');
+    });
+
+    it('does not preserve span without attributes when preserveUnsupported is false', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'standard' });
+        const input = '<span id="foo">Hello</span>';
+        expect(turndownService.turndown(input)).toBe('Hello');
+    });
+
+    it('preserves link with data attribute', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<a href="http://example.com" data-track="click">Link</a>';
+        expect(turndownService.turndown(input)).toBe('<a href="http://example.com" data-track="click">Link</a>');
+    });
+
+    it('converts link without extra attributes normally', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<a href="http://example.com">Link</a>';
+        expect(turndownService.turndown(input)).toBe('[Link](http://example.com)');
+    });
+
+    it('converts link with title normally', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<a href="http://example.com" title="Title">Link</a>';
+        expect(turndownService.turndown(input)).toBe('[Link](http://example.com "Title")');
+    });
+
+    it('preserves image with extra attributes', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<img src="image.png" alt="Alt" width="100">';
+        expect(turndownService.turndown(input)).toBe('<img src="image.png" alt="Alt" width="100">');
+    });
+
+    it('converts image without extra attributes normally', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<img src="image.png" alt="Alt">';
+        expect(turndownService.turndown(input)).toBe('![Alt](image.png)');
+    });
+
+    it('converts image with title normally', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<img src="image.png" alt="Alt" title="Title">';
+        expect(turndownService.turndown(input)).toBe('![Alt](image.png "Title")');
+    });
+
+    it('preserves code block with extra attributes', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<pre><code data-lang="javascript">const x = 1;</code></pre>';
+        expect(turndownService.turndown(input)).toBe('<pre><code data-lang="javascript">const x = 1;</code></pre>');
+    });
+
+    it('converts code block with class attribute normally', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<pre><code class="language-javascript">const x = 1;</code></pre>';
+        expect(turndownService.turndown(input)).toBe('```javascript\nconst x = 1;\n```');
+    });
+
+    it('preserves mixed content with standard and unsupported elements', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<p><em>Hello</em> <span id="foo">world</span></p>';
+        expect(turndownService.turndown(input)).toBe('_Hello_ <span id="foo">world</span>');
+    });
+
+    it('preserves nested unsupported elements', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<custom-outer><custom-inner>Hello</custom-inner></custom-outer>';
+        expect(turndownService.turndown(input)).toBe('<custom-outer><custom-inner>Hello</custom-inner></custom-outer>');
+    });
+
+    it('preserves web component style elements', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<my-component attr="value">Content</my-component>';
+        expect(turndownService.turndown(input)).toBe('<my-component attr="value">Content</my-component>');
+    });
+
+    it('preserves element with multiple attributes', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
+        const input = '<div class="foo" id="bar" data-value="baz">Content</div>';
+        expect(turndownService.turndown(input)).toBe('<div class="foo" id="bar" data-value="baz">Content</div>');
+    });
 });
 
 const read = (filename: string) =>
