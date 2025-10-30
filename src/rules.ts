@@ -26,6 +26,7 @@ export class Rules {
   private _remove: Rule[];
   blankRule: Rule;
   keepReplacement: RuleReplacementFunction;
+  markdownIncludingHtmlReplacement: RuleReplacementFunction;
   defaultRule: Rule;
   array: Rule[];
 
@@ -39,6 +40,7 @@ export class Rules {
     };
 
     this.keepReplacement = options.keepReplacement;
+    this.markdownIncludingHtmlReplacement = options.markdownIncludingHtmlReplacement;
 
     this.defaultRule = {
       replacement: options.defaultReplacement
@@ -77,6 +79,11 @@ export class Rules {
     if (this.options.htmlRetentionMode === 'preserveAll' && this.isUnsupportedElement(node)) {
       return {
         replacement: this.keepReplacement
+      };
+    }
+    if (this.options.htmlRetentionMode === 'markdownIncludingHtml' && this.isUnsupportedElement(node)) {
+      return {
+        replacement: this.markdownIncludingHtmlReplacement
       };
     }
 

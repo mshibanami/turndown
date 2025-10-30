@@ -42,6 +42,7 @@ export interface TurndownOptions {
   htmlRetentionMode?: 'standard' | 'preserveAll' | 'markdownIncludingHtml';
   blankReplacement?: (content: string, node: ExtendedNode) => string;
   keepReplacement?: (content: string, node: ExtendedNode) => string;
+  markdownIncludingHtmlReplacement?: (content: string, node: ExtendedNode) => string;
   defaultReplacement?: (content: string, node: ExtendedNode) => string;
   [key: string]: any;
 }
@@ -61,12 +62,35 @@ const defaultOptions: TurndownOptions = {
   linkReferenceDeduplication: 'full',
   br: '  ',
   preformattedCode: false,
-  htmlRetentionMode: false,
+  htmlRetentionMode: 'standard',
   blankReplacement: function (content: string, node: ExtendedNode): string {
     return node.isBlock ? '\n\n' : '';
   },
   keepReplacement: function (content: string, node: ExtendedNode): string {
     return node.isBlock ? '\n\n' + node.outerHTML + '\n\n' : node.outerHTML;
+  },
+  markdownIncludingHtmlReplacement: function (content: string, node: ExtendedNode): string {
+    const tagName = node.nodeName.toLowerCase();
+
+    let attributes = '';
+    if (node.attributes && node.attributes.length > 0) {
+      const attrs: string[] = [];
+      for (let i = 0; i < node.attributes.length; i++) {
+        const attr = node.attributes[i];
+        attrs.push(`${attr.name}="${attr.value}"`);
+      }
+      attributes = ' ' + attrs.join(' ');
+    }
+
+    attributes += ' markdown="1"';
+
+    const openTag = `<${tagName}${attributes}>`;
+    const closeTag = `</${tagName}>`;
+
+    const trimmedContent = content.trim();
+    const html = openTag + '\n' + trimmedContent + '\n' + closeTag;
+
+    return node.isBlock ? '\n\n' + html + '\n\n' : html;
   },
   defaultReplacement: function (content: string, node: ExtendedNode): string {
     return node.isBlock ? '\n\n' + content + '\n\n' : content;

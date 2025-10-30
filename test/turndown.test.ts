@@ -1152,6 +1152,54 @@ describe('TurndownService', () => {
         const input = '<div class="foo" id="bar" data-value="baz">Content</div>';
         expect(turndownService.turndown(input)).toBe('<div class="foo" id="bar" data-value="baz">Content</div>');
     });
+
+    it('markdownIncludingHtml: preserves div with id and converts inner bold to markdown', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
+        const input = '<div id="preserve-me"><b>some bolded text</b></div>';
+        expect(turndownService.turndown(input)).toBe('<div id="preserve-me" markdown="1">\n**some bolded text**\n</div>');
+    });
+
+    it('markdownIncludingHtml: preserves custom element and converts inner content', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
+        const input = '<custom-element><em>italic text</em> and <strong>bold text</strong></custom-element>';
+        expect(turndownService.turndown(input)).toBe('<custom-element markdown="1">\n_italic text_ and **bold text**\n</custom-element>');
+    });
+
+    it('markdownIncludingHtml: preserves element with class attribute and converts inner content', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
+        const input = '<div class="note"><p>A paragraph</p></div>';
+        expect(turndownService.turndown(input)).toBe('<div class="note" markdown="1">\nA paragraph\n</div>');
+    });
+
+    it('markdownIncludingHtml: preserves element with multiple attributes and converts inner content', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
+        const input = '<div class="foo" id="bar" data-value="baz"><strong>Bold content</strong></div>';
+        expect(turndownService.turndown(input)).toBe('<div class="foo" id="bar" data-value="baz" markdown="1">\n**Bold content**\n</div>');
+    });
+
+    it('markdownIncludingHtml: preserves span with id and converts inner content', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
+        const input = '<span id="note"><em>Important</em></span>';
+        expect(turndownService.turndown(input)).toBe('<span id="note" markdown="1">\n_Important_\n</span>');
+    });
+
+    it('markdownIncludingHtml: converts standard elements normally', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
+        const input = '<p><em>Hello</em> <strong>world</strong></p>';
+        expect(turndownService.turndown(input)).toBe('_Hello_ **world**');
+    });
+
+    it('markdownIncludingHtml: preserves nested custom elements and converts inner standard elements', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
+        const input = '<custom-outer><custom-inner><b>Bold</b></custom-inner></custom-outer>';
+        expect(turndownService.turndown(input)).toBe('<custom-outer markdown="1">\n<custom-inner markdown="1">\n**Bold**\n</custom-inner>\n</custom-outer>');
+    });
+
+    it('markdownIncludingHtml: preserves element with data attributes and converts lists', () => {
+        const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
+        const input = '<div data-component="list"><ul><li>Item 1</li><li>Item 2</li></ul></div>';
+        expect(turndownService.turndown(input)).toBe('<div data-component="list" markdown="1">\n*   Item 1\n*   Item 2\n</div>');
+    });
 });
 
 const read = (filename: string) =>
