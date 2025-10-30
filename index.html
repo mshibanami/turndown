@@ -143,6 +143,7 @@ console.log(
   <li>strongDelimiter (** or __)</li>
   <li>linkStyle (inlined or referenced)</li>
   <li>linkReferenceStyle (full, collapsed, or shortcut)</li>
+  <li>linkReferenceDeduplication (none or full)</li>
 </ul></textarea>
     </div>
     <div class="col">
@@ -225,6 +226,14 @@ console.log(
           <option value="full">full</option>
           <option value="collapsed">collapsed</option>
           <option value="shortcut">shortcut</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="linkReferenceDeduplication">Link reference deduplication</label>
+        <select name="linkReferenceDeduplication" id="linkReferenceDeduplication">
+          <option value="none">none</option>
+          <option value="full">full</option>
         </select>
       </div>
     </form>

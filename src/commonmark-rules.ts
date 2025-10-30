@@ -178,30 +178,49 @@ commonmarkRules.referenceLink = {
     let replacement: string;
     let reference: string;
 
-    const makeReferenceKey = (href: string, title: string): string => href + title;
+    const referenceKey = href + title;
 
     // @ts-ignore
     const self = commonmarkRules.referenceLink;
     switch (options.linkReferenceStyle) {
       case 'collapsed':
         replacement = '[' + content + '][]';
-        reference = '[' + content + ']: ' + href + title;
+        reference = '[' + content + ']: ' + referenceKey;
         break;
       case 'shortcut':
         replacement = '[' + content + ']';
-        reference = '[' + content + ']: ' + href + title;
+        reference = '[' + content + ']: ' + referenceKey;
         break;
       default: {
-        const id = self.references!.length + 1;
+        let id: number;
+        if (options.linkReferenceDeduplication === 'full' && self.urlReferenceIdMap.has(referenceKey)) {
+          id = self.urlReferenceIdMap.get(referenceKey);
+        } else {
+          id = self.references.length + 1;
+          self.urlReferenceIdMap.set(referenceKey, id);
+          reference = '[' + id + ']: ' + href + title;
+          self.references.push(reference);
+        }
         replacement = '[' + content + '][' + id + ']';
-        reference = '[' + id + ']: ' + href + title;
         break;
       }
     }
-    self.references?.push(reference);
+
+    if (options.linkReferenceStyle !== 'full') {
+      // Check if we should deduplicate
+      if (options.linkReferenceDeduplication === 'full') {
+        if (!self.urlReferenceIdMap.has(referenceKey)) {
+          self.urlReferenceIdMap.set(referenceKey, 1);
+          self.references.push(reference);
+        }
+      } else {
+        self.references.push(reference);
+      }
+    }
     return replacement;
   },
   references: [],
+  urlReferenceIdMap: new Map<string, number>(),
   append: function (_options?: TurndownOptions): string {
     // @ts-ignore
     const self = commonmarkRules.referenceLink;
@@ -209,6 +228,7 @@ commonmarkRules.referenceLink = {
     if (self.references && self.references.length) {
       references = '\n\n' + self.references.join('\n') + '\n\n';
       self.references = [];
+      self.urlReferenceIdMap = new Map();
     }
     return references;
   }

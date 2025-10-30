@@ -13,6 +13,9 @@ export interface Rule {
   filter?: RuleFilter;
   replacement: RuleReplacementFunction | ((content: string, node: any, options?: TurndownOptions, previousNode?: any) => string);
   references?: string[];
+  /// Map of URL+title combinations to their reference IDs, used for link reference deduplication.
+  /// When linkReferenceDeduplication is 'full', this tracks which URLs have already been assigned a reference number to avoid creating duplicate references.
+  urlReferenceIdMap?: Map<string, number>;
   append?: (options?: TurndownOptions) => string;
 }
 

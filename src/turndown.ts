@@ -36,6 +36,7 @@ export interface TurndownOptions {
   strongDelimiter?: '**' | '__';
   linkStyle?: 'inlined' | 'referenced';
   linkReferenceStyle?: 'full' | 'collapsed' | 'shortcut';
+  linkReferenceDeduplication?: 'none' | 'full';
   br?: string;
   preformattedCode?: boolean;
   blankReplacement?: (content: string, node: ExtendedNode) => string;
@@ -56,6 +57,7 @@ const defaultOptions: TurndownOptions = {
   strongDelimiter: '**',
   linkStyle: 'inlined',
   linkReferenceStyle: 'full',
+  linkReferenceDeduplication: 'full',
   br: '  ',
   preformattedCode: false,
   blankReplacement: function (content: string, node: ExtendedNode): string {
