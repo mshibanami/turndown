@@ -64,13 +64,13 @@ const defaultOptions: TurndownOptions = {
   br: '  ',
   preformattedCode: false,
   htmlRetentionMode: 'standard',
-  blankReplacement: function (content: string, node: ExtendedNode): string {
+  blankReplacement: (content: string, node: ExtendedNode): string => {
     return node.isBlock ? '\n\n' : '';
   },
-  keepReplacement: function (content: string, node: ExtendedNode): string {
+  keepReplacement: (content: string, node: ExtendedNode): string => {
     return node.isBlock ? '\n\n' + node.outerHTML + '\n\n' : node.outerHTML;
   },
-  markdownIncludingHtmlReplacement: function (content: string, node: ExtendedNode): string {
+  markdownIncludingHtmlReplacement: (content: string, node: ExtendedNode): string => {
     const tagName = node.nodeName.toLowerCase();
 
     let attributes = '';
