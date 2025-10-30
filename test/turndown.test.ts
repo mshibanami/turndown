@@ -684,6 +684,19 @@ describe('TurndownService', () => {
         expect(turndownService.turndown(input)).toBe("To add emphasis, surround text with \\_. For example: \\_this is emphasis\\_");
     });
 
+    it('escapes < and > if < and > are not part of a tag', () => {
+        const turndownService = new TurndownService();
+        expect.soft(turndownService.turndown("&lt;malicious&gt;")).toBe("\\<malicious\\>");
+        expect.soft(turndownService.turndown("&lt;not a tag&gt;")).toBe("\\<not a tag\\>");
+        expect.soft(turndownService.turndown("<p>&lt;tag-in-p&gt;</p>")).toBe("\\<tag-in-p\\>");
+    });
+
+    it('escapes < and > within a list item', () => {
+        const turndownService = new TurndownService();
+        expect(turndownService.turndown("<ul><li>This is bad > &lt;malicious&gt; < This is bad</li></ul>"))
+            .toBe("*   This is bad > \\<malicious\\> < This is bad");
+    });
+
     it('not escaping within code', () => {
         const turndownService = new TurndownService();
         const input = "<pre><code>def this_is_a_method; end;</code></pre>";
