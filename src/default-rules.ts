@@ -1,27 +1,27 @@
 
 import { Rule } from '@/rules';
-import { TurndownOptions } from '@/index';
+import { TurnishOptions } from '@/index';
 import { repeat, sanitizedLinkContent, sanitizedLinkTitle, trimNewlines } from '@/utilities';
 
 export const defaultRules: { [key: string]: Rule } = {}
 
 defaultRules.paragraph = {
   filter: 'p',
-  replacement: function (content: string, _node?: Node, _options?: TurndownOptions): string {
+  replacement: function (content: string, _node?: Node, _options?: TurnishOptions): string {
     return '\n\n' + content + '\n\n';
   }
 };
 
 defaultRules.lineBreak = {
   filter: 'br',
-  replacement: function (_content: string, _node?: Node, options?: TurndownOptions): string {
+  replacement: function (_content: string, _node?: Node, options?: TurnishOptions): string {
     return options.br + '\n';
   }
 };
 
 defaultRules.heading = {
   filter: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-  replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
+  replacement: function (content: string, node?: Node, options?: TurnishOptions): string {
     if (!node) return content;
     const hLevel = Number(node.nodeName.charAt(1));
     if (options.headingStyle === 'setext' && hLevel < 3) {
@@ -37,7 +37,7 @@ defaultRules.heading = {
 
 defaultRules.blockquote = {
   filter: 'blockquote',
-  replacement: function (content: string, _node?: Node, _options?: TurndownOptions): string {
+  replacement: function (content: string, _node?: Node, _options?: TurnishOptions): string {
     content = trimNewlines(content).replace(/^/gm, '> ');
     return '\n\n' + content + '\n\n';
   }
@@ -45,7 +45,7 @@ defaultRules.blockquote = {
 
 defaultRules.list = {
   filter: ['ul', 'ol'],
-  replacement: function (content: string, node?: Node, _options?: TurndownOptions): string {
+  replacement: function (content: string, node?: Node, _options?: TurnishOptions): string {
     if (!node) return content;
     const parent = node.parentNode as Element;
     if (parent.nodeName === 'LI' && parent.lastElementChild === node) {
@@ -58,7 +58,7 @@ defaultRules.list = {
 
 defaultRules.listItem = {
   filter: 'li',
-  replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
+  replacement: function (content: string, node?: Node, options?: TurnishOptions): string {
     if (!node) return content;
     let prefix = options.bulletListMarker + '   ';
     const parent = node.parentNode as Element;
@@ -77,7 +77,7 @@ defaultRules.listItem = {
 };
 
 defaultRules.indentedCodeBlock = {
-  filter: function (node: Node, options?: TurndownOptions): boolean {
+  filter: function (node: Node, options?: TurnishOptions): boolean {
     return !!(
       options &&
       options.codeBlockStyle === 'indented' &&
@@ -86,7 +86,7 @@ defaultRules.indentedCodeBlock = {
       (node.firstChild as Element).nodeName === 'CODE'
     );
   },
-  replacement: function (_content: string, node?: Node, _options?: TurndownOptions): string {
+  replacement: function (_content: string, node?: Node, _options?: TurnishOptions): string {
     if (!node || !node.firstChild) return '';
     return (
       '\n\n    ' +
@@ -97,7 +97,7 @@ defaultRules.indentedCodeBlock = {
 };
 
 defaultRules.fencedCodeBlock = {
-  filter: function (node: Node, options?: TurndownOptions): boolean {
+  filter: function (node: Node, options?: TurnishOptions): boolean {
     return !!(
       options &&
       options.codeBlockStyle === 'fenced' &&
@@ -106,7 +106,7 @@ defaultRules.fencedCodeBlock = {
       (node.firstChild as Element).nodeName === 'CODE'
     );
   },
-  replacement: function (_content: string, node?: Node, options?: TurndownOptions): string {
+  replacement: function (_content: string, node?: Node, options?: TurnishOptions): string {
     if (!node || !node.firstChild) return '';
     const codeElem = node.firstChild as Element;
     const className = codeElem.getAttribute('class') || '';
@@ -132,20 +132,20 @@ defaultRules.fencedCodeBlock = {
 
 defaultRules.horizontalRule = {
   filter: 'hr',
-  replacement: function (_content: string, _node?: Node, options?: TurndownOptions): string {
+  replacement: function (_content: string, _node?: Node, options?: TurnishOptions): string {
     return '\n\n' + options.hr + '\n\n';
   }
 };
 
 defaultRules.inlineLink = {
-  filter: function (node: Node, options?: TurndownOptions): boolean {
+  filter: function (node: Node, options?: TurnishOptions): boolean {
     return !!(
       options?.linkStyle === 'inlined' &&
       node.nodeName === 'A' &&
       (node as Element).getAttribute('href')
     );
   },
-  replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
+  replacement: function (content: string, node?: Node, options?: TurnishOptions): string {
     const sanitizedContent = sanitizedLinkContent(content);
     if (!node) {
       return content;
@@ -162,7 +162,7 @@ defaultRules.inlineLink = {
 };
 
 defaultRules.referenceLink = {
-  filter: function (node: Node, options?: TurndownOptions): boolean {
+  filter: function (node: Node, options?: TurnishOptions): boolean {
     return !!(
       options &&
       options.linkStyle === 'referenced' &&
@@ -170,7 +170,7 @@ defaultRules.referenceLink = {
       (node as Element).getAttribute('href')
     );
   },
-  replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
+  replacement: function (content: string, node?: Node, options?: TurnishOptions): string {
     if (!node) return content;
     const href = (node as Element).getAttribute('href');
     let title = sanitizedLinkTitle((node as Element).getAttribute('title'));
@@ -221,7 +221,7 @@ defaultRules.referenceLink = {
   },
   references: [],
   urlReferenceIdMap: new Map<string, number>(),
-  append: function (_options?: TurndownOptions): string {
+  append: function (_options?: TurnishOptions): string {
     // @ts-ignore
     const self = defaultRules.referenceLink;
     let references = '';
@@ -236,7 +236,7 @@ defaultRules.referenceLink = {
 
 defaultRules.emphasis = {
   filter: ['em', 'i'],
-  replacement: function (content: string, _node?: Node, options?: TurndownOptions): string {
+  replacement: function (content: string, _node?: Node, options?: TurnishOptions): string {
     content = content.trim();
     if (!content) { return ''; }
     return options.emDelimiter + content + options.emDelimiter;
@@ -245,7 +245,7 @@ defaultRules.emphasis = {
 
 defaultRules.strong = {
   filter: ['strong', 'b'],
-  replacement: function (content: string, _node?: Node, options?: TurndownOptions): string {
+  replacement: function (content: string, _node?: Node, options?: TurnishOptions): string {
     content = content.trim();
     if (!content) { return ''; }
     return options.strongDelimiter + content + options.strongDelimiter;
@@ -259,7 +259,7 @@ defaultRules.code = {
     const isCodeBlock = parent.nodeName === 'PRE' && !hasSiblings;
     return node.nodeName === 'CODE' && !isCodeBlock;
   },
-  replacement: function (content: string, _node?: Node, _options?: TurndownOptions): string {
+  replacement: function (content: string, _node?: Node, _options?: TurnishOptions): string {
     if (!content) return '';
     content = content.replace(/\r?\n|\r/g, ' ');
     const extraSpace = /^`|^ .*?[^ ].* $|`$/.test(content) ? ' ' : '';
@@ -272,7 +272,7 @@ defaultRules.code = {
 
 defaultRules.image = {
   filter: 'img',
-  replacement: function (_content: string, node?: Node, _options?: TurndownOptions): string {
+  replacement: function (_content: string, node?: Node, _options?: TurnishOptions): string {
     if (!node) return '';
     const alt = sanitizedLinkTitle((node as Element).getAttribute('alt'));
     const src = (node as Element).getAttribute('src') || '';

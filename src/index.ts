@@ -26,7 +26,7 @@ const escapes: EscapeRule[] = [
 
 type Plugin = (service: Turnish) => void;
 
-export interface TurndownOptions {
+export interface TurnishOptions {
   rules?: { [key: string]: Rule };
   headingStyle?: 'setext' | 'atx';
   hr?: string;
@@ -49,7 +49,7 @@ export interface TurndownOptions {
 }
 
 
-const defaultOptions: TurndownOptions = {
+const defaultOptions: TurnishOptions = {
   rules: defaultRules,
   headingStyle: 'atx',
   hr: '---',
@@ -99,10 +99,10 @@ const defaultOptions: TurndownOptions = {
 };
 
 export default class Turnish {
-  options: TurndownOptions;
+  options: TurnishOptions;
   rules: Rules;
 
-  constructor(options?: TurndownOptions) {
+  constructor(options?: TurnishOptions) {
     this.options = extend({}, defaultOptions, options);
     this.rules = new Rules(this.options);
   }
@@ -131,7 +131,7 @@ export default class Turnish {
    * Add one or more plugins
    * @public
    * @param {Plugin|Plugin[]} plugin The plugin or array of plugins to add
-   * @returns The Turndown instance for chaining
+   * @returns The turnish instance for chaining
    * @type Object
    */
   use(plugin: Plugin | Plugin[]): Turnish {
@@ -150,7 +150,7 @@ export default class Turnish {
    * @public
    * @param {String} key The unique key of the rule
    * @param {Object} rule The rule
-   * @returns The Turndown instance for chaining
+   * @returns The turnish instance for chaining
    * @type Object
    */
   addRule(key: string, rule: Rule): Turnish {
@@ -162,7 +162,7 @@ export default class Turnish {
    * Keep a node (as HTML) that matches the filter
    * @public
    * @param {RuleFilter} filter The unique key of the rule
-   * @returns The Turndown instance for chaining
+   * @returns The turnish instance for chaining
    * @type Object
    */
   keep(filter: RuleFilter): Turnish {
@@ -174,7 +174,7 @@ export default class Turnish {
    * Remove a node that matches the filter
    * @public
    * @param {String|Array|Function} filter The unique key of the rule
-   * @returns The Turndown instance for chaining
+   * @returns The turnish instance for chaining
    * @type Object
    */
   remove(filter: RuleFilter): Turnish {

@@ -1,18 +1,28 @@
 # turnish
 
-Turnish is a HTML to Markdown converter written in JavaScript. It is a fork of [Turndown](https://github.com/mixmark-io/turndown).
+Turnish is a HTML to Markdown converter written in JavaScript.
+
+This is a fork of [Turndown](https://github.com/mixmark-io/turndown), originally created by Dom Christie.
+
+## Differences from Turndown
+
+* Updated to TypeScript
+* Fixed various issues, such as escaping unwanted characters
+* Added an option to configure how non-standard or unsupported HTML fragments are handled during conversion. For example, whether to convert them to Markdown where possible, preserve them as raw HTML, or retain them (adding a `markdown="1"` attribute when the HTML contains Markdown) so Markdown processors can parse any embedded Markdown.
+* Changed the default behavior to better comply with de facto standards.
+* Modernized build system using Vite
 
 ## Installation
 
 npm:
 
-```bash
+```sh
 npm install turnish
 ```
 
 pnpm:
 
-```
+```sh
 pnpm install turnish
 ```
 
@@ -22,19 +32,18 @@ Browser:
 <script src="https://jsDelivr.net/npm/turnish@latest/dist/turnish.iife.js"></script>
 ```
 
-For usage with RequireJS, UMD versions are located in `dist/index.umd.js` (for Node.js) and `dist/turnish.iife.js` for browser usage. These files are generated when the npm package is published. To generate them manually, clone this repo and run `pnpm run build`.
-
 ## Usage
 
+For Node.js:
+
 ```js
-// For Node.js
 var Turnish = require('turnish')
 
 var turnish = new Turnish()
 var markdown = turnish.render('<h1>Hello world!</h1>')
 ```
 
-Turndown also accepts DOM nodes as input (either element nodes, document nodes,  or document fragment nodes):
+Turnish also accepts DOM nodes as input (either element nodes, document nodes,  or document fragment nodes):
 
 ```js
 var markdown = turnish.render(document.getElementById('content'))
@@ -61,7 +70,7 @@ var turnish = new Turnish({ option: 'value' })
 | `linkReferenceStyle`         | `full`, `collapsed`, or `shortcut`                                            | `full`     |
 | `preformattedCode`           | `false` or [`true`](https://github.com/lucthev/collapse-whitespace/issues/16) | `false`    |
 | `linkReferenceDeduplication` | `none` or `full`                                                              | `full`     |
-| `htmlRetentionMode`          | `standard` or `preserve`                                                      | `standard` |
+| `htmlRetentionMode`          | `standard`, `preserveAll`, or `markdownIncludingHtml`                         | `standard` |
 
 ### Advanced Options
 
@@ -107,7 +116,7 @@ This will render `<del>` and `<ins>` elements as HTML when converted.
 
 ### `remove(filter)`
 
-Determines which elements are to be removed altogether i.e. converted to an empty string. By default, Turndown does not remove any elements. The filter parameter works like a rule filter (see section on filters belows). Example:
+Determines which elements are to be removed altogether i.e. converted to an empty string. By default, Turnish does not remove any elements. The filter parameter works like a rule filter (see section on filters belows). Example:
 
 ```js
 turnish.remove('del')
@@ -144,7 +153,7 @@ See **Plugins** below.
 
 ## Extending with Rules
 
-Turndown can be extended by adding **rules**. A rule is a plain JavaScript object with `filter` and `replacement` properties. For example, the rule for converting `<p>` elements is as follows:
+Turnish can be extended by adding **rules**. A rule is a plain JavaScript object with `filter` and `replacement` properties. For example, the rule for converting `<p>` elements is as follows:
 
 ```js
 {
@@ -206,7 +215,7 @@ rules.emphasis = {
 
 ### Rule Precedence
 
-Turndown iterates over the set of rules, and picks the first one that matches the `filter`. The following list describes the order of precedence:
+Turnish iterates over the set of rules, and picks the first one that matches the `filter`. The following list describes the order of precedence:
 
 1. Blank rule
 2. Added rules (optional)
@@ -221,9 +230,9 @@ The plugin API provides a convenient way for developers to apply multiple extens
 
 ## Escaping Markdown Characters
 
-Turndown uses backslashes (`\`) to escape Markdown characters in the HTML input. This ensures that these characters are not interpreted as Markdown when the output is compiled back to HTML. For example, the contents of `<h1>1. Hello world</h1>` needs to be escaped to `1\. Hello world`, otherwise it will be interpreted as a list item rather than a heading.
+Turnish uses backslashes (`\`) to escape Markdown characters in the HTML input. This ensures that these characters are not interpreted as Markdown when the output is compiled back to HTML. For example, the contents of `<h1>1. Hello world</h1>` needs to be escaped to `1\. Hello world`, otherwise it will be interpreted as a list item rather than a heading.
 
-To avoid the complexity and the performance implications of parsing the content of every HTML element as Markdown, Turndown uses a group of regular expressions to escape potential Markdown syntax. As a result, the escaping rules can be quite aggressive.
+To avoid the complexity and the performance implications of parsing the content of every HTML element as Markdown, Turnish uses a group of regular expressions to escape potential Markdown syntax. As a result, the escaping rules can be quite aggressive.
 
 ### Overriding `Turnish.prototype.escape`
 

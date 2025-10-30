@@ -3,7 +3,7 @@
   "description": "HTML to Markdown converter",
   "version": "1.0.0",
   "type": "module",
-  "author": "Dom Christie",
+  "author": "Manabu Nakazawa",
   "scripts": {
     "build": "vite build",
     "dev": "vite",

@@ -2,26 +2,26 @@
  * Manages a collection of rules used to convert HTML to Markdown
  */
 import { ExtendedNode } from "./node";
-import { TurndownOptions } from "@/index";
+import { TurnishOptions } from "@/index";
 import { standardMarkdownElements } from "./utilities";
 
-export type RuleFilterFunction = (node: ExtendedNode, options?: TurndownOptions) => boolean;
+export type RuleFilterFunction = (node: ExtendedNode, options?: TurnishOptions) => boolean;
 export type RuleFilter = string | string[] | RuleFilterFunction;
 
 type RuleReplacementFunction = (...args: any[]) => string;
 
 export interface Rule {
   filter?: RuleFilter;
-  replacement: RuleReplacementFunction | ((content: string, node: any, options?: TurndownOptions, previousNode?: any) => string);
+  replacement: RuleReplacementFunction | ((content: string, node: any, options?: TurnishOptions, previousNode?: any) => string);
   references?: string[];
   /// Map of URL+title combinations to their reference IDs, used for link reference deduplication.
   /// When linkReferenceDeduplication is 'full', this tracks which URLs have already been assigned a reference number to avoid creating duplicate references.
   urlReferenceIdMap?: Map<string, number>;
-  append?: (options?: TurndownOptions) => string;
+  append?: (options?: TurnishOptions) => string;
 }
 
 export class Rules {
-  options: TurndownOptions;
+  options: TurnishOptions;
   private _keep: Rule[];
   private _remove: Rule[];
   blankRule: Rule;
@@ -30,7 +30,7 @@ export class Rules {
   defaultRule: Rule;
   array: Rule[];
 
-  constructor(options: TurndownOptions) {
+  constructor(options: TurnishOptions) {
     this.options = options;
     this._keep = [];
     this._remove = [];
@@ -163,7 +163,7 @@ export class Rules {
   }
 }
 
-function findRule(rules: Rule[], node: Node, options: TurndownOptions): Rule | undefined {
+function findRule(rules: Rule[], node: Node, options: TurnishOptions): Rule | undefined {
   for (let i = 0; i < rules.length; i++) {
     const rule = rules[i];
     if (filterValue(rule, node, options)) return rule;
@@ -171,7 +171,7 @@ function findRule(rules: Rule[], node: Node, options: TurndownOptions): Rule | u
   return undefined;
 }
 
-function filterValue(rule: Rule, node: Node, options: TurndownOptions): boolean {
+function filterValue(rule: Rule, node: Node, options: TurnishOptions): boolean {
   const filter = rule.filter
   if (typeof filter === 'string') {
     if (filter === node.nodeName.toLowerCase()) return true
