@@ -48,18 +48,20 @@ Options can be passed in to the constructor on instantiation. For example:
 var turnish = new Turnish({ option: 'value' })
 ```
 
-| Option               | Valid values                                                                  | Default   |
-| :------------------- | :---------------------------------------------------------------------------- | :-------- |
-| `headingStyle`       | `setext` or `atx`                                                             | `atx`     |
-| `hr`                 | Any [Thematic break](http://spec.commonmark.org/0.27/#thematic-breaks)        | `---`     |
-| `bulletListMarker`   | `-`, `+`, or `*`                                                              | `-`       |
-| `codeBlockStyle`     | `indented` or `fenced`                                                        | `fenced`  |
-| `fence`              | ` ``` ` or `~~~`                                                              | ` ``` `   |
-| `emDelimiter`        | `_` or `*`                                                                    | `*`       |
-| `strongDelimiter`    | `**` or `__`                                                                  | `**`      |
-| `linkStyle`          | `inlined` or `referenced`                                                     | `inlined` |
-| `linkReferenceStyle` | `full`, `collapsed`, or `shortcut`                                            | `full`    |
-| `preformattedCode`   | `false` or [`true`](https://github.com/lucthev/collapse-whitespace/issues/16) | `false`   |
+| Option                       | Valid values                                                                  | Default    |
+| :--------------------------- | :---------------------------------------------------------------------------- | :--------- |
+| `headingStyle`               | `setext` or `atx`                                                             | `atx`      |
+| `hr`                         | Any [Thematic break](http://spec.commonmark.org/0.27/#thematic-breaks)        | `---`      |
+| `bulletListMarker`           | `-`, `+`, or `*`                                                              | `-`        |
+| `codeBlockStyle`             | `indented` or `fenced`                                                        | `fenced`   |
+| `fence`                      | ` ``` ` or `~~~`                                                              | ` ``` `    |
+| `emDelimiter`                | `_` or `*`                                                                    | `*`        |
+| `strongDelimiter`            | `**` or `__`                                                                  | `**`       |
+| `linkStyle`                  | `inlined` or `referenced`                                                     | `inlined`  |
+| `linkReferenceStyle`         | `full`, `collapsed`, or `shortcut`                                            | `full`     |
+| `preformattedCode`           | `false` or [`true`](https://github.com/lucthev/collapse-whitespace/issues/16) | `false`    |
+| `linkReferenceDeduplication` | `none` or `full`                                                              | `full`     |
+| `htmlRetentionMode`          | `standard` or `preserve`                                                      | `standard` |
 
 ### Advanced Options
 
