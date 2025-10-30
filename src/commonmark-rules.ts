@@ -170,13 +170,16 @@ commonmarkRules.referenceLink = {
       (node as Element).getAttribute('href')
     );
   },
-  replacement: function (content: string, node?: Node, options?: any): string {
+  replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
     if (!node) return content;
     const href = (node as Element).getAttribute('href');
     let title = sanitizedLinkTitle((node as Element).getAttribute('title'));
     if (title) title = ' "' + title + '"';
     let replacement: string;
     let reference: string;
+
+    const makeReferenceKey = (href: string, title: string): string => href + title;
+
     // @ts-ignore
     const self = commonmarkRules.referenceLink;
     switch (options.linkReferenceStyle) {
