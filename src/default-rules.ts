@@ -1,7 +1,7 @@
 
-import { Rule } from './rules';
-import { TurndownOptions } from './turndown';
-import { repeat, sanitizedLinkContent, sanitizedLinkTitle, trimNewlines } from './utilities';
+import { Rule } from '@/rules';
+import { TurndownOptions } from '@/index';
+import { repeat, sanitizedLinkContent, sanitizedLinkTitle, trimNewlines } from '@/utilities';
 
 export const defaultRules: { [key: string]: Rule } = {}
 

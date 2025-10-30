@@ -2,7 +2,7 @@
  * Manages a collection of rules used to convert HTML to Markdown
  */
 import { ExtendedNode } from "./node";
-import { TurndownOptions } from "./turndown";
+import { TurndownOptions } from "@/index";
 import { standardMarkdownElements } from "./utilities";
 
 export type RuleFilterFunction = (node: ExtendedNode, options?: TurndownOptions) => boolean;

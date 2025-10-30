@@ -1,6 +1,6 @@
-import collapseWhitespace from './collapse-whitespace'
-import { createHTMLParser, HTMLParser } from './html-parser'
-import { isBlock, isVoid } from './utilities'
+import collapseWhitespace from '@/collapse-whitespace'
+import { createHTMLParser, HTMLParser } from '@/html-parser'
+import { isBlock, isVoid } from '@/utilities'
 
 interface RootNodeOptions {
   preformattedCode?: boolean

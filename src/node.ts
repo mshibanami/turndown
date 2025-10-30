@@ -1,4 +1,4 @@
-import { isBlock, isVoid, hasVoid, isMeaningfulWhenBlank, hasMeaningfulWhenBlank } from './utilities'
+import { isBlock, isVoid, hasVoid, isMeaningfulWhenBlank, hasMeaningfulWhenBlank } from '@/utilities'
 
 interface Options {
   preformattedCode?: boolean;
