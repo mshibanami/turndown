@@ -1,8 +1,8 @@
-import { defaultRules } from './default-rules'
-import { Rules, Rule, RuleFilter } from './rules'
-import { extend, trimLeadingNewlines, trimTrailingNewlines } from './utilities'
-import RootNode from './root-node'
-import { ExtendedNode } from './node';
+import { defaultRules } from '@/default-rules'
+import { Rules, Rule, RuleFilter } from '@/rules'
+import { extend, trimLeadingNewlines, trimTrailingNewlines } from '@/utilities'
+import RootNode from '@/root-node'
+import { ExtendedNode } from '@/node';
 const reduce = Array.prototype.reduce
 
 type EscapeRule = [RegExp, string];
@@ -24,7 +24,7 @@ const escapes: EscapeRule[] = [
   [/^(\d+)\. /g, '$1\\. ']
 ];
 
-type Plugin = (service: TurndownService) => void;
+type Plugin = (service: Turnish) => void;
 
 export interface TurndownOptions {
   rules?: { [key: string]: Rule };
@@ -98,7 +98,7 @@ const defaultOptions: TurndownOptions = {
   }
 };
 
-export default class TurndownService {
+export default class Turnish {
   options: TurndownOptions;
   rules: Rules;
 
@@ -114,7 +114,7 @@ export default class TurndownService {
    * @returns A Markdown representation of the input
    * @type String
    */
-  turndown(input: InputType): string {
+  render(input: InputType): string {
     if (!canConvert(input)) {
       throw new TypeError(
         input + ' is not a string, or an element/document/fragment node.'
@@ -134,7 +134,7 @@ export default class TurndownService {
    * @returns The Turndown instance for chaining
    * @type Object
    */
-  use(plugin: Plugin | Plugin[]): TurndownService {
+  use(plugin: Plugin | Plugin[]): Turnish {
     if (Array.isArray(plugin)) {
       for (let i = 0; i < plugin.length; i++) this.use(plugin[i]);
     } else if (typeof plugin === 'function') {
@@ -153,7 +153,7 @@ export default class TurndownService {
    * @returns The Turndown instance for chaining
    * @type Object
    */
-  addRule(key: string, rule: Rule): TurndownService {
+  addRule(key: string, rule: Rule): Turnish {
     this.rules.add(key, rule);
     return this;
   }
@@ -165,7 +165,7 @@ export default class TurndownService {
    * @returns The Turndown instance for chaining
    * @type Object
    */
-  keep(filter: RuleFilter): TurndownService {
+  keep(filter: RuleFilter): Turnish {
     this.rules.keep(filter);
     return this;
   }
@@ -177,7 +177,7 @@ export default class TurndownService {
    * @returns The Turndown instance for chaining
    * @type Object
    */
-  remove(filter: RuleFilter): TurndownService {
+  remove(filter: RuleFilter): Turnish {
     this.rules.remove(filter);
     return this;
   }

@@ -1,41 +1,43 @@
-# Turndown
+# turnish
 
-Convert HTML into Markdown with JavaScript.
-
-## Project Updates
-* `to-markdown` has been renamed to Turndown. See the [migration guide](https://github.com/domchristie/to-markdown/wiki/Migrating-from-to-markdown-to-Turndown) for details.
-* Turndown repository has changed its URL to https://github.com/mshibanami-org/turndown.
+Turnish is a HTML to Markdown converter written in JavaScript. It is a fork of [Turndown](https://github.com/mixmark-io/turndown).
 
 ## Installation
 
 npm:
 
+```bash
+npm install turnish
 ```
-npm install @mshibanami-org/turndown
+
+pnpm:
+
+```
+pnpm install turnish
 ```
 
 Browser:
 
 ```html
-<script src="https://unpkg.com/@mshibanami-org/turndown/dist/turndown.js"></script>
+<script src="https://jsDelivr.net/npm/turnish@latest/dist/turnish.iife.js"></script>
 ```
 
-For usage with RequireJS, UMD versions are located in `lib/turndown.umd.js` (for Node.js) and `lib/turndown.browser.umd.js` for browser usage. These files are generated when the npm package is published. To generate them manually, clone this repo and run `npm run build`.
+For usage with RequireJS, UMD versions are located in `dist/index.umd.js` (for Node.js) and `dist/turnish.iife.js` for browser usage. These files are generated when the npm package is published. To generate them manually, clone this repo and run `pnpm run build`.
 
 ## Usage
 
 ```js
 // For Node.js
-var TurndownService = require('@mshibanami-org/turndown')
+var Turnish = require('turnish')
 
-var turndownService = new TurndownService()
-var markdown = turndownService.turndown('<h1>Hello world!</h1>')
+var turnish = new Turnish()
+var markdown = turnish.render('<h1>Hello world!</h1>')
 ```
 
 Turndown also accepts DOM nodes as input (either element nodes, document nodes,  or document fragment nodes):
 
 ```js
-var markdown = turndownService.turndown(document.getElementById('content'))
+var markdown = turnish.render(document.getElementById('content'))
 ```
 
 ## Options
@@ -43,21 +45,21 @@ var markdown = turndownService.turndown(document.getElementById('content'))
 Options can be passed in to the constructor on instantiation. For example:
 
 ```js
-var turndownService = new TurndownService({ option: 'value' })
+var turnish = new Turnish({ option: 'value' })
 ```
 
-| Option               | Valid values                                                                  | Default    |
-| :------------------- | :---------------------------------------------------------------------------- | :--------- |
-| `headingStyle`       | `setext` or `atx`                                                             | `setext`   |
-| `hr`                 | Any [Thematic break](http://spec.commonmark.org/0.27/#thematic-breaks)        | `* * *`    |
-| `bulletListMarker`   | `-`, `+`, or `*`                                                              | `*`        |
-| `codeBlockStyle`     | `indented` or `fenced`                                                        | `indented` |
-| `fence`              | ` ``` ` or `~~~`                                                              | ` ``` `    |
-| `emDelimiter`        | `_` or `*`                                                                    | `_`        |
-| `strongDelimiter`    | `**` or `__`                                                                  | `**`       |
-| `linkStyle`          | `inlined` or `referenced`                                                     | `inlined`  |
-| `linkReferenceStyle` | `full`, `collapsed`, or `shortcut`                                            | `full`     |
-| `preformattedCode`   | `false` or [`true`](https://github.com/lucthev/collapse-whitespace/issues/16) | `false`    |
+| Option               | Valid values                                                                  | Default   |
+| :------------------- | :---------------------------------------------------------------------------- | :-------- |
+| `headingStyle`       | `setext` or `atx`                                                             | `atx`     |
+| `hr`                 | Any [Thematic break](http://spec.commonmark.org/0.27/#thematic-breaks)        | `---`     |
+| `bulletListMarker`   | `-`, `+`, or `*`                                                              | `-`       |
+| `codeBlockStyle`     | `indented` or `fenced`                                                        | `fenced`  |
+| `fence`              | ` ``` ` or `~~~`                                                              | ` ``` `   |
+| `emDelimiter`        | `_` or `*`                                                                    | `*`       |
+| `strongDelimiter`    | `**` or `__`                                                                  | `**`      |
+| `linkStyle`          | `inlined` or `referenced`                                                     | `inlined` |
+| `linkReferenceStyle` | `full`, `collapsed`, or `shortcut`                                            | `full`    |
+| `preformattedCode`   | `false` or [`true`](https://github.com/lucthev/collapse-whitespace/issues/16) | `false`   |
 
 ### Advanced Options
 
@@ -74,7 +76,7 @@ var turndownService = new TurndownService({ option: 'value' })
 The `key` parameter is a unique name for the rule for easy reference. Example:
 
 ```js
-turndownService.addRule('strikethrough', {
+turnish.addRule('strikethrough', {
   filter: ['del', 's', 'strike'],
   replacement: function (content) {
     return '~' + content + '~'
@@ -82,7 +84,7 @@ turndownService.addRule('strikethrough', {
 })
 ```
 
-`addRule` returns the `TurndownService` instance for chaining.
+`addRule` returns the `Turnish` instance for chaining.
 
 See **Extending with Rules** below.
 
@@ -91,30 +93,30 @@ See **Extending with Rules** below.
 Determines which elements are to be kept and rendered as HTML. By default, Turndown does not keep any elements. The filter parameter works like a rule filter (see section on filters belows). Example:
 
 ```js
-turndownService.keep(['del', 'ins'])
-turndownService.turndown('<p>Hello <del>world</del><ins>World</ins></p>') // 'Hello <del>world</del><ins>World</ins>'
+turnish.keep(['del', 'ins'])
+turnish.render('<p>Hello <del>world</del><ins>World</ins></p>') // 'Hello <del>world</del><ins>World</ins>'
 ```
 
 This will render `<del>` and `<ins>` elements as HTML when converted.
 
 `keep` can be called multiple times, with the newly added keep filters taking precedence over older ones. Keep filters will be overridden by the standard CommonMark rules and any added rules. To keep elements that are normally handled by those rules, add a rule with the desired behaviour.
 
-`keep` returns the `TurndownService` instance for chaining.
+`keep` returns the `Turnish` instance for chaining.
 
 ### `remove(filter)`
 
 Determines which elements are to be removed altogether i.e. converted to an empty string. By default, Turndown does not remove any elements. The filter parameter works like a rule filter (see section on filters belows). Example:
 
 ```js
-turndownService.remove('del')
-turndownService.turndown('<p>Hello <del>world</del><ins>World</ins></p>') // 'Hello World'
+turnish.remove('del')
+turnish.render('<p>Hello <del>world</del><ins>World</ins></p>') // 'Hello World'
 ```
 
 This will remove `<del>` elements (and contents).
 
 `remove` can be called multiple times, with the newly added remove filters taking precedence over older ones. Remove filters will be overridden by the keep filters,  standard CommonMark rules, and any added rules. To remove elements that are normally handled by those rules, add a rule with the desired behaviour.
 
-`remove` returns the `TurndownService` instance for chaining.
+`remove` returns the `Turnish` instance for chaining.
 
 ### `use(plugin|array)`
 
@@ -128,13 +130,13 @@ var tables = turndownPluginGfm.tables
 var strikethrough = turndownPluginGfm.strikethrough
 
 // Use the gfm plugin
-turndownService.use(gfm)
+turnish.use(gfm)
 
 // Use the table and strikethrough plugins only
-turndownService.use([tables, strikethrough])
+turnish.use([tables, strikethrough])
 ```
 
-`use` returns the `TurndownService` instance for chaining.
+`use` returns the `Turnish` instance for chaining.
 
 See **Plugins** below.
 
@@ -162,7 +164,7 @@ The filter property determines whether or not an element should be replaced with
 
 The tag names in the `filter` property are expected in lowercase, regardless of their form in the document.
 
-Alternatively, the filter can be a function that returns a boolean depending on whether a given node should be replaced. The function is passed a DOM node as well as the `TurndownService` options. For example, the following rule selects `<a>` elements (with an `href`) when the `linkStyle` option is `inlined`:
+Alternatively, the filter can be a function that returns a boolean depending on whether a given node should be replaced. The function is passed a DOM node as well as the `Turnish` options. For example, the following rule selects `<a>` elements (with an `href`) when the `linkStyle` option is `inlined`:
 
 ```js
 filter: function (node, options) {
@@ -176,7 +178,7 @@ filter: function (node, options) {
 
 ### `replacement` Function
 
-The replacement function determines how an element should be converted. It should return the Markdown string for a given node. The function is passed the node's content, the node itself, and the `TurndownService` options.
+The replacement function determines how an element should be converted. It should return the Markdown string for a given node. The function is passed the node's content, the node itself, and the `Turnish` options.
 
 The following rule shows how `<em>` elements are converted:
 
@@ -213,7 +215,7 @@ Turndown iterates over the set of rules, and picks the first one that matches th
 
 ## Plugins
 
-The plugin API provides a convenient way for developers to apply multiple extensions. A plugin is just a function that is called with the `TurndownService` instance.
+The plugin API provides a convenient way for developers to apply multiple extensions. A plugin is just a function that is called with the `Turnish` instance.
 
 ## Escaping Markdown Characters
 
@@ -221,12 +223,17 @@ Turndown uses backslashes (`\`) to escape Markdown characters in the HTML input.
 
 To avoid the complexity and the performance implications of parsing the content of every HTML element as Markdown, Turndown uses a group of regular expressions to escape potential Markdown syntax. As a result, the escaping rules can be quite aggressive.
 
-### Overriding `TurndownService.prototype.escape`
+### Overriding `Turnish.prototype.escape`
 
-If you are confident in doing so, you may want to customise the escaping behaviour to suit your needs. This can be done by overriding `TurndownService.prototype.escape`. `escape` takes the text of each HTML element and should return a version with the Markdown characters escaped.
+If you are confident in doing so, you may want to customise the escaping behaviour to suit your needs. This can be done by overriding `Turnish.prototype.escape`. `escape` takes the text of each HTML element and should return a version with the Markdown characters escaped.
 
 Note: text in code elements is never passed to`escape`.
 
 ## License
 
-turndown is copyright © 2017+ Dom Christie and released under the MIT license.
+[MIT License](LICENSE)
+
+Copyright (c) 2025- Manabu Nakazawa
+Copyright (c) 2017-2025 Dom Christie
+
+Turnish is originally based on [Turndown](https://github.com/mixmark-io/turndown) by Dom Christie, and is licensed under the MIT License.

@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import type { UserConfigExport } from 'vite';
+import path from 'path';
 import dts from 'vite-plugin-dts';
 
 const config: UserConfigExport = defineConfig({
@@ -12,8 +13,8 @@ const config: UserConfigExport = defineConfig({
     build: {
         sourcemap: true,
         lib: {
-            entry: 'src/turndown.ts',
-            name: 'TurndownService',
+            entry: 'src/index.ts',
+            name: 'Turnish',
             formats: ['es', 'cjs', 'umd', 'iife'],
             fileName: (format: string) => {
                 if (format === 'es') { return 'index.mjs'; }
@@ -32,7 +33,12 @@ const config: UserConfigExport = defineConfig({
                 exports: 'default',
             }
         }
-    }
+    },
+    resolve: {
+        alias: {
+            '@': path.resolve(__dirname, './src'),
+        },
+    },
 });
 
 export default config;

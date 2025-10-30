@@ -111,21 +111,21 @@
 
 <body>
   <header>
-    <h1>turndown</h1>
-    <a class="source-link" href="https://github.com/mixmark-io/turndown">Source on GitHub</a>
+    <h1>turnish</h1>
+    <a class="source-link" href="https://github.com/mshibanami/turnish">Source on GitHub</a>
   </header>
   <div class="row">
     <div class="col">
       <label for="input">HTML</label>
-      <textarea cols="100" rows=10 id="input"><h1>Turndown Demo</h1>
+      <textarea cols="100" rows=10 id="input"><h1>Turnish Demo</h1>
 
-<p>This demonstrates <a href="https://github.com/mixmark-io/turndown">turndown</a> – an HTML to Markdown converter in JavaScript.</p>
+<p>This demonstrates <a href="https://github.com/mshibanami/turnish">turnish</a> – an HTML to Markdown converter in JavaScript.</p>
 
 <h2>Usage</h2>
 
-<pre><code class="language-js">var turndownService = new TurndownService()
+<pre><code class="language-js">var turnish = new Turnish()
 console.log(
-  turndownService.turndown('&amp;lt;h1&amp;gt;Hello world&amp;lt;/h1&amp;gt;')
+  turnish.render('&amp;lt;h1&amp;gt;Hello world&amp;lt;/h1&amp;gt;')
 )</code></pre>
 
 <hr />
@@ -153,7 +153,7 @@ console.log(
   </div>
 
   <div class="row">
-    <form method="get" action="/turndown" id="options">
+    <form method="get" action="/turnish" id="options">
       <div class="form-group">
         <label for="headingStyle">Heading style</label>
         <select name="headingStyle" id="headingStyle">
@@ -258,19 +258,19 @@ console.log(
       var input = document.getElementById('input')
       var output = document.getElementById('output')
       var optionsForm = document.getElementById('options')
-      var turndownService = new window.TurndownService(options())
+      var turnish = new window.Turnish(options())
 
       input.addEventListener('input', update)
 
       optionsForm.addEventListener('change', function () {
-        turndownService = new window.TurndownService(options())
+        turnish = new window.Turnish(options())
         update()
       })
 
       update()
 
       function update() {
-        output.value = turndownService.turndown(input.value)
+        output.value = turnish.render(input.value)
       }
 
       function options() {
