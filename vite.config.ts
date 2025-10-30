@@ -1,7 +1,14 @@
 import { defineConfig } from 'vite';
 import type { UserConfigExport } from 'vite';
+import dts from 'vite-plugin-dts';
 
 const config: UserConfigExport = defineConfig({
+    plugins: [
+        dts({
+            outDir: './dist/types',
+            entryRoot: './src',
+        }),
+    ],
     build: {
         sourcemap: true,
         lib: {

@@ -4,9 +4,6 @@
   "version": "7.2.2",
   "type": "module",
   "author": "Dom Christie",
-  "main": "lib/turndown.cjs",
-  "module": "lib/turndown.es.js",
-  "jsnext:main": "lib/turndown.es.js",
   "scripts": {
     "build": "vite build",
     "dev": "vite",
@@ -14,11 +11,16 @@
     "test": "npm run build && vitest",
     "typecheck": "tsc --noEmit"
   },
-  "browser": {
-    "@mixmark-io/domino": false,
-    "./lib/turndown.cjs": "./lib/turndown.browser.cjs",
-    "./lib/turndown.es.js": "./lib/turndown.browser.es.js",
-    "./lib/turndown.umd.js": "./lib/turndown.browser.umd.js"
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "browser": "./dist/index.umd.js",
+      "node": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.mjs"
+    },
+    "./package.json": "./package.json"
   },
   "dependencies": {
     "@mixmark-io/domino": "^2.2.0"
@@ -26,15 +28,13 @@
   "devDependencies": {
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^24.9.1",
-    "rewire": "^9.0.1",
     "standard": "^17.1.2",
-    "turndown-attendant": "^0.0.3",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",
+    "vite-plugin-dts": "^4.5.4",
     "vitest": "^4.0.3"
   },
   "files": [
-    "lib",
     "dist"
   ],
   "keywords": [
