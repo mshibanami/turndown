@@ -51,12 +51,12 @@ export interface TurndownOptions {
 
 const defaultOptions: TurndownOptions = {
   rules: defaultRules,
-  headingStyle: 'setext',
-  hr: '* * *',
-  bulletListMarker: '*',
+  headingStyle: 'atx',
+  hr: '---',
+  bulletListMarker: '-',
   codeBlockStyle: 'fenced',
   fence: '```',
-  emDelimiter: '_',
+  emDelimiter: '*',
   strongDelimiter: '**',
   linkStyle: 'inlined',
   linkReferenceStyle: 'full',

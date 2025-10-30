@@ -172,13 +172,13 @@ describe('TurndownService', () => {
     it('em', () => {
         const turndownService = new TurndownService();
         const input = '<em>em element</em>';
-        expect(turndownService.turndown(input)).toBe('_em element_');
+        expect(turndownService.turndown(input)).toBe('*em element*');
     });
 
     it('i', () => {
         const turndownService = new TurndownService();
         const input = '<i>i element</i>';
-        expect(turndownService.turndown(input)).toBe('_i element_');
+        expect(turndownService.turndown(input)).toBe('*i element*');
     });
 
     it('strong', () => {
@@ -239,7 +239,7 @@ describe('TurndownService', () => {
     it('h1', () => {
         const turndownService = new TurndownService();
         const input = "<h1>Level One Heading</h1>";
-        expect(turndownService.turndown(input)).toBe("Level One Heading\n=================");
+        expect(turndownService.turndown(input)).toBe("# Level One Heading");
     });
 
     it('escape = when used as heading', () => {
@@ -263,13 +263,13 @@ describe('TurndownService', () => {
     it('h2', () => {
         const turndownService = new TurndownService();
         const input = "<h2>Level Two Heading</h2>";
-        expect(turndownService.turndown(input)).toBe("Level Two Heading\n-----------------");
+        expect(turndownService.turndown(input)).toBe("## Level Two Heading");
     });
 
-    it('h2 as atx', () => {
-        const turndownService = new TurndownService({ "headingStyle": "atx" });
+    it('h2 as setext', () => {
+        const turndownService = new TurndownService({ "headingStyle": "setext" });
         const input = "<h2>Level Two Heading with ATX</h2>";
-        expect(turndownService.turndown(input)).toBe("## Level Two Heading with ATX");
+        expect(turndownService.turndown(input)).toBe("Level Two Heading with ATX\n--------------------------");
     });
 
     it('h3', () => {
@@ -293,13 +293,13 @@ describe('TurndownService', () => {
     it('hr', () => {
         const turndownService = new TurndownService();
         const input = "<hr>";
-        expect(turndownService.turndown(input)).toBe("* * *");
+        expect(turndownService.turndown(input)).toBe("---");
     });
 
     it('hr with closing tag', () => {
         const turndownService = new TurndownService();
         const input = "<hr></hr>";
-        expect(turndownService.turndown(input)).toBe("* * *");
+        expect(turndownService.turndown(input)).toBe("---");
     });
 
     it('hr with option', () => {
@@ -513,13 +513,13 @@ describe('TurndownService', () => {
     it('list spacing', () => {
         const turndownService = new TurndownService();
         const input = "<p>A paragraph.</p>\n    <ol>\n      <li>Ordered list item 1</li>\n      <li>Ordered list item 2</li>\n      <li>Ordered list item 3</li>\n    </ol>\n    <p>Another paragraph.</p>\n    <ul>\n      <li>Unordered list item 1</li>\n      <li>Unordered list item 2</li>\n      <li>Unordered list item 3</li>\n    </ul>";
-        expect(turndownService.turndown(input)).toBe("A paragraph.\n\n1.  Ordered list item 1\n2.  Ordered list item 2\n3.  Ordered list item 3\n\nAnother paragraph.\n\n*   Unordered list item 1\n*   Unordered list item 2\n*   Unordered list item 3");
+        expect(turndownService.turndown(input)).toBe("A paragraph.\n\n1.  Ordered list item 1\n2.  Ordered list item 2\n3.  Ordered list item 3\n\nAnother paragraph.\n\n-   Unordered list item 1\n-   Unordered list item 2\n-   Unordered list item 3");
     });
 
     it('ul', () => {
         const turndownService = new TurndownService();
         const input = "<ul>\n      <li>Unordered list item 1</li>\n      <li>Unordered list item 2</li>\n      <li>Unordered list item 3</li>\n    </ul>";
-        expect(turndownService.turndown(input)).toBe("*   Unordered list item 1\n*   Unordered list item 2\n*   Unordered list item 3");
+        expect(turndownService.turndown(input)).toBe("-   Unordered list item 1\n-   Unordered list item 2\n-   Unordered list item 3");
     });
 
     it('ul with custom bullet', () => {
@@ -531,7 +531,7 @@ describe('TurndownService', () => {
     it('ul with paragraph', () => {
         const turndownService = new TurndownService();
         const input = "<ul>\n      <li><p>List item with paragraph</p></li>\n      <li>List item without paragraph</li>\n    </ul>";
-        expect(turndownService.turndown(input)).toBe("*   List item with paragraph\n    \n*   List item without paragraph");
+        expect(turndownService.turndown(input)).toBe("-   List item with paragraph\n    \n-   List item without paragraph");
     });
 
     it('ol with paragraphs', () => {
@@ -543,19 +543,19 @@ describe('TurndownService', () => {
     it('nested uls', () => {
         const turndownService = new TurndownService();
         const input = "<ul>\n      <li>This is a list item at root level</li>\n      <li>This is another item at root level</li>\n      <li>\n        <ul>\n          <li>This is a nested list item</li>\n          <li>This is another nested list item</li>\n          <li>\n            <ul>\n              <li>This is a deeply nested list item</li>\n              <li>This is another deeply nested list item</li>\n              <li>This is a third deeply nested list item</li>\n            </ul>\n          </li>\n        </ul>\n      </li>\n      <li>This is a third item at root level</li>\n    </ul>";
-        expect(turndownService.turndown(input)).toBe("*   This is a list item at root level\n*   This is another item at root level\n*   *   This is a nested list item\n    *   This is another nested list item\n    *   *   This is a deeply nested list item\n        *   This is another deeply nested list item\n        *   This is a third deeply nested list item\n*   This is a third item at root level");
+        expect(turndownService.turndown(input)).toBe("-   This is a list item at root level\n-   This is another item at root level\n-   -   This is a nested list item\n    -   This is another nested list item\n    -   -   This is a deeply nested list item\n        -   This is another deeply nested list item\n        -   This is a third deeply nested list item\n-   This is a third item at root level");
     });
 
     it('nested ols and uls', () => {
         const turndownService = new TurndownService();
         const input = "<ul>\n      <li>This is a list item at root level</li>\n      <li>This is another item at root level</li>\n      <li>\n        <ol>\n          <li>This is a nested list item</li>\n          <li>This is another nested list item</li>\n          <li>\n            <ul>\n              <li>This is a deeply nested list item</li>\n              <li>This is another deeply nested list item</li>\n              <li>This is a third deeply nested list item</li>\n            </ul>\n          </li>\n        </ol>\n      </li>\n      <li>This is a third item at root level</li>\n    </ul>";
-        expect(turndownService.turndown(input)).toBe("*   This is a list item at root level\n*   This is another item at root level\n*   1.  This is a nested list item\n    2.  This is another nested list item\n    3.  *   This is a deeply nested list item\n        *   This is another deeply nested list item\n        *   This is a third deeply nested list item\n*   This is a third item at root level");
+        expect(turndownService.turndown(input)).toBe("-   This is a list item at root level\n-   This is another item at root level\n-   1.  This is a nested list item\n    2.  This is another nested list item\n    3.  -   This is a deeply nested list item\n        -   This is another deeply nested list item\n        -   This is a third deeply nested list item\n-   This is a third item at root level");
     });
 
     it('ul with blockquote', () => {
         const turndownService = new TurndownService();
         const input = "<ul>\n      <li>\n        <p>A list item with a blockquote:</p>\n        <blockquote>\n          <p>This is a blockquote inside a list item.</p>\n        </blockquote>\n      </li>\n    </ul>";
-        expect(turndownService.turndown(input)).toBe("*   A list item with a blockquote:\n    \n    > This is a blockquote inside a list item.");
+        expect(turndownService.turndown(input)).toBe("-   A list item with a blockquote:\n    \n    > This is a blockquote inside a list item.");
     });
 
     it('blockquote', () => {
@@ -609,7 +609,7 @@ describe('TurndownService', () => {
     it('multilined and bizarre formatting', () => {
         const turndownService = new TurndownService();
         const input = "<ul>\n      <li>\n        Indented li with leading/trailing newlines\n      </li>\n      <li>\n        <strong>Strong with trailing space inside li with leading/trailing whitespace </strong> </li>\n      <li>li without whitespace</li>\n      <li> Leading space, text, lots of whitespace …\n                          text\n      </li>\n    </ol>";
-        expect(turndownService.turndown(input)).toBe("*   Indented li with leading/trailing newlines\n*   **Strong with trailing space inside li with leading/trailing whitespace**\n*   li without whitespace\n*   Leading space, text, lots of whitespace … text");
+        expect(turndownService.turndown(input)).toBe("-   Indented li with leading/trailing newlines\n-   **Strong with trailing space inside li with leading/trailing whitespace**\n-   li without whitespace\n-   Leading space, text, lots of whitespace … text");
     });
 
     it('whitespace between inline elements', () => {
@@ -621,7 +621,7 @@ describe('TurndownService', () => {
     it('whitespace in inline elements', () => {
         const turndownService = new TurndownService();
         const input = "Text with no space after the period.<em> Text in em with leading/trailing spaces </em><strong>text in strong with trailing space </strong>";
-        expect(turndownService.turndown(input)).toBe("Text with no space after the period. _Text in em with leading/trailing spaces_ **text in strong with trailing space**");
+        expect(turndownService.turndown(input)).toBe("Text with no space after the period. *Text in em with leading/trailing spaces* **text in strong with trailing space**");
     });
 
     it('whitespace in nested inline elements', () => {
@@ -699,7 +699,7 @@ describe('TurndownService', () => {
     it('escapes < and > within a list item', () => {
         const turndownService = new TurndownService();
         expect(turndownService.turndown("<ul><li>This is bad > &lt;malicious&gt; < This is bad</li></ul>"))
-            .toBe("*   This is bad > \\<malicious\\> < This is bad");
+            .toBe("-   This is bad > \\<malicious\\> < This is bad");
     });
 
     it('not escaping within code', () => {
@@ -807,7 +807,7 @@ describe('TurndownService', () => {
     it('escaping _ inside em tags', () => {
         const turndownService = new TurndownService();
         const input = "<em>test_italics</em>";
-        expect(turndownService.turndown(input)).toBe("_test\\_italics_");
+        expect(turndownService.turndown(input)).toBe("*test\\_italics*");
     });
 
     it('unnamed case', () => {
@@ -945,49 +945,49 @@ describe('TurndownService', () => {
     it('element with trailing nonASCII WS followed by nonWS', () => {
         const turndownService = new TurndownService();
         const input = `<i>foo${noBreakSpace}</i>bar`;
-        expect(turndownService.turndown(input)).toBe(`_foo_${noBreakSpace}bar`);
+        expect(turndownService.turndown(input)).toBe(`*foo*${noBreakSpace}bar`);
     });
 
     it('element with trailing nonASCII WS followed by nonASCII WS', () => {
         const turndownService = new TurndownService();
         const input = `<i>foo${noBreakSpace}</i>${noBreakSpace}bar`;
-        expect(turndownService.turndown(input)).toBe(`_foo_${noBreakSpace}${noBreakSpace}bar`);
+        expect(turndownService.turndown(input)).toBe(`*foo*${noBreakSpace}${noBreakSpace}bar`);
     });
 
     it('element with trailing ASCII WS followed by nonASCII WS', () => {
         const turndownService = new TurndownService();
         const input = `<i>foo </i>${noBreakSpace}bar`;
-        expect(turndownService.turndown(input)).toBe(`_foo_ ${noBreakSpace}bar`);
+        expect(turndownService.turndown(input)).toBe(`*foo* ${noBreakSpace}bar`);
     });
 
     it('element with trailing nonASCII WS followed by ASCII WS', () => {
         const turndownService = new TurndownService();
         const input = `<i>foo${noBreakSpace}</i> bar`;
-        expect(turndownService.turndown(input)).toBe(`_foo_${noBreakSpace} bar`);
+        expect(turndownService.turndown(input)).toBe(`*foo*${noBreakSpace} bar`);
     });
 
     it('nonWS followed by element with leading nonASCII WS', () => {
         const turndownService = new TurndownService();
         const input = `foo<i>${noBreakSpace}bar</i>`;
-        expect(turndownService.turndown(input)).toBe(`foo${noBreakSpace}_bar_`);
+        expect(turndownService.turndown(input)).toBe(`foo${noBreakSpace}*bar*`);
     });
 
     it('nonASCII WS followed by element with leading nonASCII WS', () => {
         const turndownService = new TurndownService();
         const input = `foo${noBreakSpace}<i>${noBreakSpace}bar</i>`;
-        expect(turndownService.turndown(input)).toBe(`foo${noBreakSpace}${noBreakSpace}_bar_`);
+        expect(turndownService.turndown(input)).toBe(`foo${noBreakSpace}${noBreakSpace}*bar*`);
     });
 
     it('nonASCII WS followed by element with leading ASCII WS', () => {
         const turndownService = new TurndownService();
         const input = `foo${noBreakSpace}<i> bar</i>`;
-        expect(turndownService.turndown(input)).toBe(`foo${noBreakSpace} _bar_`);
+        expect(turndownService.turndown(input)).toBe(`foo${noBreakSpace} *bar*`);
     });
 
     it('ASCII WS followed by element with leading nonASCII WS', () => {
         const turndownService = new TurndownService();
         const input = `foo <i>${noBreakSpace}bar</i>`;
-        expect(turndownService.turndown(input)).toBe(`foo ${noBreakSpace}_bar_`);
+        expect(turndownService.turndown(input)).toBe(`foo ${noBreakSpace}*bar*`);
     });
 
     it('preformatted code with leading whitespace', () => {
@@ -1054,13 +1054,13 @@ describe('TurndownService', () => {
     it('converts standard elements to markdown when htmlRetentionMode is false', () => {
         const turndownService = new TurndownService({ htmlRetentionMode: 'standard' });
         const input = '<em>Hello</em>';
-        expect(turndownService.turndown(input)).toBe('_Hello_');
+        expect(turndownService.turndown(input)).toBe('*Hello*');
     });
 
     it('converts standard elements to markdown when htmlRetentionMode is true', () => {
         const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
         const input = '<em>Hello</em>';
-        expect(turndownService.turndown(input)).toBe('_Hello_');
+        expect(turndownService.turndown(input)).toBe('*Hello*');
     });
 
     it('preserves span with id attribute', () => {
@@ -1150,7 +1150,7 @@ describe('TurndownService', () => {
     it('preserves mixed content with standard and unsupported elements', () => {
         const turndownService = new TurndownService({ htmlRetentionMode: 'preserveAll' });
         const input = '<p><em>Hello</em> <span id="foo">world</span></p>';
-        expect(turndownService.turndown(input)).toBe('_Hello_ <span id="foo">world</span>');
+        expect(turndownService.turndown(input)).toBe('*Hello* <span id="foo">world</span>');
     });
 
     it('preserves nested unsupported elements', () => {
@@ -1180,7 +1180,7 @@ describe('TurndownService', () => {
     it('markdownIncludingHtml: preserves custom element and converts inner content', () => {
         const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
         const input = '<custom-element><em>italic text</em> and <strong>bold text</strong></custom-element>';
-        expect(turndownService.turndown(input)).toBe('<custom-element markdown="1">\n_italic text_ and **bold text**\n</custom-element>');
+        expect(turndownService.turndown(input)).toBe('<custom-element markdown="1">\n*italic text* and **bold text**\n</custom-element>');
     });
 
     it('markdownIncludingHtml: preserves element with class attribute and converts inner content', () => {
@@ -1198,13 +1198,13 @@ describe('TurndownService', () => {
     it('markdownIncludingHtml: preserves span with id and converts inner content', () => {
         const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
         const input = '<span id="note"><em>Important</em></span>';
-        expect(turndownService.turndown(input)).toBe('<span id="note" markdown="1">\n_Important_\n</span>');
+        expect(turndownService.turndown(input)).toBe('<span id="note" markdown="1">\n*Important*\n</span>');
     });
 
     it('markdownIncludingHtml: converts standard elements normally', () => {
         const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
         const input = '<p><em>Hello</em> <strong>world</strong></p>';
-        expect(turndownService.turndown(input)).toBe('_Hello_ **world**');
+        expect(turndownService.turndown(input)).toBe('*Hello* **world**');
     });
 
     it('markdownIncludingHtml: preserves nested custom elements and converts inner standard elements', () => {
@@ -1216,7 +1216,7 @@ describe('TurndownService', () => {
     it('markdownIncludingHtml: preserves element with data attributes and converts lists', () => {
         const turndownService = new TurndownService({ htmlRetentionMode: 'markdownIncludingHtml' });
         const input = '<div data-component="list"><ul><li>Item 1</li><li>Item 2</li></ul></div>';
-        expect(turndownService.turndown(input)).toBe('<div data-component="list" markdown="1">\n*   Item 1\n*   Item 2\n</div>');
+        expect(turndownService.turndown(input)).toBe('<div data-component="list" markdown="1">\n-   Item 1\n-   Item 2\n</div>');
     });
 });
 
