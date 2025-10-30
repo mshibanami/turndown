@@ -691,6 +691,11 @@ describe('TurndownService', () => {
         expect.soft(turndownService.turndown("<p>&lt;tag-in-p&gt;</p>")).toBe("\\<tag-in-p\\>");
     });
 
+    it('should not escape < and > in pre/code', () => {
+        const turndownService = new TurndownService();
+        expect(turndownService.turndown("<pre><code>&lt;malicious&gt;</code></pre>")).toBe("```\n<malicious>\n```");
+    });
+
     it('escapes < and > within a list item', () => {
         const turndownService = new TurndownService();
         expect(turndownService.turndown("<ul><li>This is bad > &lt;malicious&gt; < This is bad</li></ul>"))
