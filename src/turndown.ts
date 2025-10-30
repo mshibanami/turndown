@@ -1,4 +1,4 @@
-import { commonmarkRules } from './commonmark-rules'
+import { defaultRules } from './default-rules'
 import { Rules, Rule, RuleFilter } from './rules'
 import { extend, trimLeadingNewlines, trimTrailingNewlines } from './utilities'
 import RootNode from './root-node'
@@ -49,7 +49,7 @@ export interface TurndownOptions {
 
 
 const defaultOptions: TurndownOptions = {
-  rules: commonmarkRules,
+  rules: defaultRules,
   headingStyle: 'setext',
   hr: '* * *',
   bulletListMarker: '*',

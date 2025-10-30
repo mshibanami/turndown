@@ -3,23 +3,23 @@ import { Rule } from './rules';
 import { TurndownOptions } from './turndown';
 import { repeat, sanitizedLinkContent, sanitizedLinkTitle, trimNewlines } from './utilities';
 
-export const commonmarkRules: { [key: string]: Rule } = {}
+export const defaultRules: { [key: string]: Rule } = {}
 
-commonmarkRules.paragraph = {
+defaultRules.paragraph = {
   filter: 'p',
   replacement: function (content: string, _node?: Node, _options?: TurndownOptions): string {
     return '\n\n' + content + '\n\n';
   }
 };
 
-commonmarkRules.lineBreak = {
+defaultRules.lineBreak = {
   filter: 'br',
   replacement: function (_content: string, _node?: Node, options?: TurndownOptions): string {
     return options.br + '\n';
   }
 };
 
-commonmarkRules.heading = {
+defaultRules.heading = {
   filter: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
   replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
     if (!node) return content;
@@ -35,7 +35,7 @@ commonmarkRules.heading = {
   }
 };
 
-commonmarkRules.blockquote = {
+defaultRules.blockquote = {
   filter: 'blockquote',
   replacement: function (content: string, _node?: Node, _options?: TurndownOptions): string {
     content = trimNewlines(content).replace(/^/gm, '> ');
@@ -43,7 +43,7 @@ commonmarkRules.blockquote = {
   }
 };
 
-commonmarkRules.list = {
+defaultRules.list = {
   filter: ['ul', 'ol'],
   replacement: function (content: string, node?: Node, _options?: TurndownOptions): string {
     if (!node) return content;
@@ -56,7 +56,7 @@ commonmarkRules.list = {
   }
 };
 
-commonmarkRules.listItem = {
+defaultRules.listItem = {
   filter: 'li',
   replacement: function (content: string, node?: Node, options?: TurndownOptions): string {
     if (!node) return content;
@@ -76,7 +76,7 @@ commonmarkRules.listItem = {
   }
 };
 
-commonmarkRules.indentedCodeBlock = {
+defaultRules.indentedCodeBlock = {
   filter: function (node: Node, options?: TurndownOptions): boolean {
     return !!(
       options &&
@@ -96,7 +96,7 @@ commonmarkRules.indentedCodeBlock = {
   }
 };
 
-commonmarkRules.fencedCodeBlock = {
+defaultRules.fencedCodeBlock = {
   filter: function (node: Node, options?: TurndownOptions): boolean {
     return !!(
       options &&
@@ -130,14 +130,14 @@ commonmarkRules.fencedCodeBlock = {
   }
 };
 
-commonmarkRules.horizontalRule = {
+defaultRules.horizontalRule = {
   filter: 'hr',
   replacement: function (_content: string, _node?: Node, options?: TurndownOptions): string {
     return '\n\n' + options.hr + '\n\n';
   }
 };
 
-commonmarkRules.inlineLink = {
+defaultRules.inlineLink = {
   filter: function (node: Node, options?: TurndownOptions): boolean {
     return !!(
       options?.linkStyle === 'inlined' &&
@@ -161,7 +161,7 @@ commonmarkRules.inlineLink = {
   }
 };
 
-commonmarkRules.referenceLink = {
+defaultRules.referenceLink = {
   filter: function (node: Node, options?: TurndownOptions): boolean {
     return !!(
       options &&
@@ -181,7 +181,7 @@ commonmarkRules.referenceLink = {
     const referenceKey = href + title;
 
     // @ts-ignore
-    const self = commonmarkRules.referenceLink;
+    const self = defaultRules.referenceLink;
     switch (options.linkReferenceStyle) {
       case 'collapsed':
         replacement = '[' + content + '][]';
@@ -223,7 +223,7 @@ commonmarkRules.referenceLink = {
   urlReferenceIdMap: new Map<string, number>(),
   append: function (_options?: TurndownOptions): string {
     // @ts-ignore
-    const self = commonmarkRules.referenceLink;
+    const self = defaultRules.referenceLink;
     let references = '';
     if (self.references && self.references.length) {
       references = '\n\n' + self.references.join('\n') + '\n\n';
@@ -234,7 +234,7 @@ commonmarkRules.referenceLink = {
   }
 };
 
-commonmarkRules.emphasis = {
+defaultRules.emphasis = {
   filter: ['em', 'i'],
   replacement: function (content: string, _node?: Node, options?: TurndownOptions): string {
     content = content.trim();
@@ -243,7 +243,7 @@ commonmarkRules.emphasis = {
   }
 };
 
-commonmarkRules.strong = {
+defaultRules.strong = {
   filter: ['strong', 'b'],
   replacement: function (content: string, _node?: Node, options?: TurndownOptions): string {
     content = content.trim();
@@ -252,7 +252,7 @@ commonmarkRules.strong = {
   }
 };
 
-commonmarkRules.code = {
+defaultRules.code = {
   filter: function (node: Node): boolean {
     const hasSiblings = node.previousSibling || node.nextSibling;
     const parent = node.parentNode as Element;
@@ -270,7 +270,7 @@ commonmarkRules.code = {
   }
 };
 
-commonmarkRules.image = {
+defaultRules.image = {
   filter: 'img',
   replacement: function (_content: string, node?: Node, _options?: TurndownOptions): string {
     if (!node) return '';
