@@ -2,6 +2,7 @@
 import { Rule } from '@/rules';
 import { TurnishOptions } from '@/index';
 import { repeat, RequireOnly, sanitizedLinkContent, sanitizedLinkTitle, trimNewlines } from '@/utilities';
+import { url } from 'inspector';
 
 export const defaultRules: { [key: string]: Rule } = {}
 
@@ -153,9 +154,13 @@ defaultRules.inlineLink = {
     let href = (node as Element)
       .getAttribute('href')
       ?.replace(/([()])/g, '\\$1');
-    let title = sanitizedLinkTitle((node as Element).getAttribute('title'));
-    if (title) {
-      title = ' "' + title.replace(/"/g, '\\"') + '"';
+    let title: string;
+    const titleAttr = (node as Element).getAttribute('title');
+    if (titleAttr) {
+      const sanitizedTitle = sanitizedLinkTitle(titleAttr);
+      title = ' "' + sanitizedTitle.replace(/"/g, '\\"') + '"';
+    } else {
+      title = '';
     }
     return '[' + sanitizedContent + '](' + href + title + ')';
   }
@@ -171,15 +176,21 @@ const referenceLinkRule: RequireOnly<Rule, "urlReferenceIdMap" | "references"> =
     );
   },
   replacement: function (content: string, node: Node, options: TurnishOptions): string {
-    const href = (node as Element).getAttribute('href');
-    let title = sanitizedLinkTitle((node as Element).getAttribute('title'));
-    if (title) title = ' "' + title + '"';
-    let replacement: string;
-    let reference: string;
+    const self = referenceLinkRule;
 
+    const href = (node as Element).getAttribute('href');
+    let title: string;
+    const titleAttr = (node as Element).getAttribute('title');
+    if (titleAttr) {
+      const sanitizedTitle = sanitizedLinkTitle(titleAttr);
+      title = ' "' + sanitizedTitle + '"';
+    } else {
+      title = '';
+    }
     const referenceKey = href + title;
 
-    const self = referenceLinkRule;
+    let replacement: string;
+    let reference: string;
     switch (options.linkReferenceStyle) {
       case 'collapsed':
         replacement = '[' + content + '][]';
@@ -191,8 +202,10 @@ const referenceLinkRule: RequireOnly<Rule, "urlReferenceIdMap" | "references"> =
         break;
       default: {
         let id: number;
-        if (options.linkReferenceDeduplication === 'full' && self.urlReferenceIdMap.has(referenceKey)) {
-          id = self.urlReferenceIdMap.get(referenceKey);
+        const existingKey = self.urlReferenceIdMap.get(referenceKey);
+        if (options.linkReferenceDeduplication === 'full' && existingKey) {
+          id = existingKey;
+          reference = '[' + id + ']: ' + href + title;
         } else {
           id = self.references.length + 1;
           self.urlReferenceIdMap.set(referenceKey, id);
