@@ -31,7 +31,7 @@ export interface TurnishOptions {
   headingStyle: 'setext' | 'atx';
   hr: string;
   bulletListMarker: '*' | '-' | '+';
-  bulletListMarkerSpaceCount: 1 | 2 | 3 | 4;
+  listMarkerSpaceCount: 1 | 2 | 3 | 4;
   listItemIndent: 'tab' | 'space';
   listItemIndentSpaceCount: 1 | 2 | 3 | 4;
   codeBlockStyle: 'indented' | 'fenced';
@@ -57,7 +57,7 @@ const defaultOptions: TurnishOptions = {
   headingStyle: 'atx',
   hr: '---',
   bulletListMarker: '-',
-  bulletListMarkerSpaceCount: 1,
+  listMarkerSpaceCount: 1,
   listItemIndent: 'space',
   listItemIndentSpaceCount: 4,
   codeBlockStyle: 'fenced',

@@ -1245,9 +1245,15 @@ describe('Turnish', () => {
         expect(turnish.render(input)).toBe("- Root item\n\t- Nested item");
     });
 
-    it('controls number of spaces after list item markers', () => {
-        const turnish = new Turnish({ bulletListMarkerSpaceCount: 4 });
+    it('controls number of spaces after bullet list item markers', () => {
+        const turnish = new Turnish({ listMarkerSpaceCount: 4 });
         const input = "<ul>\n      <li>Item 1</li>\n      <li>Item 2</li>\n    </ul>";
         expect(turnish.render(input)).toBe("-    Item 1\n-    Item 2");
+    });
+
+    it('controls number of spaces after ordered item markers', () => {
+        const turnish = new Turnish({ listMarkerSpaceCount: 4 });
+        const input = "<ol>\n      <li>Item 1</li>\n      <li>Item 2</li>\n    </ol>";
+        expect(turnish.render(input)).toBe("1.    Item 1\n2.    Item 2");
     });
 });
