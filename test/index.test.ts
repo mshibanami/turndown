@@ -544,8 +544,8 @@ describe('Turnish', () => {
 
     it('nested ols and uls', () => {
         const turnish = new Turnish();
-        const input = "<ul>\n      <li>This is a list item at root level</li>\n      <li>This is another item at root level</li>\n      <li>\n        <ol>\n          <li>This is a nested list item</li>\n          <li>This is another nested list item</li>\n          <li>\n            <ul>\n              <li>This is a deeply nested list item</li>\n              <li>This is another deeply nested list item</li>\n              <li>This is a third deeply nested list item</li>\n            </ul>\n          </li>\n        </ol>\n      </li>\n      <li>This is a third item at root level</li>\n    </ul>";
-        expect(turnish.render(input)).toBe("- This is a list item at root level\n- This is another item at root level\n- 1. This is a nested list item\n    2. This is another nested list item\n    3. - This is a deeply nested list item\n        - This is another deeply nested list item\n        - This is a third deeply nested list item\n- This is a third item at root level");
+        const input = read('nested-ols-and-uls.html');
+        expect(turnish.render(input)).toBe(read('nested-ols-and-uls.md'));
     });
 
     it('ul with blockquote', () => {
@@ -1230,18 +1230,24 @@ describe('Turnish', () => {
     it('nested lists with listItemIndentSpaceCount 2', () => {
         const turnish = new Turnish({ listItemIndentSpaceCount: 2 });
         const input = "<ul>\n      <li>Root item</li>\n      <li>\n        <ul>\n          <li>Nested item</li>\n        </ul>\n      </li>\n    </ul>";
-        expect(turnish.render(input)).toBe("- Root item\n- - Nested item");
+        expect(turnish.render(input)).toBe("- Root item\n  - Nested item");
     });
 
     it('nested lists with tab indentation', () => {
         const turnish = new Turnish({ listItemIndent: 'tab' });
         const input = "<ul>\n      <li>Root item</li>\n      <li>\n        <ul>\n          <li>Nested item 1</li>\n          <li>Nested item 2</li>\n        </ul>\n      </li>\n    </ul>";
-        expect(turnish.render(input)).toBe("- Root item\n- - Nested item 1\n\t- Nested item 2");
+        expect(turnish.render(input)).toBe("- Root item\n\t- Nested item 1\n\t- Nested item 2");
     });
 
     it('ignores listItemIndentSpaceCount if listItemIndent is tab', () => {
         const turnish = new Turnish({ listItemIndent: 'tab', listItemIndentSpaceCount: 2 });
         const input = "<ul>\n      <li>Root item</li>\n      <li>\n        <ul>\n          <li>Nested item</li>\n        </ul>\n      </li>\n    </ul>";
-        expect(turnish.render(input)).toBe("- Root item\n- - Nested item");
+        expect(turnish.render(input)).toBe("- Root item\n\t- Nested item");
+    });
+
+    it('controls number of spaces after list item markers', () => {
+        const turnish = new Turnish({ bulletListMarkerSpaceCount: 4 });
+        const input = "<ul>\n      <li>Item 1</li>\n      <li>Item 2</li>\n    </ul>";
+        expect(turnish.render(input)).toBe("-    Item 1\n-    Item 2");
     });
 });
