@@ -6,7 +6,13 @@ Turnish is a HTML to Markdown converter written in JavaScript.
 
 This is a fork of [Turndown](https://github.com/mixmark-io/turndown), originally created by Dom Christie.
 
+## Demo
+
+You can try Turnish online [here](https://mshibanami.github.io/turnish/).
+
 ## Turnish vs Turndown
+
+Turnish has been created to address various issues found in Turndown, while keeping its core functionality and API intact.
 
 **Library user perspective:**
 
@@ -20,8 +26,9 @@ This is a fork of [Turndown](https://github.com/mixmark-io/turndown), originally
 
 **Library/plugin developer perspective:**
 
-* Updated to TypeScript
+* Full TypeScript support
 * Modernized build system using Vite
+* Improved code structure for better maintainability
 
 ## Installation
 
@@ -254,11 +261,11 @@ Turnish uses backslashes (`\`) to escape Markdown characters in the HTML input. 
 
 To avoid the complexity and the performance implications of parsing the content of every HTML element as Markdown, Turnish uses a group of regular expressions to escape potential Markdown syntax. As a result, the escaping rules can be quite aggressive.
 
-### Overriding `Turnish.prototype.escape`
+### Overriding `Turnish.escape()`
 
-If you are confident in doing so, you may want to customise the escaping behaviour to suit your needs. This can be done by overriding `Turnish.prototype.escape`. `escape` takes the text of each HTML element and should return a version with the Markdown characters escaped.
+If you are confident in doing so, you may want to customise the escaping behaviour to suit your needs. This can be done by overriding the `escape()` method of `Turnish`. `escape()` takes the text of each HTML element and should return a version with the Markdown characters escaped.
 
-Note: text in code elements is never passed to`escape`.
+Note: text in code elements is never passed to`escape()`.
 
 ## License
 
