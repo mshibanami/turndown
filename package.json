@@ -7,7 +7,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "private": "false",
   "scripts": {
     "build": "vite build",
     "dev": "vite",
