@@ -2,6 +2,8 @@ import Turnish from '../src';
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
+import { Rule } from '@/rules';
+import { ExtendedNode } from '@/node';
 
 describe('Turnish', () => {
     it('parses p tag', () => {
@@ -43,18 +45,13 @@ describe('Turnish', () => {
             replacement: (content: string) => '~~' + content + '~~'
         };
         let called = false;
-        if (turnish.rules && typeof turnish.rules.add === 'function') {
-            turnish.rules.add = (key: string, r: any) => {
-                expect(key).toBe('strikethrough');
-                expect(r).toBe(rule);
-                called = true;
-            };
-            turnish.addRule('strikethrough', rule);
-            expect(called).toBe(true);
-        } else {
-            // If rules.add is not available, just check addRule returns instance
-            expect(turnish.addRule('strikethrough', rule)).toBe(turnish);
-        }
+        turnish.rules.add = (key: string, rule: Rule) => {
+            expect(key).toBe('strikethrough');
+            expect(rule).toBe(rule);
+            called = true;
+        };
+        turnish.addRule('strikethrough', rule);
+        expect(called).toBe(true);
     });
 
     it('#use returns the instance for chaining', () => {
@@ -65,7 +62,7 @@ describe('Turnish', () => {
     it('#use with a single plugin calls the fn with instance', () => {
         const turnish = new Turnish();
         let called = false;
-        function plugin(service: any) {
+        function plugin(service: Turnish) {
             expect(service).toBe(turnish);
             called = true;
         }
@@ -76,11 +73,11 @@ describe('Turnish', () => {
     it('#use with multiple plugins calls each fn with instance', () => {
         const turnish = new Turnish();
         let called1 = false, called2 = false;
-        function plugin1(service: any) {
+        function plugin1(service: Turnish) {
             expect(service).toBe(turnish);
             called1 = true;
         }
-        function plugin2(service: any) {
+        function plugin2(service: Turnish) {
             expect(service).toBe(turnish);
             called2 = true;
         }
@@ -118,7 +115,7 @@ describe('Turnish', () => {
 
     it('keepReplacement can be customised', () => {
         const turnish = new Turnish({
-            keepReplacement: (content: string, node: any) => '\n\n' + node.outerHTML + '\n\n'
+            keepReplacement: (content: string, node: ExtendedNode) => '\n\n' + node.outerHTML + '\n\n'
         });
         turnish.keep(['del', 'ins']);
         expect(turnish.render('<p>Hello <del>world</del><ins>World</ins></p>')).toBe('Hello \n\n<del>world</del>\n\n<ins>World</ins>');
