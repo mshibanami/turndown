@@ -131,7 +131,7 @@ export default class Turnish {
    * Add one or more plugins
    * @public
    * @param {Plugin|Plugin[]} plugin The plugin or array of plugins to add
-   * @returns The turnish instance for chaining
+   * @returns The Turnish instance for chaining
    * @type Object
    */
   use(plugin: Plugin | Plugin[]): Turnish {
@@ -150,7 +150,7 @@ export default class Turnish {
    * @public
    * @param {String} key The unique key of the rule
    * @param {Object} rule The rule
-   * @returns The turnish instance for chaining
+   * @returns The Turnish instance for chaining
    * @type Object
    */
   addRule(key: string, rule: Rule): Turnish {
@@ -162,7 +162,7 @@ export default class Turnish {
    * Keep a node (as HTML) that matches the filter
    * @public
    * @param {RuleFilter} filter The unique key of the rule
-   * @returns The turnish instance for chaining
+   * @returns The Turnish instance for chaining
    * @type Object
    */
   keep(filter: RuleFilter): Turnish {
@@ -174,7 +174,7 @@ export default class Turnish {
    * Remove a node that matches the filter
    * @public
    * @param {String|Array|Function} filter The unique key of the rule
-   * @returns The turnish instance for chaining
+   * @returns The Turnish instance for chaining
    * @type Object
    */
   remove(filter: RuleFilter): Turnish {

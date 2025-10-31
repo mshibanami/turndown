@@ -1,15 +1,25 @@
-# turnish
+# Turnish
+
+[![Test](https://github.com/mshibanami/turnish/actions/workflows/test.yml/badge.svg)](https://github.com/mshibanami/turnish/actions/workflows/test.yml)
 
 Turnish is a HTML to Markdown converter written in JavaScript.
 
 This is a fork of [Turndown](https://github.com/mixmark-io/turndown), originally created by Dom Christie.
 
-## Differences from Turndown
+## Turnish vs Turndown
 
-* Updated to TypeScript
-* Fixed various issues, such as escaping unwanted characters
+**Library user perspective:**
+* Fixed various issues, such as:
+  * escaping unwanted characters that can break the Markdown rendering.
+  * removing new lines in link texts.
 * Added an option to configure how non-standard or unsupported HTML fragments are handled during conversion. For example, whether to convert them to Markdown where possible, preserve them as raw HTML, or retain them (adding a `markdown="1"` attribute when the HTML contains Markdown) so Markdown processors can parse any embedded Markdown.
 * Changed the default behavior to better comply with de facto standards.
+* Remains compatible with Turndown plugins.
+* Remains licensed under the MIT License.
+
+**Library/plugin developer perspective:**
+
+* Updated to TypeScript
 * Modernized build system using Vite
 
 ## Installation
