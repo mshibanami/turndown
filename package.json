@@ -33,14 +33,15 @@
     "@mixmark-io/domino": "^2.2.0"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.5.1",
+    "@changesets/cli": "^2.29.7",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^24.9.2",
     "standard": "^17.1.2",
     "typescript": "^5.9.3",
     "vite": "^7.1.12",
     "vite-plugin-dts": "^4.5.4",
-    "vitest": "^4.0.5",
-    "@changesets/cli": "^2.29.7"
+    "vitest": "^4.0.5"
   },
   "files": [
     "dist"
