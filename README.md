@@ -264,7 +264,7 @@ Note: text in code elements is never passed to`escape`.
 
 [MIT License](LICENSE)
 
-Copyright (c) 2025- Manabu Nakazawa
-Copyright (c) 2017-2025 Dom Christie
+* Copyright (c) 2025- Manabu Nakazawa
+* Copyright (c) 2017-2025 Dom Christie
 
 Turnish is originally based on [Turndown](https://github.com/mixmark-io/turndown) by Dom Christie, and is licensed under the MIT License.
