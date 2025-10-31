@@ -32,6 +32,8 @@ export interface TurnishOptions {
   hr: string;
   bulletListMarker: '*' | '-' | '+';
   bulletListMarkerSpaceCount: 1 | 2 | 3 | 4;
+  listItemIndent: 'tab' | 'space';
+  listItemIndentSpaceCount: 1 | 2 | 3 | 4;
   codeBlockStyle: 'indented' | 'fenced';
   fence: string;
   emDelimiter: '_' | '*';
@@ -56,6 +58,8 @@ const defaultOptions: TurnishOptions = {
   hr: '---',
   bulletListMarker: '-',
   bulletListMarkerSpaceCount: 1,
+  listItemIndent: 'space',
+  listItemIndentSpaceCount: 4,
   codeBlockStyle: 'fenced',
   fence: '```',
   emDelimiter: '*',

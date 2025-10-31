@@ -66,7 +66,12 @@ defaultRules.listItem = {
     }
     const isParagraph = /\n$/.test(content);
     content = trimNewlines(content) + (isParagraph ? '\n' : '');
-    content = content.replace(/\n/gm, '\n' + ' '.repeat(prefix.length)); // indent
+
+    // Determine indentation for continuation lines
+    const indent = options.listItemIndent === 'tab'
+      ? '\t'
+      : ' '.repeat(options.listItemIndentSpaceCount);
+    content = content.replace(/\n/gm, '\n' + indent); // indent
     return (
       prefix + content + (node.nextSibling ? '\n' : '')
     );

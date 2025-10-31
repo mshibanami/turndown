@@ -503,7 +503,7 @@ describe('Turnish', () => {
     it('ol with content', () => {
         const turnish = new Turnish();
         const input = "<ol start=\"42\">\n      <li>\n        <p>Ordered list item 42</p>\n        <p>Ordered list's additional content</p>\n      </li>\n    </ol>";
-        expect(turnish.render(input)).toBe("42. Ordered list item 42\n     \n     Ordered list's additional content");
+        expect(turnish.render(input)).toBe("42. Ordered list item 42\n    \n    Ordered list's additional content");
     });
 
     it('list spacing', () => {
@@ -599,7 +599,7 @@ describe('Turnish', () => {
     it('trailing whitespace in li', () => {
         const turnish = new Turnish();
         const input = "<ol>\n      <li>Chapter One\n        <ol>\n          <li>Section One</li>\n          <li>Section Two with trailing whitespace </li>\n          <li>Section Three with trailing whitespace </li>\n        </ol>\n      </li>\n      <li>Chapter Two</li>\n      <li>Chapter Three with trailing whitespace  </li>\n    </ol>";
-        expect(turnish.render(input)).toBe("1. Chapter One\n   1. Section One\n   2. Section Two with trailing whitespace\n    3. Section Three with trailing whitespace\n2. Chapter Two\n3. Chapter Three with trailing whitespace");
+        expect(turnish.render(input)).toBe("1. Chapter One\n    1. Section One\n    2. Section Two with trailing whitespace\n    3. Section Three with trailing whitespace\n2. Chapter Two\n3. Chapter Three with trailing whitespace");
     });
 
     it('multilined and bizarre formatting', () => {
@@ -1213,5 +1213,35 @@ describe('Turnish', () => {
         const turnish = new Turnish({ htmlRetentionMode: 'markdownIncludingHtml' });
         const input = '<div data-component="list"><ul><li>Item 1</li><li>Item 2</li></ul></div>';
         expect(turnish.render(input)).toBe('<div data-component="list" markdown="1">\n- Item 1\n- Item 2\n</div>');
+    });
+
+    it('listItemIndent with tab', () => {
+        const turnish = new Turnish({ listItemIndent: 'tab' });
+        const input = "<ul>\n      <li>\n        <p>List item with paragraph</p>\n        <p>Second paragraph</p>\n      </li>\n    </ul>";
+        expect(turnish.render(input)).toBe("- List item with paragraph\n\t\n\tSecond paragraph");
+    });
+
+    it('listItemIndent with space and listItemIndentSpaceCount 2', () => {
+        const turnish = new Turnish({ listItemIndent: 'space', listItemIndentSpaceCount: 2 });
+        const input = "<ul>\n      <li>\n        <p>List item with paragraph</p>\n        <p>Second paragraph</p>\n      </li>\n    </ul>";
+        expect(turnish.render(input)).toBe("- List item with paragraph\n  \n  Second paragraph");
+    });
+
+    it('nested lists with listItemIndentSpaceCount 2', () => {
+        const turnish = new Turnish({ listItemIndentSpaceCount: 2 });
+        const input = "<ul>\n      <li>Root item</li>\n      <li>\n        <ul>\n          <li>Nested item</li>\n        </ul>\n      </li>\n    </ul>";
+        expect(turnish.render(input)).toBe("- Root item\n- - Nested item");
+    });
+
+    it('nested lists with tab indentation', () => {
+        const turnish = new Turnish({ listItemIndent: 'tab' });
+        const input = "<ul>\n      <li>Root item</li>\n      <li>\n        <ul>\n          <li>Nested item 1</li>\n          <li>Nested item 2</li>\n        </ul>\n      </li>\n    </ul>";
+        expect(turnish.render(input)).toBe("- Root item\n- - Nested item 1\n\t- Nested item 2");
+    });
+
+    it('ignores listItemIndentSpaceCount if listItemIndent is tab', () => {
+        const turnish = new Turnish({ listItemIndent: 'tab', listItemIndentSpaceCount: 2 });
+        const input = "<ul>\n      <li>Root item</li>\n      <li>\n        <ul>\n          <li>Nested item</li>\n        </ul>\n      </li>\n    </ul>";
+        expect(turnish.render(input)).toBe("- Root item\n- - Nested item");
     });
 });
