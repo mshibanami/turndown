@@ -19,7 +19,9 @@ Turnish has been created to address various issues found in Turndown, while keep
 * Fixed various issues, such as:
   * escaping unwanted characters that can break the Markdown rendering.
   * removing new lines in link texts.
-* Added an option to configure how non-standard or unsupported HTML fragments are handled during conversion. For example, whether to convert them to Markdown where possible, preserve them as raw HTML, or retain them (adding a `markdown="1"` attribute when the HTML contains Markdown) so Markdown processors can parse any embedded Markdown.
+* Added more options, such as:
+  * `htmlRetentionMode`: configures how non-standard or unsupported HTML fragments are handled during conversion. For example, whether to convert them to Markdown where possible, preserve them as raw HTML, or retain them (adding a `markdown="1"` attribute when the HTML contains Markdown) so Markdown processors can parse any embedded Markdown.
+  * `bulletListMarker`: configures the number of spaces after bullet list markers.
 * Changed the default behavior to better comply with de facto standards.
 * Remains compatible with Turndown plugins.
 * Remains licensed under the MIT License.
@@ -84,20 +86,21 @@ Options can be passed in to the constructor on instantiation. For example:
 var turnish = new Turnish({ option: 'value' })
 ```
 
-| Option                       | Valid values                                                                  | Default    |
-| :--------------------------- | :---------------------------------------------------------------------------- | :--------- |
-| `headingStyle`               | `setext` or `atx`                                                             | `atx`      |
-| `hr`                         | Any [Thematic break](http://spec.commonmark.org/0.27/#thematic-breaks)        | `---`      |
-| `bulletListMarker`           | `-`, `+`, or `*`                                                              | `-`        |
-| `codeBlockStyle`             | `indented` or `fenced`                                                        | `fenced`   |
-| `fence`                      | ` ``` ` or `~~~`                                                              | ` ``` `    |
-| `emDelimiter`                | `_` or `*`                                                                    | `*`        |
-| `strongDelimiter`            | `**` or `__`                                                                  | `**`       |
-| `linkStyle`                  | `inlined` or `referenced`                                                     | `inlined`  |
-| `linkReferenceStyle`         | `full`, `collapsed`, or `shortcut`                                            | `full`     |
-| `preformattedCode`           | `false` or [`true`](https://github.com/lucthev/collapse-whitespace/issues/16) | `false`    |
-| `linkReferenceDeduplication` | `none` or `full`                                                              | `full`     |
-| `htmlRetentionMode`          | `standard`, `preserveAll`, or `markdownIncludingHtml`                         | `standard` |
+| Option                       | Description                                                                                                                                                                                                                                                                                                                                 | Default    |
+| :--------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :--------- |
+| `headingStyle`               | Style of headings such as h1, h2...<br/>`setext`: underlined headings<br/>`atx`: hash-prefixed headings                                                                                                                                                                                                                                     | `atx`      |
+| `hr`                         | Any [Thematic break](http://spec.commonmark.org/0.27/#thematic-breaks)                                                                                                                                                                                                                                                                      | `---`      |
+| `bulletListMarker`           | `-`, `+`, or `*`                                                                                                                                                                                                                                                                                                                            | `-`        |
+| `bulletListMarkerSpaceCount` | Number of spaces after the bullet list marker.<br/><br/>`1` - `4`                                                                                                                                                                                                                                                                                                                  | `1`        |
+| `codeBlockStyle`             | `indented` or `fenced`                                                                                                                                                                                                                                                                                                                      | `fenced`   |
+| `fence`                      | ` ``` ` or `~~~`                                                                                                                                                                                                                                                                                                                            | ` ``` `    |
+| `emDelimiter`                | `_` or `*`                                                                                                                                                                                                                                                                                                                                  | `*`        |
+| `strongDelimiter`            | `**` or `__`                                                                                                                                                                                                                                                                                                                                | `**`       |
+| `linkStyle`                  | `inlined` or `referenced`                                                                                                                                                                                                                                                                                                                   | `inlined`  |
+| `linkReferenceStyle`         | `full`, `collapsed`, or `shortcut`                                                                                                                                                                                                                                                                                                          | `full`     |
+| `linkReferenceDeduplication` | How duplicate link reference definitions are handled.<br/><br/>`none`: preserve every duplicate reference as-is.<br/>`full`: merge identical references into one.                                                                                                                                                                           | `full`     |
+| `htmlRetentionMode`          | How non-standard HTML fragments are handled.<br/><br/>`standard`: does not preserve non-standard HTML<br/>`preserveAll`: preserve non-standard HTML tags and its children<br/>`markdownIncludingHtml`: preserve non-standard HTML while including Markdown as its child. `markdown="1"` attribute is added when the HTML contains Markdown. | `standard` |
+| `preformattedCode`           | `false` or [`true`](https://github.com/lucthev/collapse-whitespace/issues/16)                                                                                                                                                                                                                                                               | `false`    |
 
 ### Advanced Options
 
