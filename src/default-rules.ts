@@ -2,7 +2,6 @@
 import { Rule } from '@/rules';
 import { TurnishOptions } from '@/index';
 import { repeat, RequireOnly, sanitizedLinkContent, sanitizedLinkTitle, trimNewlines } from '@/utilities';
-import { url } from 'inspector';
 
 export const defaultRules: { [key: string]: Rule } = {}
 
