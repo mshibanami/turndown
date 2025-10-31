@@ -27,20 +27,20 @@ const escapes: EscapeRule[] = [
 type Plugin = (service: Turnish) => void;
 
 export interface TurnishOptions {
-  rules?: { [key: string]: Rule };
-  headingStyle?: 'setext' | 'atx';
-  hr?: string;
-  bulletListMarker?: '*' | '-' | '+';
-  codeBlockStyle?: 'indented' | 'fenced';
-  fence?: string;
-  emDelimiter?: '_' | '*';
-  strongDelimiter?: '**' | '__';
-  linkStyle?: 'inlined' | 'referenced';
-  linkReferenceStyle?: 'full' | 'collapsed' | 'shortcut';
-  linkReferenceDeduplication?: 'none' | 'full';
-  br?: string;
-  preformattedCode?: boolean;
-  htmlRetentionMode?: 'standard' | 'preserveAll' | 'markdownIncludingHtml';
+  rules: { [key: string]: Rule };
+  headingStyle: 'setext' | 'atx';
+  hr: string;
+  bulletListMarker: '*' | '-' | '+';
+  codeBlockStyle: 'indented' | 'fenced';
+  fence: string;
+  emDelimiter: '_' | '*';
+  strongDelimiter: '**' | '__';
+  linkStyle: 'inlined' | 'referenced';
+  linkReferenceStyle: 'full' | 'collapsed' | 'shortcut';
+  linkReferenceDeduplication: 'none' | 'full';
+  br: string;
+  preformattedCode: boolean;
+  htmlRetentionMode: 'standard' | 'preserveAll' | 'markdownIncludingHtml';
   blankReplacement: (content: string, node: ExtendedNode) => string;
   keepReplacement: (content: string, node: ExtendedNode) => string;
   markdownIncludingHtmlReplacement: (content: string, node: ExtendedNode) => string;
