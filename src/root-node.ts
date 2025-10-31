@@ -39,5 +39,5 @@ function htmlParser(): HTMLParser {
 }
 
 function isPreOrCode(node: Node): boolean {
-  return node.nodeName === 'PRE' || node.nodeName === 'CODE'
+  return node.nodeName === 'PRE' || node.nodeName === 'CODE';
 }

@@ -112,7 +112,7 @@ export default class Turnish {
    * @public
    * @param {InputType} input The string or DOM node to convert
    * @returns A Markdown representation of the input
-   * @type String
+   * @type string
    */
   render(input: InputType): string {
     if (!canConvert(input)) {
@@ -148,7 +148,7 @@ export default class Turnish {
   /**
    * Adds a rule
    * @public
-   * @param {String} key The unique key of the rule
+   * @param {string} key The unique key of the rule
    * @param {Object} rule The rule
    * @returns The Turnish instance for chaining
    * @type Object
@@ -173,7 +173,7 @@ export default class Turnish {
   /**
    * Remove a node that matches the filter
    * @public
-   * @param {String|Array|Function} filter The unique key of the rule
+   * @param {string|Array|Function} filter The unique key of the rule
    * @returns The Turnish instance for chaining
    * @type Object
    */
@@ -185,9 +185,9 @@ export default class Turnish {
   /**
    * Escapes Markdown syntax
    * @public
-   * @param {String} string The string to escape
+   * @param {string} string The string to escape
    * @returns A string with Markdown syntax escaped
-   * @type String
+   * @type string
    */
   escape(string: string): string {
     return escapes.reduce(function (accumulator: string, escape: EscapeRule) {
@@ -262,10 +262,10 @@ function replacementForNode(node: ExtendedNode) {
 /**
  * Joins replacement to the current output with appropriate number of new lines
  * @private
- * @param {String} output The current conversion output
- * @param {String} replacement The string to append to the output
+ * @param {string} output The current conversion output
+ * @param {string} replacement The string to append to the output
  * @returns Joined output
- * @type String
+ * @type string
  */
 
 function join(output, replacement) {
@@ -280,9 +280,9 @@ function join(output, replacement) {
 /**
  * Determines whether an input can be converted
  * @private
- * @param {String|HTMLElement} input Describe this parameter
+ * @param {string|HTMLElement} input Describe this parameter
  * @returns Describe what it returns
- * @type String|Object|Array|Boolean|Number
+ * @type string|Object|Array|Boolean|Number
  */
 type InputType = string | HTMLElement | Document | DocumentFragment;
 function canConvert(input: any): input is InputType {

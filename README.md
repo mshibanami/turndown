@@ -176,7 +176,7 @@ Turnish can be extended by adding **rules**. A rule is a plain JavaScript object
 
 The filter selects `<p>` elements, and the replacement function returns the `<p>` contents separated by two new lines.
 
-### `filter` String|Array|Function
+### `filter` string|Array|Function
 
 The filter property determines whether or not an element should be replaced with the rule's `replacement`. DOM nodes can be selected simply using a tag name or an array of tag names:
 
