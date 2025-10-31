@@ -9,6 +9,7 @@ This is a fork of [Turndown](https://github.com/mixmark-io/turndown), originally
 ## Turnish vs Turndown
 
 **Library user perspective:**
+
 * Fixed various issues, such as:
   * escaping unwanted characters that can break the Markdown rendering.
   * removing new lines in link texts.
@@ -39,7 +40,7 @@ pnpm install turnish
 Browser:
 
 ```html
-<script src="https://jsDelivr.net/npm/turnish@latest/dist/turnish.iife.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/turnish@latest/dist/index.iife.js"></script>
 ```
 
 ## Usage
@@ -51,6 +52,15 @@ var Turnish = require('turnish')
 
 var turnish = new Turnish()
 var markdown = turnish.render('<h1>Hello world!</h1>')
+```
+
+ES module import (Node with ESM, bundlers, or browsers supporting modules):
+
+```js
+import Turnish from 'turnish'
+
+const turnish = new Turnish()
+const markdown = turnish.render('<h1>Hello world!</h1>')
 ```
 
 Turnish also accepts DOM nodes as input (either element nodes, document nodes,  or document fragment nodes):
