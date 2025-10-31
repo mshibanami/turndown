@@ -8,6 +8,10 @@ const config: UserConfigExport = defineConfig({
         dts({
             outDir: './dist/types',
             entryRoot: './src',
+            exclude: [
+                '**/tests/**',
+                '**/*.test.ts'
+            ],
         }),
     ],
     build: {
