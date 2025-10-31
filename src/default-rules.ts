@@ -23,7 +23,6 @@ defaultRules.lineBreak = {
 defaultRules.heading = {
   filter: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
   replacement: function (content: string, node: Node, options: TurnishOptions): string {
-    if (!node) return content;
     const hLevel = Number(node.nodeName.charAt(1));
     if (options.headingStyle === 'setext' && hLevel < 3) {
       const underline = repeat((hLevel === 1 ? '=' : '-'), content.length);
@@ -148,9 +147,6 @@ defaultRules.inlineLink = {
   },
   replacement: function (content: string, node: Node): string {
     const sanitizedContent = sanitizedLinkContent(content);
-    if (!node) {
-      return content;
-    }
     let href = (node as Element)
       .getAttribute('href')
       ?.replace(/([()])/g, '\\$1');
@@ -284,10 +280,11 @@ defaultRules.code = {
 defaultRules.image = {
   filter: 'img',
   replacement: function (_content: string, node: Node): string {
-    if (!node) return '';
-    const alt = sanitizedLinkTitle((node as Element).getAttribute('alt'));
+    const altAttr = (node as Element).getAttribute('alt');
+    const alt = altAttr ? sanitizedLinkTitle(altAttr) : '';
     const src = (node as Element).getAttribute('src') || '';
-    const title = sanitizedLinkTitle((node as Element).getAttribute('title'));
+    const titleAttr = (node as Element).getAttribute('title');
+    const title = titleAttr ? sanitizedLinkTitle(titleAttr) : '';
     const titlePart = title ? ' "' + title + '"' : '';
     return src ? '![' + alt + ']' + '(' + src + titlePart + ')' : '';
   }
