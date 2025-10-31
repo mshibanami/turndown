@@ -538,8 +538,8 @@ describe('Turnish', () => {
 
     it('nested uls', () => {
         const turnish = new Turnish();
-        const input = "<ul>\n      <li>This is a list item at root level</li>\n      <li>This is another item at root level</li>\n      <li>\n        <ul>\n          <li>This is a nested list item</li>\n          <li>This is another nested list item</li>\n          <li>\n            <ul>\n              <li>This is a deeply nested list item</li>\n              <li>This is another deeply nested list item</li>\n              <li>This is a third deeply nested list item</li>\n            </ul>\n          </li>\n        </ul>\n      </li>\n      <li>This is a third item at root level</li>\n    </ul>";
-        expect(turnish.render(input)).toBe("- This is a list item at root level\n- This is another item at root level\n- - This is a nested list item\n    - This is another nested list item\n    - - This is a deeply nested list item\n        - This is another deeply nested list item\n        - This is a third deeply nested list item\n- This is a third item at root level");
+        const input = read('nested-uls.html');
+        expect(turnish.render(input)).toBe(read('nested-uls.md'));
     });
 
     it('nested ols and uls', () => {
