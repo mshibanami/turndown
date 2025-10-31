@@ -18,6 +18,9 @@ importers:
       '@changesets/cli':
         specifier: ^2.29.7
         version: 2.29.7(@types/node@24.9.2)
+      '@joplin/turndown-plugin-gfm':
+        specifier: ^1.0.64
+        version: 1.0.64
       '@rollup/plugin-typescript':
         specifier: ^12.3.0
         version: 12.3.0(rollup@4.52.5)(typescript@5.9.3)
@@ -27,6 +30,9 @@ importers:
       standard:
         specifier: ^17.1.2
         version: 17.1.2
+      turndown:
+        specifier: ^7.2.2
+        version: 7.2.2
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -327,6 +333,9 @@ packages:
   '@isaacs/brace-expansion@5.0.0':
     resolution: {integrity: sha512-ZT55BDLV0yv0RBm2czMiZ+SqCGO7AvmOM3G/w2xhVPH+te0aKgFjmBvGlL1dH+ql2tgGO3MVrbb3jCKyvpgnxA==}
     engines: {node: 20 || >=22}
+
+  '@joplin/turndown-plugin-gfm@1.0.64':
+    resolution: {integrity: sha512-8GJ7f9OenE3zkSVII5B6qzIkvgF7C/a20gaASEjM6jWPLPJFFQ2nQ3Ou/kXH1mPUTs9dC9VYs8QXVPvZabKXBQ==}
 
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
@@ -2096,6 +2105,9 @@ packages:
   tsconfig-paths@3.15.0:
     resolution: {integrity: sha512-2Ac2RgzDe/cn48GvOe3M+o82pEFewD3UPbyoUHHdKasHwJKjds4fLXWf/Ux5kATBKN20oaFGu+jbElp1pos0mg==}
 
+  turndown@7.2.2:
+    resolution: {integrity: sha512-1F7db8BiExOKxjSMU2b7if62D/XOyQyZbPKq/nUwopfgnHlqXHqQ0lvfUTeUIr1lZJzOPFn43dODyMSIfvWRKQ==}
+
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
     engines: {node: '>= 0.8.0'}
@@ -2647,6 +2659,8 @@ snapshots:
   '@isaacs/brace-expansion@5.0.0':
     dependencies:
       '@isaacs/balanced-match': 4.0.1
+
+  '@joplin/turndown-plugin-gfm@1.0.64': {}
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
@@ -4718,6 +4732,10 @@ snapshots:
       json5: 1.0.2
       minimist: 1.2.8
       strip-bom: 3.0.0
+
+  turndown@7.2.2:
+    dependencies:
+      '@mixmark-io/domino': 2.2.0
 
   type-check@0.4.0:
     dependencies:

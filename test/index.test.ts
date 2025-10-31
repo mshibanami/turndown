@@ -1,9 +1,8 @@
 import Turnish from '../src';
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'fs';
-import { resolve } from 'path';
 import { Rule } from '@/rules';
 import { ExtendedNode } from '@/node';
+import { noBreakSpace, read } from './utilities';
 
 describe('Turnish', () => {
     it('parses p tag', () => {
@@ -1216,8 +1215,3 @@ describe('Turnish', () => {
         expect(turnish.render(input)).toBe('<div data-component="list" markdown="1">\n-   Item 1\n-   Item 2\n</div>');
     });
 });
-
-const read = (filename: string) =>
-    readFileSync(resolve(__dirname, 'resources', filename), 'utf8').trim();
-
-const noBreakSpace = '\u00A0';

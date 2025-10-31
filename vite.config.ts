@@ -36,7 +36,7 @@ const config: UserConfigExport = defineConfig({
                 },
                 exports: 'default',
             }
-        }
+        },
     },
     resolve: {
         alias: {
