@@ -2,7 +2,7 @@ import { defaultRules } from '@/default-rules'
 import { Rules, Rule, RuleFilter } from '@/rules'
 import { extend, trimLeadingNewlines, trimTrailingNewlines } from '@/utilities'
 import RootNode from '@/root-node'
-import { ExtendedNode } from '@/node';
+import { ExtendedNode, NodeTypes } from '@/node';
 const reduce = Array.prototype.reduce
 
 type EscapeRule = [RegExp, string];
@@ -120,11 +120,11 @@ export default class Turnish {
         input + ' is not a string, or an element/document/fragment node.'
       );
     }
-
-    if (input === '') return '';
-
-    const output = process.call(this, RootNode(input, this.options));
-    return postProcess.call(this, output);
+    if (input === '') {
+      return '';
+    }
+    const output = this.process(RootNode(input, this.options));
+    return this.postProcess(output);
   }
 
   /**
@@ -194,69 +194,68 @@ export default class Turnish {
       return accumulator.replace(escape[0], escape[1]);
     }, string);
   }
-}
 
-/**
- * Reduces a DOM node down to its Markdown string equivalent
- * @private
- * @param {HTMLElement} parentNode The node to convert
- * @returns A Markdown representation of the node
- * @type String
- */
 
-function process(parentNode: ExtendedNode): string {
-  const self = this
-  return reduce.call(parentNode.childNodes, function (output, node) {
-    node = ExtendedNode(node, self.options)
+  /**
+   * Reduces a DOM node down to its Markdown string equivalent
+   * @private
+   * @param {HTMLElement} parentNode The node to convert
+   * @returns A Markdown representation of the node
+   * @type string
+   */
+  process(this: Turnish, parentNode: Node): string {
+    return Array.from(parentNode.childNodes).reduce((output, node) => {
+      const extended = ExtendedNode(node, this.options);
+      let replacement = '';
+      if (extended.nodeType === NodeTypes.Text) {
+        const value = extended.nodeValue ?? ''; // ensure a string
+        replacement = extended.isCode ? value : this.escape(value);
+      } else if (extended.nodeType === NodeTypes.Element) {
+        replacement = this.replacementForNode(extended);
+      }
+      return join(output, replacement);
+    }, '');
+  }
 
-    let replacement = ''
-    if (node.nodeType === 3) {
-      replacement = node.isCode ? node.nodeValue : self.escape(node.nodeValue)
-    } else if (node.nodeType === 1) {
-      replacement = replacementForNode.call(self, node)
+  /**
+   * Appends strings as each rule requires and trims the output
+   * @private
+   * @param {string} output The conversion output
+   * @returns A trimmed version of the ouput
+   * @type string
+   */
+  postProcess(output: string): string {
+    for (const rule of this.rules.array) {
+      if (rule.append) {
+        output = join(output, rule.append(this.options))
+      }
     }
+    return output
+      .replace(/^[\t\r\n]+/, '')
+      .replace(/[\t\r\n\s]+$/, '')
+  }
 
-    return join(output, replacement)
-  }, '')
-}
 
-/**
- * Appends strings as each rule requires and trims the output
- * @private
- * @param {String} output The conversion output
- * @returns A trimmed version of the ouput
- * @type String
- */
-
-function postProcess(output: string) {
-  const self = this
-  this.rules.forEach(function (rule) {
-    if (typeof rule.append === 'function') {
-      output = join(output, rule.append(self.options))
+  /**
+   * Converts an element node to its Markdown equivalent
+   * @private
+   * @param {ExtendedNode} node The node to convert
+   * @returns A Markdown representation of the node
+   * @type string
+   */
+  replacementForNode(node: ExtendedNode) {
+    const rule = this.rules.forNode(node)
+    let content = this.process(node)
+    const whitespace = node.flankingWhitespace
+    if (whitespace.leading || whitespace.trailing) {
+      content = content.trim()
     }
-  })
-
-  return output.replace(/^[\t\r\n]+/, '').replace(/[\t\r\n\s]+$/, '')
-}
-
-/**
- * Converts an element node to its Markdown equivalent
- * @private
- * @param {ExtendedNode} node The node to convert
- * @returns A Markdown representation of the node
- * @type String
- */
-
-function replacementForNode(node: ExtendedNode) {
-  const rule = this.rules.forNode(node)
-  let content = process.call(this, node)
-  const whitespace = node.flankingWhitespace
-  if (whitespace.leading || whitespace.trailing) content = content.trim()
-  return (
-    whitespace.leading +
-    rule.replacement(content, node, this.options) +
-    whitespace.trailing
-  )
+    return (
+      whitespace.leading +
+      rule.replacement(content, node, this.options) +
+      whitespace.trailing
+    )
+  }
 }
 
 /**
@@ -267,8 +266,7 @@ function replacementForNode(node: ExtendedNode) {
  * @returns Joined output
  * @type string
  */
-
-function join(output, replacement) {
+function join(output: string, replacement: string): string {
   const s1 = trimTrailingNewlines(output)
   const s2 = trimLeadingNewlines(replacement)
   const nls = Math.max(output.length - s1.length, replacement.length - s2.length)

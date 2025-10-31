@@ -8,7 +8,7 @@ interface RootNodeOptions {
 
 export default function RootNode(
   input: string | Node,
-  options: RootNodeOptions
+  { preformattedCode }: RootNodeOptions
 ): Element {
   let root: Element
   if (typeof input === 'string') {
@@ -27,7 +27,7 @@ export default function RootNode(
     element: root,
     isBlock: isBlock,
     isVoid: isVoid,
-    isPre: options.preformattedCode ? isPreOrCode : null
+    isPre: preformattedCode ? isPreOrCode : undefined
   })
 
   return root
