@@ -105,12 +105,14 @@ defaultRules.fencedCodeBlock = {
     );
   },
   replacement: function (_content: string, node: Node, options: TurnishOptions): string {
-    if (!node || !node.firstChild) return '';
+    if (!node.firstChild) {
+      return '';
+    }
     const codeElem = node.firstChild as Element;
     const className = codeElem.getAttribute('class') || '';
     const language = (className.match(/language-(\S+)/) || [null, ''])[1];
     const code = codeElem.textContent || '';
-    const fenceChar = options.fence?.charAt(0);
+    const fenceChar = options.fence?.charAt(0) || '`';
     let fenceSize = 3;
     const fenceInCodeRegex = new RegExp('^' + fenceChar + '{3,}', 'gm');
     let match;
@@ -130,7 +132,7 @@ defaultRules.fencedCodeBlock = {
 
 defaultRules.horizontalRule = {
   filter: 'hr',
-  replacement: function (_content: string, _node?: Node, options: TurnishOptions): string {
+  replacement: function (_content: string, _node: Node, options: TurnishOptions): string {
     return '\n\n' + options.hr + '\n\n';
   }
 };
