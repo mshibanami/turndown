@@ -5,19 +5,19 @@ import { ExtendedNode } from "./node";
 import { TurnishOptions } from "@/index";
 import { standardMarkdownElements } from "./utilities";
 
-export type RuleFilterFunction = (node: ExtendedNode, options?: TurnishOptions) => boolean;
+export type RuleFilterFunction = (node: ExtendedNode, options: TurnishOptions) => boolean;
 export type RuleFilter = string | string[] | RuleFilterFunction;
 
 type RuleReplacementFunction = (...args: any[]) => string;
 
 export interface Rule {
   filter?: RuleFilter;
-  replacement: RuleReplacementFunction | ((content: string, node: any, options?: TurnishOptions, previousNode?: any) => string);
+  replacement: RuleReplacementFunction | ((content: string, node: any, options: TurnishOptions, previousNode?: any) => string);
   references?: string[];
   /// Map of URL+title combinations to their reference IDs, used for link reference deduplication.
   /// When linkReferenceDeduplication is 'full', this tracks which URLs have already been assigned a reference number to avoid creating duplicate references.
   urlReferenceIdMap?: Map<string, number>;
-  append?: (options?: TurnishOptions) => string;
+  append?: (options: TurnishOptions) => string;
 }
 
 export class Rules {

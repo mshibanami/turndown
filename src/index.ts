@@ -41,10 +41,10 @@ export interface TurnishOptions {
   br?: string;
   preformattedCode?: boolean;
   htmlRetentionMode?: 'standard' | 'preserveAll' | 'markdownIncludingHtml';
-  blankReplacement?: (content: string, node: ExtendedNode) => string;
-  keepReplacement?: (content: string, node: ExtendedNode) => string;
-  markdownIncludingHtmlReplacement?: (content: string, node: ExtendedNode) => string;
-  defaultReplacement?: (content: string, node: ExtendedNode) => string;
+  blankReplacement: (content: string, node: ExtendedNode) => string;
+  keepReplacement: (content: string, node: ExtendedNode) => string;
+  markdownIncludingHtmlReplacement: (content: string, node: ExtendedNode) => string;
+  defaultReplacement: (content: string, node: ExtendedNode) => string;
   [key: string]: any;
 }
 
