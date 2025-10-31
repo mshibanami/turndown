@@ -49,7 +49,9 @@
   "keywords": [
     "converter",
     "html",
-    "markdown"
+    "markdown",
+    "turndown",
+    "html-to-markdown"
   ],
   "license": "MIT",
   "repository": {
