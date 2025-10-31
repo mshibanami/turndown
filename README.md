@@ -1,6 +1,7 @@
 # Turnish
 
 [![Test](https://github.com/mshibanami/turnish/actions/workflows/test.yml/badge.svg)](https://github.com/mshibanami/turnish/actions/workflows/test.yml)
+[![NPM version](https://img.shields.io/npm/v/turnish.svg?style=flat)](https://www.npmjs.org/package/turnish)
 
 Turnish is a HTML to Markdown converter written in JavaScript.
 
