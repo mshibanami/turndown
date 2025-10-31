@@ -1,7 +1,7 @@
 {
   "name": "turnish",
   "description": "HTML to Markdown converter",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "type": "module",
   "author": "Manabu Nakazawa",
   "publishConfig": {
