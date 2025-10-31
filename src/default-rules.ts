@@ -1,7 +1,7 @@
 
 import { Rule } from '@/rules';
 import { TurnishOptions } from '@/index';
-import { repeat, sanitizedLinkContent, sanitizedLinkTitle, trimNewlines } from '@/utilities';
+import { repeat, RequireOnly, sanitizedLinkContent, sanitizedLinkTitle, trimNewlines } from '@/utilities';
 
 export const defaultRules: { [key: string]: Rule } = {}
 
@@ -161,7 +161,7 @@ defaultRules.inlineLink = {
   }
 };
 
-defaultRules.referenceLink = {
+const referenceLinkRule: RequireOnly<Rule, "urlReferenceIdMap" | "references"> = {
   filter: function (node: Node, options: TurnishOptions): boolean {
     return !!(
       options &&
@@ -179,8 +179,7 @@ defaultRules.referenceLink = {
 
     const referenceKey = href + title;
 
-    // @ts-ignore
-    const self = defaultRules.referenceLink;
+    const self = referenceLinkRule;
     switch (options.linkReferenceStyle) {
       case 'collapsed':
         replacement = '[' + content + '][]';
@@ -220,9 +219,8 @@ defaultRules.referenceLink = {
   },
   references: [],
   urlReferenceIdMap: new Map<string, number>(),
-  append: function (_options?: TurnishOptions): string {
-    // @ts-ignore
-    const self = defaultRules.referenceLink;
+  append: (): string => {
+    const self = referenceLinkRule;
     let references = '';
     if (self.references && self.references.length) {
       references = '\n\n' + self.references.join('\n') + '\n\n';
@@ -233,9 +231,11 @@ defaultRules.referenceLink = {
   }
 };
 
+defaultRules.referenceLink = referenceLinkRule;
+
 defaultRules.emphasis = {
   filter: ['em', 'i'],
-  replacement: function (content: string, _node: Node, options: TurnishOptions): string {
+  replacement: (content: string, _node: Node, options: TurnishOptions): string => {
     content = content.trim();
     if (!content) { return ''; }
     return options.emDelimiter + content + options.emDelimiter;
@@ -244,7 +244,7 @@ defaultRules.emphasis = {
 
 defaultRules.strong = {
   filter: ['strong', 'b'],
-  replacement: function (content: string, _node: Node, options: TurnishOptions): string {
+  replacement: (content: string, _node: Node, options: TurnishOptions): string => {
     content = content.trim();
     if (!content) { return ''; }
     return options.strongDelimiter + content + options.strongDelimiter;
@@ -252,26 +252,25 @@ defaultRules.strong = {
 };
 
 defaultRules.code = {
-  filter: function (node: Node): boolean {
+  filter: (node: Node): boolean => {
     const hasSiblings = node.previousSibling || node.nextSibling;
     const parent = node.parentNode as Element;
     const isCodeBlock = parent.nodeName === 'PRE' && !hasSiblings;
     return node.nodeName === 'CODE' && !isCodeBlock;
   },
-  replacement: function (content: string, _node?: Node, _options?: TurnishOptions): string {
-    if (!content) return '';
-    content = content.replace(/\r?\n|\r/g, ' ');
-    const extraSpace = /^`|^ .*?[^ ].* $|`$/.test(content) ? ' ' : '';
+  replacement: (content: string): string => {
+    const trimmed = content.replace(/\r?\n|\r/g, ' ');
+    const extraSpace = /^`|^ .*?[^ ].* $|`$/.test(trimmed) ? ' ' : '';
     let delimiter = '`';
-    const matches: string[] = content.match(/`+/gm) || [];
+    const matches: string[] = trimmed.match(/`+/gm) || [];
     while (matches.includes(delimiter)) delimiter = delimiter + '`';
-    return delimiter + extraSpace + content + extraSpace + delimiter;
+    return delimiter + extraSpace + trimmed + extraSpace + delimiter;
   }
 };
 
 defaultRules.image = {
   filter: 'img',
-  replacement: function (_content: string, node?: Node, _options?: TurnishOptions): string {
+  replacement: function (_content: string, node: Node): string {
     if (!node) return '';
     const alt = sanitizedLinkTitle((node as Element).getAttribute('alt'));
     const src = (node as Element).getAttribute('src') || '';

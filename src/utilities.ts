@@ -108,3 +108,6 @@ export function sanitizedLinkTitle(content: string): string {
   return sanitized
     .replace(/[\t\r\n]+/g, ' ');
 }
+
+export type RequireOnly<T, K extends keyof T> =
+  T & Required<Pick<T, K>>;
