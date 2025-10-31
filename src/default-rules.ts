@@ -2,6 +2,7 @@
 import { Rule } from '@/rules';
 import { TurnishOptions } from '@/index';
 import { repeat, RequireOnly, sanitizedLinkContent, sanitizedLinkTitle, trimNewlines } from '@/utilities';
+import { NodeTypes } from './node';
 
 export const defaultRules: { [key: string]: Rule } = {}
 
@@ -67,14 +68,33 @@ defaultRules.listItem = {
     const isParagraph = /\n$/.test(content);
     content = trimNewlines(content) + (isParagraph ? '\n' : '');
 
-    // Determine indentation for continuation lines
-    const indent = options.listItemIndent === 'tab'
-      ? '\t'
-      : ' '.repeat(options.listItemIndentSpaceCount);
-    content = content.replace(/\n/gm, '\n' + indent); // indent
-    return (
-      prefix + content + (node.nextSibling ? '\n' : '')
-    );
+    const hasOnlyNestedList = node.childNodes.length > 0 &&
+      Array.from(node.childNodes).every((child: Node) => {
+        return (child.nodeType === NodeTypes.Text && /^\s*$/.test(child.nodeValue || ''))
+          || (child.nodeType === NodeTypes.Element && ['UL', 'OL'].includes(child.nodeName));
+      });
+    if (hasOnlyNestedList && content.trim() !== '') {
+      // This list item only contains a nested list, don't duplicate marker
+      return content + (node.nextSibling ? '\n' : '');
+    }
+
+    let nestingLevel = 0;
+    let currentNode: Node | null = parent;
+    while (currentNode) {
+      if (currentNode.nodeName === 'UL' || currentNode.nodeName === 'OL') {
+        const grandparent = currentNode.parentNode as Element | null;
+        if (grandparent && grandparent.nodeName === 'LI') {
+          nestingLevel++;
+        }
+      }
+      currentNode = currentNode.parentNode;
+    }
+
+    let oneIndent = options.listItemIndent === 'tab' ? '\t' : ' '.repeat(options.listItemIndentSpaceCount);
+    let indent = oneIndent.repeat(nestingLevel);
+    const listMarkerRegex = /\n(?!\s*(?:\d+\.\s|[-+*]\s))/gm;
+    content = content.replace(listMarkerRegex, '\n' + oneIndent);
+    return indent + prefix + content + (node.nextSibling ? '\n' : '');
   }
 };
 
