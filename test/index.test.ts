@@ -491,67 +491,67 @@ describe('Turnish', () => {
     it('ol', () => {
         const turnish = new Turnish();
         const input = "<ol>\n      <li>Ordered list item 1</li>\n      <li>Ordered list item 2</li>\n      <li>Ordered list item 3</li>\n    </ol>";
-        expect(turnish.render(input)).toBe("1.  Ordered list item 1\n2.  Ordered list item 2\n3.  Ordered list item 3");
+        expect(turnish.render(input)).toBe("1. Ordered list item 1\n2. Ordered list item 2\n3. Ordered list item 3");
     });
 
     it('ol with start', () => {
         const turnish = new Turnish();
         const input = "<ol start=\"42\">\n      <li>Ordered list item 42</li>\n      <li>Ordered list item 43</li>\n      <li>Ordered list item 44</li>\n    </ol>";
-        expect(turnish.render(input)).toBe("42.  Ordered list item 42\n43.  Ordered list item 43\n44.  Ordered list item 44");
+        expect(turnish.render(input)).toBe("42. Ordered list item 42\n43. Ordered list item 43\n44. Ordered list item 44");
     });
 
     it('ol with content', () => {
         const turnish = new Turnish();
         const input = "<ol start=\"42\">\n      <li>\n        <p>Ordered list item 42</p>\n        <p>Ordered list's additional content</p>\n      </li>\n    </ol>";
-        expect(turnish.render(input)).toBe("42.  Ordered list item 42\n     \n     Ordered list's additional content");
+        expect(turnish.render(input)).toBe("42. Ordered list item 42\n     \n     Ordered list's additional content");
     });
 
     it('list spacing', () => {
         const turnish = new Turnish();
         const input = "<p>A paragraph.</p>\n    <ol>\n      <li>Ordered list item 1</li>\n      <li>Ordered list item 2</li>\n      <li>Ordered list item 3</li>\n    </ol>\n    <p>Another paragraph.</p>\n    <ul>\n      <li>Unordered list item 1</li>\n      <li>Unordered list item 2</li>\n      <li>Unordered list item 3</li>\n    </ul>";
-        expect(turnish.render(input)).toBe("A paragraph.\n\n1.  Ordered list item 1\n2.  Ordered list item 2\n3.  Ordered list item 3\n\nAnother paragraph.\n\n-   Unordered list item 1\n-   Unordered list item 2\n-   Unordered list item 3");
+        expect(turnish.render(input)).toBe("A paragraph.\n\n1. Ordered list item 1\n2. Ordered list item 2\n3. Ordered list item 3\n\nAnother paragraph.\n\n- Unordered list item 1\n- Unordered list item 2\n- Unordered list item 3");
     });
 
     it('ul', () => {
         const turnish = new Turnish();
         const input = "<ul>\n      <li>Unordered list item 1</li>\n      <li>Unordered list item 2</li>\n      <li>Unordered list item 3</li>\n    </ul>";
-        expect(turnish.render(input)).toBe("-   Unordered list item 1\n-   Unordered list item 2\n-   Unordered list item 3");
+        expect(turnish.render(input)).toBe("- Unordered list item 1\n- Unordered list item 2\n- Unordered list item 3");
     });
 
     it('ul with custom bullet', () => {
         const turnish = new Turnish({ bulletListMarker: "-" });
         const input = "<ul>\n      <li>Unordered list item 1</li>\n      <li>Unordered list item 2</li>\n      <li>Unordered list item 3</li>\n    </ul>";
-        expect(turnish.render(input)).toBe("-   Unordered list item 1\n-   Unordered list item 2\n-   Unordered list item 3");
+        expect(turnish.render(input)).toBe("- Unordered list item 1\n- Unordered list item 2\n- Unordered list item 3");
     });
 
     it('ul with paragraph', () => {
         const turnish = new Turnish();
         const input = "<ul>\n      <li><p>List item with paragraph</p></li>\n      <li>List item without paragraph</li>\n    </ul>";
-        expect(turnish.render(input)).toBe("-   List item with paragraph\n    \n-   List item without paragraph");
+        expect(turnish.render(input)).toBe("- List item with paragraph\n    \n- List item without paragraph");
     });
 
     it('ol with paragraphs', () => {
         const turnish = new Turnish();
         const input = "<ol>\n      <li>\n        <p>This is a paragraph in a list item.</p>\n        <p>This is a paragraph in the same list item as above.</p>\n      </li>\n      <li>\n        <p>A paragraph in a second list item.</p>\n      </li>\n    </ol>";
-        expect(turnish.render(input)).toBe("1.  This is a paragraph in a list item.\n    \n    This is a paragraph in the same list item as above.\n    \n2.  A paragraph in a second list item.");
+        expect(turnish.render(input)).toBe("1. This is a paragraph in a list item.\n    \n    This is a paragraph in the same list item as above.\n    \n2. A paragraph in a second list item.");
     });
 
     it('nested uls', () => {
         const turnish = new Turnish();
         const input = "<ul>\n      <li>This is a list item at root level</li>\n      <li>This is another item at root level</li>\n      <li>\n        <ul>\n          <li>This is a nested list item</li>\n          <li>This is another nested list item</li>\n          <li>\n            <ul>\n              <li>This is a deeply nested list item</li>\n              <li>This is another deeply nested list item</li>\n              <li>This is a third deeply nested list item</li>\n            </ul>\n          </li>\n        </ul>\n      </li>\n      <li>This is a third item at root level</li>\n    </ul>";
-        expect(turnish.render(input)).toBe("-   This is a list item at root level\n-   This is another item at root level\n-   -   This is a nested list item\n    -   This is another nested list item\n    -   -   This is a deeply nested list item\n        -   This is another deeply nested list item\n        -   This is a third deeply nested list item\n-   This is a third item at root level");
+        expect(turnish.render(input)).toBe("- This is a list item at root level\n- This is another item at root level\n- - This is a nested list item\n    - This is another nested list item\n    - - This is a deeply nested list item\n        - This is another deeply nested list item\n        - This is a third deeply nested list item\n- This is a third item at root level");
     });
 
     it('nested ols and uls', () => {
         const turnish = new Turnish();
         const input = "<ul>\n      <li>This is a list item at root level</li>\n      <li>This is another item at root level</li>\n      <li>\n        <ol>\n          <li>This is a nested list item</li>\n          <li>This is another nested list item</li>\n          <li>\n            <ul>\n              <li>This is a deeply nested list item</li>\n              <li>This is another deeply nested list item</li>\n              <li>This is a third deeply nested list item</li>\n            </ul>\n          </li>\n        </ol>\n      </li>\n      <li>This is a third item at root level</li>\n    </ul>";
-        expect(turnish.render(input)).toBe("-   This is a list item at root level\n-   This is another item at root level\n-   1.  This is a nested list item\n    2.  This is another nested list item\n    3.  -   This is a deeply nested list item\n        -   This is another deeply nested list item\n        -   This is a third deeply nested list item\n-   This is a third item at root level");
+        expect(turnish.render(input)).toBe("- This is a list item at root level\n- This is another item at root level\n- 1. This is a nested list item\n    2. This is another nested list item\n    3. - This is a deeply nested list item\n        - This is another deeply nested list item\n        - This is a third deeply nested list item\n- This is a third item at root level");
     });
 
     it('ul with blockquote', () => {
         const turnish = new Turnish();
         const input = "<ul>\n      <li>\n        <p>A list item with a blockquote:</p>\n        <blockquote>\n          <p>This is a blockquote inside a list item.</p>\n        </blockquote>\n      </li>\n    </ul>";
-        expect(turnish.render(input)).toBe("-   A list item with a blockquote:\n    \n    > This is a blockquote inside a list item.");
+        expect(turnish.render(input)).toBe("- A list item with a blockquote:\n    \n    > This is a blockquote inside a list item.");
     });
 
     it('blockquote', () => {
@@ -599,13 +599,13 @@ describe('Turnish', () => {
     it('trailing whitespace in li', () => {
         const turnish = new Turnish();
         const input = "<ol>\n      <li>Chapter One\n        <ol>\n          <li>Section One</li>\n          <li>Section Two with trailing whitespace </li>\n          <li>Section Three with trailing whitespace </li>\n        </ol>\n      </li>\n      <li>Chapter Two</li>\n      <li>Chapter Three with trailing whitespace  </li>\n    </ol>";
-        expect(turnish.render(input)).toBe("1.  Chapter One\n    1.  Section One\n    2.  Section Two with trailing whitespace\n    3.  Section Three with trailing whitespace\n2.  Chapter Two\n3.  Chapter Three with trailing whitespace");
+        expect(turnish.render(input)).toBe("1. Chapter One\n   1. Section One\n   2. Section Two with trailing whitespace\n    3. Section Three with trailing whitespace\n2. Chapter Two\n3. Chapter Three with trailing whitespace");
     });
 
     it('multilined and bizarre formatting', () => {
         const turnish = new Turnish();
         const input = "<ul>\n      <li>\n        Indented li with leading/trailing newlines\n      </li>\n      <li>\n        <strong>Strong with trailing space inside li with leading/trailing whitespace </strong> </li>\n      <li>li without whitespace</li>\n      <li> Leading space, text, lots of whitespace …\n                          text\n      </li>\n    </ol>";
-        expect(turnish.render(input)).toBe("-   Indented li with leading/trailing newlines\n-   **Strong with trailing space inside li with leading/trailing whitespace**\n-   li without whitespace\n-   Leading space, text, lots of whitespace … text");
+        expect(turnish.render(input)).toBe("- Indented li with leading/trailing newlines\n- **Strong with trailing space inside li with leading/trailing whitespace**\n- li without whitespace\n- Leading space, text, lots of whitespace … text");
     });
 
     it('whitespace between inline elements', () => {
@@ -695,7 +695,7 @@ describe('Turnish', () => {
     it('escapes < and > within a list item', () => {
         const turnish = new Turnish();
         expect(turnish.render("<ul><li>This is bad > &lt;malicious&gt; < This is bad</li></ul>"))
-            .toBe("-   This is bad > \\<malicious\\> < This is bad");
+            .toBe("- This is bad > \\<malicious\\> < This is bad");
     });
 
     it('not escaping within code', () => {
@@ -1212,6 +1212,6 @@ describe('Turnish', () => {
     it('markdownIncludingHtml: preserves element with data attributes and converts lists', () => {
         const turnish = new Turnish({ htmlRetentionMode: 'markdownIncludingHtml' });
         const input = '<div data-component="list"><ul><li>Item 1</li><li>Item 2</li></ul></div>';
-        expect(turnish.render(input)).toBe('<div data-component="list" markdown="1">\n-   Item 1\n-   Item 2\n</div>');
+        expect(turnish.render(input)).toBe('<div data-component="list" markdown="1">\n- Item 1\n- Item 2\n</div>');
     });
 });

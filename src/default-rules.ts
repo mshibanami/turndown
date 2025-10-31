@@ -57,12 +57,12 @@ defaultRules.list = {
 defaultRules.listItem = {
   filter: 'li',
   replacement: function (content: string, node: Node, options: TurnishOptions): string {
-    let prefix = options.bulletListMarker + '   ';
+    let prefix = options.bulletListMarker + ' '.repeat(options.bulletListMarkerSpaceCount);
     const parent = node.parentNode as Element;
     if (parent.nodeName === 'OL') {
       const start = parent.getAttribute('start');
       const index = Array.prototype.indexOf.call(parent.children, node);
-      prefix = (start ? Number(start) + index : index + 1) + '.  ';
+      prefix = (start ? Number(start) + index : index + 1) + '.' + ' '.repeat(options.bulletListMarkerSpaceCount);
     }
     const isParagraph = /\n$/.test(content);
     content = trimNewlines(content) + (isParagraph ? '\n' : '');
