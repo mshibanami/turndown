@@ -1,6 +1,6 @@
 import { defaultRules } from '@/default-rules'
 import { Rules, Rule, RuleFilter } from '@/rules'
-import { extend, trimLeadingNewlines, trimTrailingNewlines } from '@/utilities'
+import { trimLeadingNewlines, trimTrailingNewlines } from '@/utilities'
 import RootNode from '@/root-node'
 import { ExtendedNode, NodeTypes } from '@/node';
 const reduce = Array.prototype.reduce
@@ -102,8 +102,8 @@ export default class Turnish {
   options: TurnishOptions;
   rules: Rules;
 
-  constructor(options?: TurnishOptions) {
-    this.options = extend({}, defaultOptions, options);
+  constructor(options?: Partial<TurnishOptions>) {
+    this.options = Object.assign({}, defaultOptions, options);
     this.rules = new Rules(this.options);
   }
 
