@@ -49,6 +49,7 @@ function createParser(): HTMLParser {
     }
     return new HTMLParserBrowser()
   } else {
+    // Node environment: use domino
     const domino = require('@mixmark-io/domino') as {
       createDocument: (html: string) => Document
     }
