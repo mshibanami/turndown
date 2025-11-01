@@ -214,7 +214,14 @@ export default class Turnish {
       const extended = ExtendedNode(node, this.options);
       let replacement = '';
       if (extended.nodeType === NodeTypes.Text) {
-        const value = extended.nodeValue ?? ''; // ensure a string
+        let value = extended.nodeValue ?? '';
+        // Special handling for text nodes following void elements. Void element replacements (e.g., from GFM plugin for checkboxes) may add trailing whitespace, so we should remove leading whitespace from the following text node.
+        if (node.previousSibling && node.previousSibling.nodeType === NodeTypes.Element) {
+          const prevElement = node.previousSibling as Element;
+          if (prevElement.nodeName === 'INPUT' && prevElement.getAttribute('type') === 'checkbox') {
+            value = value.replace(/^\s+/, '');
+          }
+        }
         replacement = extended.isCode ? value : this.escape(value);
       } else if (extended.nodeType === NodeTypes.Element) {
         replacement = this.replacementForNode(extended);

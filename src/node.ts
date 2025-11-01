@@ -89,15 +89,15 @@ function edgeWhitespace(string: string): EdgeWhitespace {
 }
 
 function isFlankedByWhitespace(side: 'left' | 'right', node: Element, options: Options): boolean {
-  let sibling: Element | null;
+  let sibling: Node | null;
   let regExp: RegExp;
   let isFlanked: boolean | undefined;
 
   if (side === 'left') {
-    sibling = node.previousElementSibling;
+    sibling = node.previousSibling;
     regExp = / $/;
   } else {
-    sibling = node.nextElementSibling;
+    sibling = node.nextSibling;
     regExp = /^ /;
   }
 
