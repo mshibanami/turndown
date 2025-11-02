@@ -1,5 +1,11 @@
 # turnish
 
+## 1.2.0
+
+### Minor Changes
+
+- [`a606e87`](https://github.com/mshibanami/turnish/commit/a606e871729efebbf3dcda7bbf8fc948eb3a3aed) Thanks [@mshibanami](https://github.com/mshibanami)! - Fixed extra spacing caused by GFM plugin
+
 ## 1.1.0
 
 ### Minor Changes
