@@ -24,7 +24,7 @@ Turnish has been created to address various issues found in Turndown, while keep
   * `htmlRetentionMode`: configures how non-standard or unsupported HTML fragments are handled during conversion. For example, whether to convert them to Markdown where possible, preserve them as raw HTML, or retain them (adding a `markdown="1"` attribute when the HTML contains Markdown) so Markdown processors can parse any embedded Markdown.
   * `bulletListMarker`: configures the number of spaces after bullet list markers.
 * Changed the default behavior to better comply with de facto standards.
-* Remains compatible with Turndown plugins, such as [@joplin/turndown-plugin-gfm](https://github.com/joplin/turndown-plugin-gfm).
+* Remains compatible with Turndown plugins, such as [@joplin/turndown-plugin-gfm](https://www.npmjs.com/package/@joplin/turndown-plugin-gfm).
 * Remains licensed under the MIT License.
 
 **Library/plugin developer perspective:**
