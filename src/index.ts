@@ -51,7 +51,6 @@ export interface TurnishOptions {
   [key: string]: any;
 }
 
-
 const defaultOptions: TurnishOptions = {
   rules: defaultRules,
   headingStyle: 'atx',
