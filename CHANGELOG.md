@@ -1,5 +1,11 @@
 # turnish
 
+## 1.3.0
+
+### Minor Changes
+
+- Modified the default options
+
 ## 1.2.0
 
 ### Minor Changes
