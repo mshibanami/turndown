@@ -33,7 +33,7 @@ export interface TurnishOptions {
   bulletListMarker: '*' | '-' | '+';
   listMarkerSpaceCount: 1 | 2 | 3 | 4;
   listItemIndent: 'tab' | 'space';
-  listItemIndentSpaceCount: 1 | 2 | 3 | 4;
+  listItemIndentSpaceCount: 2 | 4;
   codeBlockStyle: 'indented' | 'fenced';
   fence: string;
   emDelimiter: '_' | '*';
